@@ -39,7 +39,14 @@ export default function SwarmApp() {
   const [rows, setRows] = useState<Row[]>([]);
   const [verifyMsg, setVerifyMsg] = useState<Record<string, string>>({});
 
+  const nRef = useRef(n);
   keyRef.current = polKey;
+  nRef.current = n;
+
+  const runScore = useCallback((key: string, agents: number) => {
+    const r = scoreSeeds(compilePolicy(POLICIES[key].src), agents, SEEDS);
+    setScored({ score: r.score, meanSteps: r.meanSteps, ok: r.ok });
+  }, []);
 
   const draw = useCallback(() => {
     const cv = cvRef.current, sim = simRef.current;
@@ -59,12 +66,17 @@ export default function SwarmApp() {
     const sim = simRef.current!;
     for (let i = 0; i < 3; i++) { if (sim.step >= CAP || sim.frac >= TARGET) break; sim.tick(); }
     draw(); setLive({ step: sim.step, frac: sim.frac });
-    if (sim.step >= CAP || sim.frac >= TARGET) { setRunning(false); return; }
+    if (sim.step >= CAP || sim.frac >= TARGET) {
+      setRunning(false);
+      runScore(keyRef.current, nRef.current); // watch finished → fill the official 12-seed score
+      return;
+    }
     rafRef.current = requestAnimationFrame(loop);
-  }, [draw]);
+  }, [draw, runScore]);
 
   const run = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
+    setScored(null);
     simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, seed);
     setLive({ step: 0, frac: 0 }); setRunning(true);
     rafRef.current = requestAnimationFrame(loop);
@@ -73,9 +85,8 @@ export default function SwarmApp() {
   const pause = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); }, []);
   const score = useCallback(() => {
     cancelAnimationFrame(rafRef.current); setRunning(false);
-    const r = scoreSeeds(compilePolicy(POLICIES[polKey].src), n, SEEDS);
-    setScored({ score: r.score, meanSteps: r.meanSteps, ok: r.ok });
-  }, [polKey, n]);
+    runScore(polKey, n);
+  }, [polKey, n, runScore]);
 
   const refreshBoard = useCallback(async () => {
     const builtins: Row[] = ORDER.map((k) => {
