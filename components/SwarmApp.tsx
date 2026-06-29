@@ -4,13 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, type Sim } from "@/lib/sim";
 import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
 
-type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; isMine?: boolean };
-type Tab = "arena" | "board" | "submit" | "how";
+type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
-const COLORS: Record<string, string> = { random: "#f87171", levy: "#22d3ee", disperse: "#818cf8", stripes: "#34d399" };
+const COLORS: Record<string, string> = { random: "#f87171", levy: "#22d3ee", disperse: "#818cf8", stripes: "#4ade80" };
 const colorFor = (k: string) => COLORS[k] || "#818cf8";
-const WATCH_SEEDS = [1, 2, 3, 7, 42];
 const MEDAL = ["🥇", "🥈", "🥉"];
 
 function EigenMark({ className }: { className?: string }) {
@@ -23,25 +21,29 @@ function EigenMark({ className }: { className?: string }) {
   );
 }
 
+const CARDS = [
+  { c: "var(--indigo)", l: "No orchestrator", h: "Nobody is in charge", p: "Every agent runs the identical rule. No leader hands out regions — any coordination has to emerge from local behavior alone." },
+  { c: "var(--teal)", l: "Local only", h: "Each agent sees one cell", p: "No global map, no messaging. An agent knows its own position, a private scratchpad, and whether its cell is covered. That's it." },
+  { c: "var(--violet)", l: "Emergent", h: "Order from a single rule", p: "Hundreds of dumb agents, one policy, and the whole map gets covered — the way ants forage or birds flock, with no plan." },
+  { c: "var(--amber)", l: "Reproducible", h: "Anyone re-runs your score", p: "Maps are seeded deterministically. Same policy + agent count → the identical number on any machine. No trust required." },
+];
+
 export default function SwarmApp() {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const simRef = useRef<Sim | null>(null);
   const rafRef = useRef<number>(0);
   const keyRef = useRef<string>("levy");
 
-  const [tab, setTab] = useState<Tab>("arena");
   const [polKey, setPolKey] = useState("levy");
   const [n, setN] = useState(DEFAULT_N);
-  const [seed, setSeed] = useState(1);
   const [running, setRunning] = useState(false);
-  const [liveState, setLive] = useState({ step: 0, frac: 0 });
+  const [live, setLive] = useState({ step: 0, frac: 0 });
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [verifyMsg, setVerifyMsg] = useState<Record<string, string>>({});
 
   const nRef = useRef(n);
-  keyRef.current = polKey;
-  nRef.current = n;
+  keyRef.current = polKey; nRef.current = n;
 
   const runScore = useCallback((key: string, agents: number) => {
     const r = scoreSeeds(compilePolicy(POLICIES[key].src), agents, SEEDS);
@@ -53,11 +55,11 @@ export default function SwarmApp() {
     if (!cv || !sim) return;
     const ctx = cv.getContext("2d")!;
     const cell = cv.width / W;
-    ctx.fillStyle = "#0c0a14"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = "#08070d"; ctx.fillRect(0, 0, cv.width, cv.height);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++)
-      if (sim.covered[y * W + x]) { ctx.fillStyle = "rgba(99,102,241,.22)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      if (sim.covered[y * W + x]) { ctx.fillStyle = "rgba(99,102,241,.20)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
     const c = colorFor(keyRef.current);
-    ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 6;
+    ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 7;
     for (const a of sim.agents) ctx.fillRect(a.x * cell + cell * 0.1, a.y * cell + cell * 0.1, cell * 0.8, cell * 0.8);
     ctx.shadowBlur = 0;
   }, []);
@@ -66,27 +68,19 @@ export default function SwarmApp() {
     const sim = simRef.current!;
     for (let i = 0; i < 3; i++) { if (sim.step >= CAP || sim.frac >= TARGET) break; sim.tick(); }
     draw(); setLive({ step: sim.step, frac: sim.frac });
-    if (sim.step >= CAP || sim.frac >= TARGET) {
-      setRunning(false);
-      runScore(keyRef.current, nRef.current); // watch finished → fill the official 12-seed score
-      return;
-    }
+    if (sim.step >= CAP || sim.frac >= TARGET) { setRunning(false); runScore(keyRef.current, nRef.current); return; }
     rafRef.current = requestAnimationFrame(loop);
   }, [draw, runScore]);
 
   const run = useCallback(() => {
-    cancelAnimationFrame(rafRef.current);
-    setScored(null);
-    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, seed);
+    cancelAnimationFrame(rafRef.current); setScored(null);
+    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, 1);
     setLive({ step: 0, frac: 0 }); setRunning(true);
     rafRef.current = requestAnimationFrame(loop);
-  }, [polKey, n, seed, loop]);
+  }, [polKey, n, loop]);
 
   const pause = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); }, []);
-  const score = useCallback(() => {
-    cancelAnimationFrame(rafRef.current); setRunning(false);
-    runScore(polKey, n);
-  }, [polKey, n, runScore]);
+  const score = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); runScore(polKey, n); }, [polKey, n, runScore]);
 
   const refreshBoard = useCallback(async () => {
     const builtins: Row[] = ORDER.map((k) => {
@@ -110,22 +104,17 @@ export default function SwarmApp() {
     return () => cancelAnimationFrame(rafRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     cancelAnimationFrame(rafRef.current); setRunning(false); setScored(null);
-    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, seed);
+    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, 1);
     setLive({ step: 0, frac: 0 }); draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [polKey, n, seed]);
-
-  // re-draw the canvas when switching back to the arena tab (canvas remounts)
-  useEffect(() => { if (tab === "arena") requestAnimationFrame(draw); }, [tab, draw]);
+  }, [polKey, n]);
 
   const verify = useCallback(async (id: string) => {
     setVerifyMsg((m) => ({ ...m, [id]: "…" }));
     try {
-      const res = await fetch(`/api/verify/${id}`);
-      const d = await res.json();
+      const res = await fetch(`/api/verify/${id}`); const d = await res.json();
       setVerifyMsg((m) => ({ ...m, [id]: d.match ? `✓ ${d.recomputed}` : `✗ ${d.recomputed}≠${d.stored}` }));
     } catch { setVerifyMsg((m) => ({ ...m, [id]: "err" })); }
   }, []);
@@ -137,159 +126,190 @@ export default function SwarmApp() {
   const aboveFloor = hasData ? Math.round(((best - FLOOR) / FLOOR) * 100) : null;
   const aheadLevy = levyScore && hasData ? Math.round(((levyScore - best) / levyScore) * 100) : null;
   const pos = (s: number) => Math.max(0, Math.min(100, ((s - FLOOR) / (worst - FLOOR)) * 100));
-  const TABS: [Tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"]];
 
   return (
-    <div className="app">
-      {/* header */}
+    <>
       <header className="site"><div className="wrap nav">
         <div className="brand">
           <EigenMark className="mark" />
-          <span className="name">swarm<span style={{ color: "var(--primary)" }}>.fail</span></span>
+          <span className="name">swarm<span style={{ color: "var(--indigo)" }}>.fail</span></span>
           <a className="by" href="https://www.eigenlabs.org" target="_blank" rel="noreferrer">by <EigenMark /> Eigen ↗</a>
         </div>
-        <div className="hstat">
-          <span>best <b>{hasData ? best : "—"}</b></span>
-          <span>floor <b>{FLOOR}</b></span>
-          {aheadLevy != null && <span><span className="up">{aheadLevy}%</span> ahead of Lévy</span>}
-          <a href={REPO} target="_blank" rel="noreferrer" className="mono" style={{ color: "var(--muted-fg)" }}>GitHub ↗</a>
+        <div className="nav-right">
+          <nav className="nav-links">
+            <a href="#why">Why</a><a href="#board">Leaderboard</a><a href="#submit">Submit</a><a href="#how">How it works</a>
+          </nav>
+          <a className="btn sm" href={REPO} target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a className="btn primary sm" href="#board">Leaderboard</a>
         </div>
       </div></header>
 
-      {/* tabs */}
-      <div className="tabs">
-        {TABS.map(([t, label]) => (
-          <button key={t} className={`tab ${tab === t ? "active" : ""}`} onClick={() => setTab(t)}>{label}</button>
-        ))}
-      </div>
+      {/* Hero */}
+      <section className="hero"><div className="wrap hero-grid">
+        <div>
+          <div className="eyebrow">Deterministic swarm benchmark · 40×40 · 12 seeds</div>
+          <h1>Write one rule.<br />Command a swarm.<br /><span className="dim">No orchestrator.</span></h1>
+          <p className="lead">
+            Submit one local policy. It&apos;s cloned into hundreds of identical agents dropped on maps they&apos;ve never
+            seen — no leader, no shared memory, each sees only its own cell. One number comes out: <b style={{ color: "var(--fg)" }}>agents × steps to cover</b>. Beat the Lévy forager; approach the floor.
+          </p>
+          <div className="cta">
+            <button className="btn primary" onClick={run}>▶ Watch the swarm</button>
+            <a className="btn" href="#submit">Write a policy</a>
+          </div>
+          <div className="npm">
+            <span className="lbl">Submit from your terminal</span>
+            <code>npx swarm submit policy.js --name you</code>
+          </div>
+        </div>
 
-      {/* panes */}
-      <div className="pane">
-        {tab === "arena" && (
-          <div className="wrap grid2">
-            <div className="panel">
-              <div className="row between" style={{ marginBottom: 12 }}>
-                <h2 style={{ fontSize: 18 }}>Arena</h2>
-                <span className="mono" style={{ fontSize: 12, color: "var(--muted-fg)" }}>watching seed {seed} · scored over {SEEDS.length} seeds</span>
-              </div>
-              <canvas ref={cvRef} width={400} height={400} />
-              <div className="bar" style={{ marginTop: 12 }}><i style={{ width: `${Math.min(100, (liveState.frac / TARGET) * 100)}%` }} /></div>
+        {/* live terminal panel */}
+        <div className="term">
+          <div className="term-bar">
+            <span className="dot" /><span className="dot" /><span className="dot" />
+            <span className="t">swarm · {POLICIES[polKey].name.toLowerCase()} · seed 1 · {n} agents</span>
+          </div>
+          <div className="term-body">
+            <canvas ref={cvRef} width={400} height={400} />
+            <div className="bar"><i style={{ width: `${Math.min(100, (live.frac / TARGET) * 100)}%` }} /></div>
+            <div className="term-foot">
+              <span>step <b>{live.step}</b></span>
+              <span>cov <b>{Math.round(live.frac * 100)}%</b></span>
+              <span>score <b style={{ color: scored ? (scored.ok ? "var(--good)" : "var(--destructive)") : "var(--fg)" }}>{scored ? scored.score : "—"}</b></span>
+              <span className="grow" />
+              <select value={polKey} onChange={(e) => setPolKey(e.target.value)}>
+                {ORDER.map((k) => <option key={k} value={k}>{POLICIES[k].name}</option>)}
+              </select>
             </div>
-            <div>
-              <div className="panel" style={{ marginBottom: 14 }}>
-                <div className="stats">
-                  <div className="stat"><span className="k">Live step</span><span className="v">{liveState.step}</span></div>
-                  <div className="stat"><span className="k">Coverage</span><span className="v">{Math.round(liveState.frac * 100)}%</span></div>
-                  <div className="stat"><span className="k">Agents</span><span className="v">{n}</span></div>
-                  <div className="stat"><span className="k">Score</span><span className="v" style={{ color: scored ? (scored.ok ? "var(--good)" : "var(--destructive)") : "var(--fg)" }}>{scored ? scored.score : "—"}</span></div>
-                </div>
-                {scored && <div className="hint" style={{ marginBottom: 12 }}>{scored.ok ? <>mean {scored.meanSteps} steps × {n} agents · <b>+{Math.round(((scored.score - FLOOR) / FLOOR) * 100)}%</b> above floor</> : <span style={{ color: "var(--destructive)" }}>FAIL — didn&apos;t cover every seed</span>}</div>}
-                <label className="fld" style={{ marginBottom: 12 }}>Policy
-                  <select value={polKey} onChange={(e) => setPolKey(e.target.value)}>
-                    {ORDER.map((k) => <option key={k} value={k}>{POLICIES[k].name}{POLICIES[k].tag === "baseline" ? " (baseline)" : ""}</option>)}
-                  </select>
-                </label>
-                <div className="row" style={{ marginBottom: 12 }}>
-                  <label className="fld" style={{ flex: 1 }}>Agents <span className="mono">{n}</span>
-                    <input type="range" min={10} max={300} step={5} value={n} onChange={(e) => setN(+e.target.value)} />
-                  </label>
-                  <label className="fld" style={{ flex: 1 }}>Watch seed
-                    <select value={seed} onChange={(e) => setSeed(+e.target.value)}>{WATCH_SEEDS.map((s) => <option key={s} value={s}>{s}</option>)}</select>
-                  </label>
-                </div>
-                <div className="row">
-                  <button className="btn primary" onClick={run} disabled={running}>▶ Watch</button>
-                  <button className="btn" onClick={pause} disabled={!running}>Pause</button>
-                  <button className="btn" onClick={score}>Score</button>
-                </div>
-              </div>
-              <div className="panel hint">
-                Pick a policy and watch 120 clones cover the grid. <b style={{ color: "var(--fg)" }}>Score</b> = agents × mean steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} seeds, floor <b>{FLOOR}</b>. To get on the board, submit from the repo — see the <b style={{ color: "var(--fg)" }}>Submit</b> tab.
-              </div>
+            <div className="term-foot">
+              <label className="fld" style={{ flexDirection: "row", alignItems: "center", gap: 8, textTransform: "none", letterSpacing: 0, color: "var(--muted)" }}>
+                <span className="mono" style={{ fontSize: 12 }}>agents {n}</span>
+                <input type="range" min={10} max={300} step={5} value={n} onChange={(e) => setN(+e.target.value)} style={{ width: 120 }} />
+              </label>
+              <span className="grow" />
+              <button className="btn sm" onClick={running ? pause : run}>{running ? "Pause" : "▶ Watch"}</button>
+              <button className="btn sm" onClick={score}>Score</button>
             </div>
           </div>
-        )}
+        </div>
+      </div></section>
 
-        {tab === "board" && (
-          <div className="wrap">
-            <div className="frontier" style={{ marginBottom: 16 }}>
-              <div className="row between" style={{ alignItems: "flex-end" }}>
-                <div><div className="big">{hasData ? best : "—"}</div><div className="biglbl">Best score · {aboveFloor != null ? `+${aboveFloor}% above floor` : "—"}</div></div>
-                <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 22, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
-              </div>
-              <div className="track">
-                <span className="lbl top" style={{ left: 0 }}>floor {FLOOR}</span><span className="lbl bot" style={{ left: 0 }}>optimal</span>
-                {hasData && <span className="pin" style={{ left: `${pos(best)}%`, background: "var(--good)" }} />}
-                {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best {best}</span>}
-                {levyScore && <span className="pin" style={{ left: `${pos(levyScore)}%`, background: "var(--c5)" }} />}
-                {levyScore && <span className="lbl bot" style={{ left: `${pos(levyScore)}%` }}>Lévy</span>}
-                <span className="lbl bot" style={{ left: "100%" }}>random</span>
-              </div>
+      {/* feature bar */}
+      <div className="fbar"><div className="wrap"><div className="fbar-in">
+        <div className="cell"><span className="k">Best score</span><span className="v"><b>{hasData ? best : "—"}</b></span></div>
+        <div className="cell"><span className="k">Floor</span><span className="v"><b>{FLOOR}</b> optimal</span></div>
+        <div className="cell"><span className="k">vs Lévy</span><span className="v"><b style={{ color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}% ahead` : "—"}</b></span></div>
+        <div className="cell lead2"><span className="k">Deterministic · reproducible</span><span className="v">Same policy → same score on any machine. Re-run to verify — no trust required.</span></div>
+      </div></div></div>
+
+      {/* Why */}
+      <section id="why" className="sec"><div className="wrap">
+        <div className="eyebrow">Why it&apos;s hard</div>
+        <h2>A single robot can&apos;t see the whole map. A swarm doesn&apos;t have to.</h2>
+        <p className="sub">Coordination has to come from the rule itself — there&apos;s nothing else to lean on.</p>
+        <div className="cards">
+          {CARDS.map((c) => (
+            <div className="card" key={c.l}>
+              <span className="lbl" style={{ color: c.c }}>{c.l}</span>
+              <h4>{c.h}</h4><p>{c.p}</p>
             </div>
-            <div className="panel" style={{ padding: "4px 16px" }}>
-              <table>
-                <thead><tr><th>#</th><th>Policy</th><th></th><th className="num">Agents</th><th className="num">Steps</th><th className="num">Score</th><th className="num">vs Lévy</th><th></th></tr></thead>
-                <tbody>
-                  {rows.map((r, i) => {
-                    const delta = levyScore != null ? r.score - levyScore : 0;
-                    const dStr = delta === 0 ? "—" : delta < 0 ? `▼ ${-delta}` : `▲ ${delta}`;
-                    const dCol = delta < 0 ? "var(--good)" : delta > 0 ? "var(--destructive)" : "var(--muted-fg)";
-                    const tg = r.tag === "baseline" ? <span className="tag base">baseline</span> : r.tag === "win" ? <span className="tag win">beats Lévy</span> : r.tag === "floor" ? <span className="tag">floor</span> : null;
-                    return (
-                      <tr key={`${r.key}-${r.id ?? i}`} className={r.isMine ? "me" : ""}>
-                        <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
-                        <td style={{ fontWeight: 500 }}>{r.name}</td><td>{tg}</td>
-                        <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
-                        <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
-                        <td className="num" style={{ color: dCol }}>{dStr}</td>
-                        <td className="num">{r.id && <button className="verify" onClick={() => verify(r.id!)}>{verifyMsg[r.id] ?? "verify"}</button>}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+          ))}
+        </div>
+      </div></section>
+
+      {/* Leaderboard */}
+      <section id="board" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
+        <div className="eyebrow" style={{ marginBottom: 14 }}>Leaderboard</div>
+        <div className="frontier" style={{ marginBottom: 18 }}>
+          <div className="row between" style={{ alignItems: "flex-end" }}>
+            <div><div className="big">{hasData ? best : "—"}</div><div className="biglbl">Best score · {aboveFloor != null ? `+${aboveFloor}% above floor` : "—"}</div></div>
+            <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 24, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
           </div>
-        )}
+          <div className="track">
+            <span className="lbl top" style={{ left: 0 }}>floor {FLOOR}</span><span className="lbl bot" style={{ left: 0 }}>optimal</span>
+            {hasData && <span className="pin" style={{ left: `${pos(best)}%`, background: "var(--good)" }} />}
+            {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best {best}</span>}
+            {levyScore && <span className="pin" style={{ left: `${pos(levyScore)}%`, background: "var(--cyan)" }} />}
+            {levyScore && <span className="lbl bot" style={{ left: `${pos(levyScore)}%` }}>Lévy</span>}
+            <span className="lbl bot" style={{ left: "100%" }}>random</span>
+          </div>
+        </div>
+        <div className="panel" style={{ padding: "4px 18px" }}>
+          <table>
+            <thead><tr><th>#</th><th>Policy</th><th></th><th className="num">Agents</th><th className="num">Steps</th><th className="num">Score</th><th className="num">vs Lévy</th><th></th></tr></thead>
+            <tbody>
+              {rows.map((r, i) => {
+                const d = levyScore != null ? r.score - levyScore : 0;
+                const dStr = d === 0 ? "—" : d < 0 ? `▼ ${-d}` : `▲ ${d}`;
+                const dCol = d < 0 ? "var(--good)" : d > 0 ? "var(--destructive)" : "var(--faint)";
+                const tg = r.tag === "baseline" ? <span className="tag base">baseline</span> : r.tag === "win" ? <span className="tag win">beats Lévy</span> : r.tag === "floor" ? <span className="tag">floor</span> : null;
+                return (
+                  <tr key={`${r.key}-${r.id ?? i}`}>
+                    <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
+                    <td style={{ fontWeight: 500 }}>{r.name}</td><td>{tg}</td>
+                    <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
+                    <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
+                    <td className="num" style={{ color: dCol }}>{dStr}</td>
+                    <td className="num">{r.id && <button className="verify" onClick={() => verify(r.id!)}>{verifyMsg[r.id] ?? "verify"}</button>}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div></section>
 
-        {tab === "submit" && (
-          <div className="wrap grid2">
-            <div className="panel">
-              <h2 style={{ fontSize: 18, marginBottom: 4 }}>Submit a policy</h2>
-              <p className="hint" style={{ margin: "0 0 14px" }}>One way in: clone the repo, write a policy, run the CLI. It scores locally with the same engine the server uses, then posts — so your number is reproducible by anyone.</p>
-              <pre className="cli">{`git clone ${REPO}
+      {/* Submit */}
+      <section id="submit" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
+        <div className="eyebrow" style={{ marginBottom: 14 }}>Submit</div>
+        <h2>One way in: clone, write, submit.</h2>
+        <p className="sub">The CLI scores locally with the same engine the server runs, then posts — so your number is reproducible by anyone.</p>
+        <div className="grid2" style={{ marginTop: 28 }}>
+          <div className="panel">
+            <pre className="cli">{`git clone ${REPO}
 cd swarm.fail && npm install
 
-# write policy.js (see the example →), then:
+# write policy.js (example →), then:
 npx swarm run    policy.js --agents 40   # score locally
-npx swarm submit policy.js --name you    # post to the board`}</pre>
-              <p className="hint" style={{ margin: 0 }}><b style={{ color: "var(--fg)" }}>Score</b> = agents × mean steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} fixed seeds. Lower wins, floor <b>{FLOOR}</b>. A policy that fails to cover any seed is logged <span className="mono">FAIL</span> and not ranked. Re-run <span className="mono">npx swarm board</span> to see the leaderboard from your terminal.</p>
-            </div>
-            <div className="panel">
-              <div className="row between" style={{ marginBottom: 6 }}><b style={{ fontSize: 13 }}>policy.js</b><span className="mono" style={{ fontSize: 11, color: "var(--muted-fg)" }}>example · beats Lévy</span></div>
-              <pre className="cli" style={{ margin: "0 0 12px" }}>{POLICIES.stripes.src}</pre>
-              <b style={{ fontSize: 13 }}>Inputs (read-only)</b>
-              <ul className="hint" style={{ marginTop: 6 }}>
-                <li><code className="k">a.x a.y</code> cell · <code className="k">a.id</code> index · <code className="k">a.n</code> size</li>
-                <li><code className="k">a.mem</code> private scratch · <code className="k">a.heading</code> last dir</li>
-                <li><code className="k">env.w env.h</code> grid ({W}×{H}) · <code className="k">env.here</code> covered?</li>
-                <li><code className="k">rng()</code> deterministic 0..1 — no Math.random/Date</li>
-              </ul>
-            </div>
+npx swarm submit policy.js --name you    # post to the board
+npx swarm board                          # view from your terminal`}</pre>
+            <p className="hint" style={{ margin: 0 }}>Score = agents × mean steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} fixed seeds. Lower wins, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. A policy that fails to cover any seed is logged <span className="mono">FAIL</span> and not ranked.</p>
           </div>
-        )}
+          <div className="panel">
+            <div className="row between" style={{ marginBottom: 8 }}><b style={{ fontSize: 13 }}>policy.js</b><span className="mono" style={{ fontSize: 11, color: "var(--faint)" }}>example · beats Lévy</span></div>
+            <pre className="cli" style={{ margin: "0 0 12px" }}>{POLICIES.stripes.src}</pre>
+            <b style={{ fontSize: 13 }}>Inputs (read-only)</b>
+            <ul className="hint" style={{ marginTop: 6 }}>
+              <li><code className="k">a.x a.y</code> cell · <code className="k">a.id</code> index · <code className="k">a.n</code> size</li>
+              <li><code className="k">a.mem</code> private scratch · <code className="k">a.heading</code> last dir</li>
+              <li><code className="k">env.w env.h</code> grid ({W}×{H}) · <code className="k">env.here</code> covered?</li>
+              <li><code className="k">rng()</code> deterministic 0..1 — no Math.random/Date</li>
+            </ul>
+          </div>
+        </div>
+      </div></section>
 
-        {tab === "how" && (
-          <div className="wrap">
-            <div className="how">
-              <div className="panel"><div className="n">01</div><h3>One rule</h3><p>You write a single local policy — a pure function from what one agent senses to one move. No model calls, no network, no global state.</p></div>
-              <div className="panel"><div className="n">02</div><h3>Cloned into a swarm</h3><p>The same rule runs in every agent. Coordination has to <i>emerge</i> from local behavior — there&apos;s no central controller telling them where to go.</p></div>
-              <div className="panel"><div className="n">03</div><h3>One honest number</h3><p>Maps are seeded deterministically and scored locally and server-side with the same engine. Anyone re-runs your code and gets the identical number — honesty is free.</p></div>
-            </div>
-            <p className="hint" style={{ marginTop: 16 }}>Score = agents × mean steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} seeds. Provable floor {FLOOR}: every covered cell needs ≥1 agent-step, so agents × steps can&apos;t go lower. Named baseline: the Lévy-flight forager. swarm.fail is an Eigen project · <a href={REPO} target="_blank" rel="noreferrer">github ↗</a></p>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* How it works */}
+      <section id="how" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
+        <div className="eyebrow">How it works</div>
+        <h2>Write to a rule. Agents react. Coverage emerges.</h2>
+        <div className="cols3">
+          <div className="col"><h5>01 · You write</h5>
+            <p><b>One local function.</b> <code className="k">step(a, env, rng)</code> returns a move. No model calls, no network, no global state.</p>
+            <p>The same rule is copied into every agent — identical, anonymous, on a map none of them has seen.</p></div>
+          <div className="col"><h5>02 · The swarm reacts</h5>
+            <p><b>Each agent moves one cell.</b> It only knows its own position and a private scratchpad — never the full map or the other agents.</p>
+            <p>Run it until 95% of the grid is covered. Coordination, if any, is emergent.</p></div>
+          <div className="col"><h5>03 · One number</h5>
+            <p><b>agents × mean steps</b> over 12 fixed seeds. Lower wins; the floor is {FLOOR}.</p>
+            <p>Deterministic, so anyone re-runs your code and gets the identical score. The leaderboard is just a log of reproducible results.</p></div>
+        </div>
+      </div></section>
+
+      <footer className="site"><div className="wrap row between">
+        <span>swarm.fail — a deterministic swarm benchmark · an Eigen project</span>
+        <a href={REPO} target="_blank" rel="noreferrer" className="mono">github ↗</a>
+      </div></footer>
+    </>
   );
 }
