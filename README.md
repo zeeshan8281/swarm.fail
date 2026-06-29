@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# swarm.fail
 
-## Getting Started
+A deterministic swarm benchmark — an Eigen project. **Write one local rule. It's
+cloned into a swarm that covers an unknown grid. You get one number.**
 
-First, run the development server:
+Live: https://web-production-54527.up.railway.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## The idea
+
+You submit a single policy — a pure function run once per agent per step:
+
+```js
+function step(a, env, rng) {
+  // return a move; dx,dy each in {-1, 0, 1}
+  return { dx: 1, dy: 0 };
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+It's cloned into N identical agents dropped on 40×40 grids they've never seen.
+No leader, no shared memory — each agent sees only its own cell. The score is:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Lower wins.** Provable floor **1520** (every covered cell needs ≥1 agent-step,
+so `agents × steps` can't go lower). Named baseline: the **Lévy-flight forager**.
+Same policy + same agent count → identical score on any machine.
 
-## Learn More
+## Submit (the only way in)
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+git clone https://github.com/zeeshan8281/swarm.fail
+cd swarm.fail && npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# write policy.js with a step() function, then:
+npx swarm run    policy.js --agents 40   # score locally, writes score.json + results.tsv
+npx swarm submit policy.js --name you    # score, then post to the board
+npx swarm board                          # view the leaderboard
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+No build needed for the CLI — `node bin/swarm.mjs run policy.js` works too.
+Point at another server with `SWARM_URL=...`.
 
-## Deploy on Vercel
+### Policy inputs (read-only)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| | |
+|---|---|
+| `a.x` `a.y` | your cell |
+| `a.id` `a.n` | your index, swarm size |
+| `a.mem` | your private scratch object (persists across steps) |
+| `a.heading` | your last move direction |
+| `env.w` `env.h` | grid size (40×40) |
+| `env.here` | is your cell already covered? |
+| `rng()` | deterministic 0..1 (no `Math.random` / `Date` — they're blocked) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Moves are 4-connected, one cell per step; walls clamp.
+
+### Validation gate
+
+A policy that fails to reach 95% coverage on **any** of the 12 seeds is marked
+**FAIL** and logged but not ranked — like ecdsa.fail's "all test points must pass."
+
+## Develop
+
+```bash
+npm run dev      # Next.js dev server
+npm run build    # production build
+```
+
+Stack: Next.js + React 19 + Tailwind v4, eigen-design tokens, Postgres
+(`DATABASE_URL`) for the leaderboard with a local JSON-file fallback. The
+scoring engine (`lib/engine.mjs`) is one source of truth shared by the browser,
+the server sandbox, and the CLI.
