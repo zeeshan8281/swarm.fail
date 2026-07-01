@@ -236,24 +236,29 @@ export default function SwarmApp() {
 
       {/* ── LEADERBOARD ── */}
       {tab === "board" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
-        <div className="eyebrow" style={{ marginBottom: 14 }}>Leaderboard</div>
+        <div className="eyebrow" style={{ marginBottom: 12 }}>Leaderboard</div>
+        <p className="sub" style={{ marginTop: 0, marginBottom: 20, maxWidth: 680 }}>
+          Each row is one rule. <b style={{ color: "var(--fg)" }}>Score = robots × moves to explore every maze — lower wins.</b> The bar
+          below runs from the <b style={{ color: "var(--fg)" }}>best score physically possible</b> (left) to <b style={{ color: "var(--fg)" }}>aimless
+          wandering</b> (right). The one to beat is <b style={{ color: "var(--fg)" }}>Lévy Flight</b> — the search pattern real animals use.
+        </p>
         <div className="frontier" style={{ marginBottom: 18 }}>
           <div className="row between" style={{ alignItems: "flex-end" }}>
             <div><div className="big">{hasData ? best : "—"}</div><div className="biglbl">Best score · {aboveFloor != null ? `+${aboveFloor}% above floor` : "—"}</div></div>
             <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 24, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
           </div>
           <div className="track">
-            <span className="lbl top" style={{ left: 0 }}>floor {FLOOR}</span><span className="lbl bot" style={{ left: 0 }}>optimal</span>
+            <span className="lbl top" style={{ left: 0 }}>{FLOOR}</span><span className="lbl bot" style={{ left: 0 }}>best possible</span>
             {hasData && <span className="pin" style={{ left: `${pos(best)}%`, background: "var(--good)" }} />}
-            {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best {best}</span>}
+            {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best so far {best}</span>}
             {levyScore && <span className="pin" style={{ left: `${pos(levyScore)}%`, background: "var(--cyan)" }} />}
             {levyScore && <span className="lbl bot" style={{ left: `${pos(levyScore)}%` }}>Lévy</span>}
-            <span className="lbl bot" style={{ left: "100%" }}>random</span>
+            <span className="lbl bot" style={{ left: "100%" }}>aimless</span>
           </div>
         </div>
         <div className="panel" style={{ padding: "4px 18px" }}>
           <table>
-            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Agents</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>
+            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Robots</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>
             <tbody>
               {rows.map((r, i) => {
                 const d = levyScore != null ? r.score - levyScore : 0;
@@ -275,6 +280,12 @@ export default function SwarmApp() {
             </tbody>
           </table>
         </div>
+        <p className="hint" style={{ marginTop: 14 }}>
+          <span className="tag">reference</span> = built-in example rules to beat ·{" "}
+          <span className="tag base">baseline</span> = Lévy Flight, the one to beat ·{" "}
+          <b style={{ color: "var(--good)" }}>▼</b> better than Lévy, <b style={{ color: "var(--destructive)" }}>▲</b> worse ·{" "}
+          🥇 current best · <b style={{ color: "var(--fg)" }}>Robots × Moves = Score</b>, lower wins.
+        </p>
       </div></section>}
 
       {/* ── SUBMIT ── */}
