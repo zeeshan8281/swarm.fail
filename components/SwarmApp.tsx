@@ -156,18 +156,18 @@ export default function SwarmApp() {
       {tab === "arena" && <>
       <section className="hero" style={{ paddingBottom: 24 }}><div className="wrap hero-grid">
         <div>
-          <div className="eyebrow">Deterministic swarm benchmark · 40×40 · 12 seeds</div>
-          <h1>Write one rule.<br />Command a swarm.<br /><span className="dim">No orchestrator.</span></h1>
+          <div className="eyebrow">A swarm coordination puzzle</div>
+          <h1>One rule.<br />A hundred robots.<br /><span className="dim">Explore the whole map.</span></h1>
           <p className="lead">
-            Submit one local policy. It&apos;s cloned into hundreds of identical agents dropped on maps they&apos;ve never
-            seen — no leader, no shared memory, each sees only its own cell. One number comes out: <b style={{ color: "var(--fg)" }}>agents × steps to cover</b>. Beat the Lévy forager; approach the floor.
+            You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred robots and drop them on a map
+            they&apos;ve never seen — no leader, no map, no talking. Your job: get them to <b style={{ color: "var(--fg)" }}>explore every corner</b>, as fast as possible.
           </p>
           <div className="cta">
-            <button className="btn primary" onClick={run}>▶ Watch the swarm</button>
-            <button className="btn" onClick={() => setTab("submit")}>How to submit</button>
+            <button className="btn primary" onClick={run}>▶ Watch them explore</button>
+            <button className="btn" onClick={() => setTab("how")}>How it works</button>
           </div>
           <div className="npm">
-            <span className="lbl">Submit from your terminal</span>
+            <span className="lbl">Play from your terminal</span>
             <code>swarm submit policy.js --model &quot;GPT-5&quot;</code>
           </div>
         </div>
@@ -176,14 +176,15 @@ export default function SwarmApp() {
         <div className="term">
           <div className="term-bar">
             <span className="dot" /><span className="dot" /><span className="dot" />
-            <span className="t">swarm · {POLICIES[polKey].name.toLowerCase()} · seed 1 · {n} agents</span>
+            <span className="t">{n} robots · rule: {POLICIES[polKey].name.toLowerCase()}</span>
           </div>
           <div className="term-body">
             <canvas ref={cvRef} width={400} height={400} />
+            <div className="cap"><span><i className="sw-dot" /> robots</span><span><i className="sw-cell" /> explored</span><span className="grow" />goal: explore the whole board</div>
             <div className="bar"><i style={{ width: `${Math.min(100, (live.frac / TARGET) * 100)}%` }} /></div>
             <div className="term-foot">
-              <span>step <b>{live.step}</b></span>
-              <span>cov <b>{Math.round(live.frac * 100)}%</b></span>
+              <span>moves <b>{live.step}</b></span>
+              <span>explored <b>{Math.round(live.frac * 100)}%</b></span>
               <span>score <b style={{ color: scored ? (scored.ok ? "var(--good)" : "var(--destructive)") : "var(--fg)" }}>{scored ? scored.score : "—"}</b></span>
               <span className="grow" />
               <select value={polKey} onChange={(e) => setPolKey(e.target.value)}>
@@ -207,15 +208,15 @@ export default function SwarmApp() {
       <div className="obj"><div className="wrap"><div className="obj-in">
         <div className="cell">
           <span className="k"><span className="num">01</span> The goal</span>
-          <p>Cover a map you can&apos;t see. Hundreds of identical agents, <b>one shared rule, no leader</b> — each sees only its own cell.</p>
+          <p>Get the robots to <b>explore the whole map</b> — every cell visited at least once.</p>
         </div>
         <div className="cell">
-          <span className="k"><span className="num">02</span> The score</span>
-          <p><b>agents × steps</b> to cover 95% of the grid. <span className="m">Lower wins. The best possible is <b>{FLOOR}</b>{hasData ? <> — best so far <b>{best}</b></> : null}.</span></p>
+          <span className="k"><span className="num">02</span> The catch</span>
+          <p>They all follow <b>the same one rule</b> you write. <span className="m">No leader, no map, no talking — each robot sees only the cell it&apos;s standing on.</span></p>
         </div>
         <div className="cell">
-          <span className="k"><span className="num">03</span> How you win</span>
-          <p>Beat the <b>Lévy forager</b>{levyScore ? <> <span className="m mono">({levyScore})</span></> : null} — nature&apos;s best solo search — and top the board. <span className="m">Every score re-runs to the same number.</span></p>
+          <span className="k"><span className="num">03</span> The win</span>
+          <p>Finish in the <b>fewest total moves</b>. <span className="m">Random wandering wastes time re-covering ground — smart rules spread out. Can you beat them?</span></p>
         </div>
       </div></div></div>
       </>}

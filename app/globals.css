@@ -71,6 +71,11 @@ header.site { border-bottom: 1px solid var(--border); position: sticky; top: 0; 
 .term-bar .t { margin-left: 8px; font-family: var(--font-geist-mono), monospace; font-size: 11px; color: var(--faint); }
 .term-body { padding: 14px; }
 canvas { width: 100%; height: auto; aspect-ratio: 1/1; display: block; background: #08070d; border-radius: var(--radius-lg); image-rendering: pixelated; }
+.cap { display: flex; align-items: center; gap: 14px; margin-top: 12px; font-family: var(--font-geist-mono), monospace; font-size: 11px; color: var(--faint); }
+.cap .grow { flex: 1; }
+.cap span { display: inline-flex; align-items: center; gap: 6px; }
+.cap .sw-dot { width: 9px; height: 9px; border-radius: 2px; background: #22d3ee; box-shadow: 0 0 6px #22d3ee; }
+.cap .sw-cell { width: 9px; height: 9px; border-radius: 2px; background: rgba(99,102,241,.35); }
 .term-foot { display: flex; align-items: center; gap: 14px; margin-top: 12px; font-family: var(--font-geist-mono), monospace; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
 .term-foot b { color: var(--fg); }
 .term-foot .grow { flex: 1; }
