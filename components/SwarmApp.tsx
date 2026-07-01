@@ -214,7 +214,7 @@ export default function SwarmApp() {
         </div>
         <div className="cell">
           <span className="k"><span className="num">03</span> The win</span>
-          <p>Finish in the <b>fewest total moves</b>. <span className="m">Random wandering wastes time re-covering ground — smart rules spread out. Can you beat them?</span></p>
+          <p>Finish in the <b>fewest total moves</b>. <span className="m">Beat whoever&apos;s #1 on the leaderboard and get as close as you can to the perfect score — the fewest moves physically possible.</span></p>
         </div>
       </div></div></div>
       </>}
@@ -240,7 +240,7 @@ export default function SwarmApp() {
         <p className="sub" style={{ marginTop: 0, marginBottom: 20, maxWidth: 680 }}>
           Each row is one rule. <b style={{ color: "var(--fg)" }}>Score = robots × moves to explore every maze — lower wins.</b> The bar
           below runs from the <b style={{ color: "var(--fg)" }}>best score physically possible</b> (left) to <b style={{ color: "var(--fg)" }}>aimless
-          wandering</b> (right). The one to beat is <b style={{ color: "var(--fg)" }}>Lévy Flight</b> — the search pattern real animals use.
+          wandering</b> (right). Your goal: <b style={{ color: "var(--fg)" }}>beat whoever&apos;s #1 and creep toward the best-possible score on the left</b> — that gap is the open challenge. <b style={{ color: "var(--fg)" }}>Lévy Flight</b> (the pattern real animals use) is just a landmark you pass along the way.
         </p>
         <div className="frontier" style={{ marginBottom: 18 }}>
           <div className="row between" style={{ alignItems: "flex-end" }}>
@@ -282,7 +282,7 @@ export default function SwarmApp() {
         </div>
         <p className="hint" style={{ marginTop: 14 }}>
           <span className="tag">reference</span> = built-in example rules to beat ·{" "}
-          <span className="tag base">baseline</span> = Lévy Flight, the one to beat ·{" "}
+          <span className="tag base">baseline</span> = Lévy Flight, a natural landmark to pass ·{" "}
           <b style={{ color: "var(--good)" }}>▼</b> better than Lévy, <b style={{ color: "var(--destructive)" }}>▲</b> worse ·{" "}
           🥇 current best · <b style={{ color: "var(--fg)" }}>Robots × Moves = Score</b>, lower wins.
         </p>
@@ -356,7 +356,7 @@ git push   # then open the PR on GitHub`}</pre>
           </div>
           <div className="faq-item">
             <h4>How is the score worked out? What&apos;s a good one?</h4>
-            <p>Score = <b>how many robots × how many moves</b> it took to explore {Math.round(TARGET * 100)}% of each maze, averaged over {SEEDS.length} mazes. Lower wins. The best possible is around <b>{FLOOR}</b> (you can&apos;t beat that — it&apos;s the number of squares to visit). The one to beat is <b>Lévy Flight</b>{levyScore ? <> (<span className="mono">{levyScore}</span>)</> : null}, the search pattern real animals use.</p>
+            <p>Score = <b>how many robots × how many moves</b> it took to explore {Math.round(TARGET * 100)}% of each maze, averaged over {SEEDS.length} mazes. Lower wins. The best possible is around <b>{FLOOR}</b> — you can&apos;t beat that (it&apos;s the number of squares to visit), so the real game is getting as <i>close</i> to it as you can. You&apos;re racing <b>everyone else on the board</b>, not one policy. <b>Lévy Flight</b>{levyScore ? <> (<span className="mono">{levyScore}</span>)</> : null} — the pattern real animals use — is just a famous landmark: pass it and you know your rule is genuinely good.</p>
           </div>
           <div className="faq-item">
             <h4>Do the robots learn or talk to each other?</h4>
