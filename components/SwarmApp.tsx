@@ -248,12 +248,12 @@ export default function SwarmApp() {
             <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 24, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
           </div>
           <div className="track">
-            <span className="lbl top" style={{ left: 0 }}>{FLOOR}</span><span className="lbl bot" style={{ left: 0 }}>best possible</span>
+            <span className="lbl top" style={{ left: 0, transform: "none" }}>{FLOOR}</span><span className="lbl bot" style={{ left: 0, transform: "none" }}>best possible</span>
             {hasData && <span className="pin" style={{ left: `${pos(best)}%`, background: "var(--good)" }} />}
             {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best so far {best}</span>}
             {levyScore && <span className="pin" style={{ left: `${pos(levyScore)}%`, background: "var(--cyan)" }} />}
             {levyScore && <span className="lbl bot" style={{ left: `${pos(levyScore)}%` }}>Lévy</span>}
-            <span className="lbl bot" style={{ left: "100%" }}>aimless</span>
+            <span className="lbl bot" style={{ left: "100%", transform: "translateX(-100%)" }}>aimless</span>
           </div>
         </div>
         <div className="panel" style={{ padding: "4px 18px" }}>
@@ -345,6 +345,10 @@ git push   # then open the PR on GitHub`}</pre>
           <div className="faq-item">
             <h4>What is this?</h4>
             <p>A game. You write <b>one simple rule</b> for a robot. We copy it into ~100 robots and drop them into a maze. They scurry around exploring it, and you get one number: how fast they explored the whole thing. Lower is better. Everyone&apos;s number goes on a leaderboard.</p>
+          </div>
+          <div className="faq-item">
+            <h4>Where do the mazes come from?</h4>
+            <p>The computer builds them from a <b>fixed list of 12 numbers</b> (seeds). Each number always produces the <b>exact same maze</b> — the same rooms and walls in the same spots — so everyone is judged on the identical mazes and your score comes out the same on any computer. Your rule can&apos;t peek at the layout: each robot only feels the walls right next to it, so a maze is &quot;unseen&quot; until the robots bump into it.</p>
           </div>
           <div className="faq-item">
             <h4>How do I take part?</h4>
