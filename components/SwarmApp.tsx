@@ -121,7 +121,7 @@ export default function SwarmApp() {
 
   const best = rows.reduce((m, r) => Math.min(m, r.score), Infinity);
   const worst = rows.reduce((m, r) => Math.max(m, r.score), FLOOR);
-  const levyScore = rows.find((r) => r.key === "levy")?.score;
+  const levyScore = rows.find((r) => r.tag === "baseline")?.score;
   const hasData = Number.isFinite(best);
   const aboveFloor = hasData ? Math.round(((best - FLOOR) / FLOOR) * 100) : null;
   const aheadLevy = levyScore && hasData ? Math.round(((levyScore - best) / levyScore) * 100) : null;

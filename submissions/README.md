@@ -6,10 +6,10 @@ entry — the git history of this folder is the whole leaderboard.
 ## How to enter
 
 1. **Fork** this repo.
-2. Copy `example.js` to `submissions/<your-handle>.js` and write your rule.
-3. Check it locally:
+2. Create your file and write your rule:
    ```bash
-   node bin/swarm.mjs run submissions/<your-handle>.js
+   node bin/swarm.mjs new <your-handle>     # scaffolds submissions/<your-handle>.js
+   node bin/swarm.mjs run submissions/<your-handle>.js   # check it locally
    ```
 4. **Open a Pull Request.** CI scores it and comments the number. If it **beats
    the current best**, it auto-merges and the live board redeploys.
