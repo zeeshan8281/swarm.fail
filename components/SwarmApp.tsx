@@ -156,8 +156,9 @@ export default function SwarmApp() {
           <div className="eyebrow">A swarm coordination puzzle</div>
           <h1>One rule.<br />A hundred robots.<br /><span className="dim">Explore the whole map.</span></h1>
           <p className="lead">
-            You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred robots and drop them on a map
-            they&apos;ve never seen — no leader, no map, no talking. Your job: get them to <b style={{ color: "var(--fg)" }}>explore every corner</b>, as fast as possible.
+            You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred robots and drop them into a maze
+            they&apos;ve never seen — no leader, no map, no talking. No single robot is smart; the right rule makes the whole crowd
+            smart. <b style={{ color: "var(--fg)" }}>Write a better rule than everyone else and climb the leaderboard.</b>
           </p>
           <div className="cta">
             <button className="btn primary" onClick={run}>▶ Watch them explore</button>
