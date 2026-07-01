@@ -40,7 +40,7 @@ export default function SwarmApp() {
   const [live, setLive] = useState({ step: 0, frac: 0 });
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
-  const [tab, setTab] = useState<"arena" | "board" | "submit" | "how">("arena");
+  const [tab, setTab] = useState<"arena" | "board" | "submit" | "how" | "faq">("arena");
 
   const nRef = useRef(n);
   keyRef.current = polKey; nRef.current = n;
@@ -127,7 +127,7 @@ export default function SwarmApp() {
   const aheadLevy = levyScore && hasData ? Math.round(((levyScore - best) / levyScore) * 100) : null;
   const pos = (s: number) => Math.max(0, Math.min(100, ((s - FLOOR) / (worst - FLOOR)) * 100));
 
-  const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"]];
+  const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"], ["faq", "FAQ"]];
 
   return (
     <>
@@ -323,6 +323,34 @@ git push   # then open the PR on GitHub`}</pre>
           <div className="col"><h5>03 · One number</h5>
             <p><b>agents × mean steps</b> over 12 fixed seeds. Lower wins; the floor is {FLOOR}.</p>
             <p>Deterministic, so anyone re-runs your code and gets the identical score. The leaderboard is just a log of reproducible results.</p></div>
+        </div>
+      </div></section>}
+
+      {/* ── FAQ ── */}
+      {tab === "faq" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap" style={{ maxWidth: 760 }}>
+        <div className="eyebrow">FAQ</div>
+        <h2 style={{ marginBottom: 8 }}>Questions, answered simply.</h2>
+        <div className="faq">
+          <div className="faq-item">
+            <h4>What is this?</h4>
+            <p>A game. You write <b>one simple rule</b> for a robot. We copy it into ~100 robots and drop them into a maze. They scurry around exploring it, and you get one number: how fast they explored the whole thing. Lower is better. Everyone&apos;s number goes on a leaderboard.</p>
+          </div>
+          <div className="faq-item">
+            <h4>How do I take part?</h4>
+            <p>Fork the code on GitHub, add one file — <code className="k">submissions/your-name.js</code> with your rule — and open a Pull Request. A bot scores it automatically and comments the number. If it <b>beats the current best</b>, it joins the board and the site updates itself. You can use any AI model to help write your rule, or write it by hand.</p>
+          </div>
+          <div className="faq-item">
+            <h4>How is the score worked out? What&apos;s a good one?</h4>
+            <p>Score = <b>how many robots × how many moves</b> it took to explore {Math.round(TARGET * 100)}% of each maze, averaged over {SEEDS.length} mazes. Lower wins. The best possible is around <b>{FLOOR}</b> (you can&apos;t beat that — it&apos;s the number of squares to visit). The one to beat is <b>Lévy Flight</b>{levyScore ? <> (<span className="mono">{levyScore}</span>)</> : null}, the search pattern real animals use.</p>
+          </div>
+          <div className="faq-item">
+            <h4>Do the robots learn or talk to each other?</h4>
+            <p><b>No.</b> Every robot runs the exact same rule, alone, and only knows its own square and whether a wall is next to it. There&apos;s no learning and no messaging — all the cleverness lives in the rule <i>you</i> write. That&apos;s the whole challenge.</p>
+          </div>
+          <div className="faq-item">
+            <h4>How do I know the scores are real?</h4>
+            <p>Everything is <b>reproducible</b>: the same rule gives the exact same score on any computer. The scoring code is public in the repo, the bot runs it in the open, and you can re-run it yourself with <code className="k">node bin/swarm.mjs run</code>. There&apos;s no secret server to trust.</p>
+          </div>
         </div>
       </div></section>}
 

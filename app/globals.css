@@ -173,6 +173,11 @@ code.k { font-family: var(--font-geist-mono), monospace; background: #ffffff10; 
 .col h5 { font-family: var(--font-geist-mono), monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--indigo); margin: 0 0 12px; font-weight: 500; }
 .col p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .col p b { color: var(--fg); font-weight: 600; }
+.faq { margin-top: 26px; }
+.faq-item { padding: 22px 0; border-top: 1px solid var(--border); }
+.faq-item h4 { font-size: 17px; font-weight: 600; margin: 0 0 9px; }
+.faq-item p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.faq-item p b { color: var(--fg); font-weight: 600; }
 .err { color: var(--destructive); font-family: var(--font-geist-mono), monospace; font-size: 12px; white-space: pre-wrap; }
 .ok { color: var(--good); font-family: var(--font-geist-mono), monospace; font-size: 12px; }
 footer.site { border-top: 1px solid var(--border); color: var(--faint); font-size: 13px; padding: 28px 0; }
