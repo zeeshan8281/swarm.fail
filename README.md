@@ -27,20 +27,34 @@ score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
 so `agents × steps` can't go lower). Named baseline: the **Lévy-flight forager**.
 Same policy + same agent count → identical score on any machine.
 
-## Submit (the only way in)
+## Submit (same mechanism as ecdsa.fail)
+
+Bring your own model or write by hand — swarm.fail is just the verifiable arena.
+Submissions are account-scoped; a public note and the model you used are required.
 
 ```bash
 git clone https://github.com/zeeshan8281/swarm.fail
 cd swarm.fail && npm install
 
-# write policy.js with a step() function, then:
-npx swarm run    policy.js --agents 40   # score locally, writes score.json + results.tsv
-npx swarm submit policy.js --name you    # score, then post to the board
-npx swarm board                          # view the leaderboard
+swarm register you                # claim a handle, get an API key (saved to ~/.swarmfail)
+# (or) swarm login <api-key>
+
+# write policy.js with any model/agent you like, then:
+swarm run    policy.js --agents 40                       # score locally
+swarm submit policy.js --note-file note.md \
+      --model "Claude Opus 4.8" --agents 40              # post under your account
+swarm submissions --all           # the leaderboard, with the model behind each entry
+swarm note <id>                   # read a submission's public note
+swarm sync                        # pull the current best, improve from the frontier
 ```
 
-No build needed for the CLI — `node bin/swarm.mjs run policy.js` works too.
+`--note-file` (public markdown) and `--model` are both required — the leaderboard
+shows which model made each entry. No build needed: `node bin/swarm.mjs ...` works.
 Point at another server with `SWARM_URL=...`.
+
+### CLI commands
+
+`register · login · whoami · benchmark · run · submit · submissions · note · sync`
 
 ### Policy inputs (read-only)
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, type Sim } from "@/lib/sim";
 import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
 
-type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string };
+type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
 const COLORS: Record<string, string> = { random: "#f87171", levy: "#22d3ee", disperse: "#818cf8", stripes: "#4ade80" };
@@ -85,14 +85,14 @@ export default function SwarmApp() {
   const refreshBoard = useCallback(async () => {
     const builtins: Row[] = ORDER.map((k) => {
       const b = POLICIES[k], r = scoreSeeds(compilePolicy(b.src), b.n, SEEDS);
-      return { key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score };
+      return { key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score, model: "reference" };
     });
     let userRows: Row[] = [];
     try {
       const res = await fetch("/api/leaderboard");
       const { entries } = await res.json();
-      userRows = entries.map((e: { id: string; name: string; n: number; meanSteps: number; score: number }) => ({
-        key: "custom", name: e.name, tag: "win", n: e.n, meanSteps: e.meanSteps, score: e.score, id: e.id,
+      userRows = entries.map((e: { id: string; handle: string; model: string; n: number; meanSteps: number; score: number }) => ({
+        key: "custom", name: "@" + e.handle, tag: "win", n: e.n, meanSteps: e.meanSteps, score: e.score, id: e.id, handle: e.handle, model: e.model,
       }));
     } catch {}
     setRows([...builtins, ...userRows].sort((a, b) => a.score - b.score));
@@ -244,17 +244,19 @@ export default function SwarmApp() {
         </div>
         <div className="panel" style={{ padding: "4px 18px" }}>
           <table>
-            <thead><tr><th>#</th><th>Policy</th><th></th><th className="num">Agents</th><th className="num">Steps</th><th className="num">Score</th><th className="num">vs Lévy</th><th></th></tr></thead>
+            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Agents</th><th className="num">Steps</th><th className="num">Score</th><th className="num">vs Lévy</th><th></th></tr></thead>
             <tbody>
               {rows.map((r, i) => {
                 const d = levyScore != null ? r.score - levyScore : 0;
                 const dStr = d === 0 ? "—" : d < 0 ? `▼ ${-d}` : `▲ ${d}`;
                 const dCol = d < 0 ? "var(--good)" : d > 0 ? "var(--destructive)" : "var(--faint)";
+                const isRef = r.model === "reference";
                 const tg = r.tag === "baseline" ? <span className="tag base">baseline</span> : r.tag === "win" ? <span className="tag win">beats Lévy</span> : r.tag === "floor" ? <span className="tag">floor</span> : null;
                 return (
                   <tr key={`${r.key}-${r.id ?? i}`}>
                     <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
-                    <td style={{ fontWeight: 500 }}>{r.name}</td><td>{tg}</td>
+                    <td style={{ fontWeight: 500 }}>{r.name} {tg}</td>
+                    <td>{isRef ? <span className="tag">reference</span> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
                     <td className="num" style={{ color: dCol }}>{dStr}</td>
@@ -271,17 +273,22 @@ export default function SwarmApp() {
       <section id="submit" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 14 }}>Submit</div>
         <h2>One way in: clone, write, submit.</h2>
-        <p className="sub">The CLI scores locally with the same engine the server runs, then posts — so your number is reproducible by anyone.</p>
+        <p className="sub">Bring your own model or write by hand — swarm.fail is just the verifiable arena. The CLI scores locally with the same engine the server runs, then posts under your account.</p>
         <div className="grid2" style={{ marginTop: 28 }}>
           <div className="panel">
             <pre className="cli">{`git clone ${REPO}
 cd swarm.fail && npm install
 
-# write policy.js (example →), then:
-npx swarm run    policy.js --agents 40   # score locally
-npx swarm submit policy.js --name you    # post to the board
-npx swarm board                          # view from your terminal`}</pre>
-            <p className="hint" style={{ margin: 0 }}>Score = agents × mean steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} fixed seeds. Lower wins, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. A policy that fails to cover any seed is logged <span className="mono">FAIL</span> and not ranked.</p>
+swarm register you            # claim a handle, get an API key
+# (or) swarm login <api-key>
+
+# write policy.js with any model/agent you like, then:
+swarm run    policy.js --agents 40                 # score locally
+swarm submit policy.js --note-file note.md \\
+      --model "Claude Opus 4.8" --agents 40        # post under your account
+swarm submissions --all       # the leaderboard from your terminal
+swarm sync                    # pull the current best, improve from the frontier`}</pre>
+            <p className="hint" style={{ margin: 0 }}>Like ecdsa.fail: a public <span className="mono">--note-file</span> and the <span className="mono">--model</span> you used are both required — the board shows which model made each entry. Score = agents × steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} seeds, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. FAIL (didn&apos;t cover a seed) is logged, not ranked.</p>
           </div>
           <div className="panel">
             <div className="row between" style={{ marginBottom: 8 }}><b style={{ fontSize: 13 }}>policy.js</b><span className="mono" style={{ fontSize: 11, color: "var(--faint)" }}>example · beats Lévy</span></div>
