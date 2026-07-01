@@ -27,34 +27,44 @@ score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
 so `agents × steps` can't go lower). Named baseline: the **Lévy-flight forager**.
 Same policy + same agent count → identical score on any machine.
 
-## Submit (same mechanism as ecdsa.fail)
+## Contribute — fork, add a file, open a PR
 
-Bring your own model or write by hand — swarm.fail is just the verifiable arena.
-Submissions are account-scoped; a public note and the model you used are required.
+Your submission is one file: `submissions/<your-handle>.js`. The git history of
+that folder **is** the leaderboard. No accounts — your GitHub handle is your id.
 
 ```bash
-git clone https://github.com/zeeshan8281/swarm.fail
-cd swarm.fail && npm install
+# 1. fork this repo, then:
+node bin/swarm.mjs new you           # scaffolds submissions/you.js
+#    ...edit submissions/you.js with any model/agent you like...
+node bin/swarm.mjs run submissions/you.js   # score it locally
+node bin/swarm.mjs board             # the whole leaderboard, locally
 
-swarm register you                # claim a handle, get an API key (saved to ~/.swarmfail)
-# (or) swarm login <api-key>
-
-# write policy.js with any model/agent you like, then:
-swarm run    policy.js --agents 40                       # score locally
-swarm submit policy.js --note-file note.md \
-      --model "Claude Opus 4.8" --agents 40              # post under your account
-swarm submissions --all           # the leaderboard, with the model behind each entry
-swarm note <id>                   # read a submission's public note
-swarm sync                        # pull the current best, improve from the frontier
+# 2. commit + open a Pull Request
+git add submissions/you.js && git commit -m "you: my swarm" && git push
 ```
 
-`--note-file` (public markdown) and `--model` are both required — the leaderboard
-shows which model made each entry. No build needed: `node bin/swarm.mjs ...` works.
-Point at another server with `SWARM_URL=...`.
+**CI scores your PR and comments the number.** If it **beats the current best**,
+it auto-merges and the live site redeploys. A run that fails to explore any map
+is unranked. Everything is reproducible — the scoring code is in the repo, CI
+runs it in the open, you can re-run it yourself.
 
-### CLI commands
+### Submission file format
 
-`register · login · whoami · benchmark · run · submit · submissions · note · sync`
+```js
+// @model Claude Opus 4.8        (the AI model you used, or "human")
+// @agents 100                    (how many robots — part of your strategy)
+// @note One line on your approach.
+function step(a, env, rng) {       // dx,dy each in {-1,0,1}
+  // env.up/down/left/right = is that neighbour a wall or edge?
+  return { dx: 1, dy: 0 };
+}
+```
+
+## Auto-deploy setup (one-time)
+
+Either connect the repo in **Railway → project → Settings → Source** (it then
+auto-deploys on every merge to `main`), or add a `RAILWAY_TOKEN` repo secret and
+the included `.github/workflows/deploy.yml` will deploy for you.
 
 ### Policy inputs (read-only)
 

@@ -1,0 +1,67 @@
+name: score submission
+on:
+  pull_request_target:
+    paths: ["submissions/**"]
+
+# pull_request_target runs in the BASE repo context (trusted scorer + write
+# token). We only overlay the PR's submissions/ (data + policy TEXT) and run the
+# base scorer, which runs the policy inside a vm sandbox — untrusted code never
+# executes with the token.
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: score-pr-${{ github.event.pull_request.number }}
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+
+      - name: Overlay the PR's submissions
+        run: |
+          git fetch origin "pull/${{ github.event.pull_request.number }}/head:prhead"
+          git checkout prhead -- submissions
+
+      - name: Find the changed submission
+        id: find
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          files=$(git diff --name-only "$base" prhead -- 'submissions/*.js' | grep -v 'submissions/example.js' || true)
+          n=$(printf '%s\n' "$files" | grep -c . || true)
+          echo "changed ($n): $files"
+          if [ "$n" != "1" ]; then
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "msg=A submission PR must add exactly one \`submissions/<handle>.js\` (found $n)." >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+          echo "handle=$(basename "$files" .js)" >> "$GITHUB_OUTPUT"
+
+      - name: Score + comment + maybe merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "${{ steps.find.outputs.ok }}" != "true" ]; then
+            gh pr comment "$PR" --body "❌ ${{ steps.find.outputs.msg }}"
+            exit 0
+          fi
+          node scripts/score-submissions.mjs --check "${{ steps.find.outputs.handle }}" > result.json
+          cat result.json
+          node -e '
+            const r=require("./result.json"), fs=require("fs");
+            let body, merge=false;
+            if(r.error) body="❌ **"+r.handle+"** could not be scored: `"+r.error+"`";
+            else if(!r.ok) body="❌ **"+r.handle+"** — FAIL: the swarm did not explore every map. score `"+r.score+"`.";
+            else if(r.beats){ body="✅ **"+r.handle+"** scores **"+r.score+"** — beats the current best `"+r.best+"` (floor "+r.floor+"). Auto-merging 🎉"; merge=true; }
+            else body="🟡 **"+r.handle+"** scores **"+r.score+"**, but the current best is `"+r.best+"`. Beat it to auto-merge.";
+            fs.writeFileSync("body.md",body); fs.writeFileSync("merge.txt",merge?"1":"0");
+          '
+          gh pr comment "$PR" --body-file body.md
+          if [ "$(cat merge.txt)" = "1" ]; then
+            gh pr merge "$PR" --squash || gh pr merge "$PR" --squash --admin
+          fi

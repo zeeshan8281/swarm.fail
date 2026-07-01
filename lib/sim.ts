@@ -9,11 +9,13 @@ export { ENGINE_SRC, W, H, TARGET, CAP, SEEDS, FLOOR };
 
 export type Move = { dx: number; dy: number };
 export type Agent = { id: number; n: number; x: number; y: number; heading: number; mem: Record<string, unknown> };
-export type SimEnv = { w: number; h: number; here: boolean };
+export type SimEnv = { w: number; h: number; here: boolean; up: boolean; down: boolean; left: boolean; right: boolean };
 export type Policy = (a: Agent, env: SimEnv, rng: () => number) => Move;
 export type Sim = {
   agents: Agent[];
   covered: Uint8Array;
+  wall: Uint8Array;
+  openCount: number;
   tick: () => number;
   readonly step: number;
   readonly frac: number;

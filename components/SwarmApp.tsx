@@ -40,7 +40,6 @@ export default function SwarmApp() {
   const [live, setLive] = useState({ step: 0, frac: 0 });
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
-  const [verifyMsg, setVerifyMsg] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<"arena" | "board" | "submit" | "how">("arena");
 
   const nRef = useRef(n);
@@ -57,8 +56,11 @@ export default function SwarmApp() {
     const ctx = cv.getContext("2d")!;
     const cell = cv.width / W;
     ctx.fillStyle = "#08070d"; ctx.fillRect(0, 0, cv.width, cv.height);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++)
-      if (sim.covered[y * W + x]) { ctx.fillStyle = "rgba(99,102,241,.20)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+    for (let i = 0; i < W * H; i++) {
+      const x = i % W, y = (i / W) | 0;
+      if (sim.wall[i]) { ctx.fillStyle = "#24242f"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      else if (sim.covered[i]) { ctx.fillStyle = "rgba(99,102,241,.24)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+    }
     const c = colorFor(keyRef.current);
     ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 7;
     for (const a of sim.agents) ctx.fillRect(a.x * cell + cell * 0.1, a.y * cell + cell * 0.1, cell * 0.8, cell * 0.8);
@@ -84,19 +86,22 @@ export default function SwarmApp() {
   const score = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); runScore(polKey, n); }, [polKey, n, runScore]);
 
   const refreshBoard = useCallback(async () => {
-    const builtins: Row[] = ORDER.map((k) => {
-      const b = POLICIES[k], r = scoreSeeds(compilePolicy(b.src), b.n, SEEDS);
-      return { key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score, model: "reference" };
-    });
-    let userRows: Row[] = [];
+    // the board is scored server-side from the committed submissions + built-ins
     try {
       const res = await fetch("/api/leaderboard");
       const { entries } = await res.json();
-      userRows = entries.map((e: { id: string; handle: string; model: string; n: number; meanSteps: number; score: number }) => ({
-        key: "custom", name: "@" + e.handle, tag: "win", n: e.n, meanSteps: e.meanSteps, score: e.score, id: e.id, handle: e.handle, model: e.model,
-      }));
-    } catch {}
-    setRows([...builtins, ...userRows].sort((a, b) => a.score - b.score));
+      setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; n: number; meanSteps: number; score: number }) => ({
+        key: e.kind + e.handle,
+        name: e.kind === "reference" ? e.handle : "@" + e.handle,
+        tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
+      })));
+    } catch {
+      // fall back to just the built-ins if the API is unreachable
+      setRows(ORDER.map((k) => {
+        const b = POLICIES[k], r = scoreSeeds(compilePolicy(b.src), b.n, SEEDS);
+        return { key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score, model: "reference" };
+      }).sort((a, b) => a.score - b.score));
+    }
   }, []);
 
   useEffect(() => {
@@ -113,14 +118,6 @@ export default function SwarmApp() {
   }, [polKey, n]);
   // canvas remounts when the Arena tab shows — redraw the current frame
   useEffect(() => { if (tab === "arena") requestAnimationFrame(draw); }, [tab, draw]);
-
-  const verify = useCallback(async (id: string) => {
-    setVerifyMsg((m) => ({ ...m, [id]: "…" }));
-    try {
-      const res = await fetch(`/api/verify/${id}`); const d = await res.json();
-      setVerifyMsg((m) => ({ ...m, [id]: d.match ? `✓ ${d.recomputed}` : `✗ ${d.recomputed}≠${d.stored}` }));
-    } catch { setVerifyMsg((m) => ({ ...m, [id]: "err" })); }
-  }, []);
 
   const best = rows.reduce((m, r) => Math.min(m, r.score), Infinity);
   const worst = rows.reduce((m, r) => Math.max(m, r.score), FLOOR);
@@ -167,8 +164,8 @@ export default function SwarmApp() {
             <button className="btn" onClick={() => setTab("how")}>How it works</button>
           </div>
           <div className="npm">
-            <span className="lbl">Play from your terminal</span>
-            <code>swarm submit policy.js --model &quot;GPT-5&quot;</code>
+            <span className="lbl">Contribute</span>
+            <code>fork → add submissions/you.js → open a PR</code>
           </div>
         </div>
 
@@ -180,7 +177,7 @@ export default function SwarmApp() {
           </div>
           <div className="term-body">
             <canvas ref={cvRef} width={400} height={400} />
-            <div className="cap"><span><i className="sw-dot" /> robots</span><span><i className="sw-cell" /> explored</span><span className="grow" />goal: explore the whole board</div>
+            <div className="cap"><span><i className="sw-dot" /> robots</span><span><i className="sw-cell" /> explored</span><span><i className="sw-wall" /> walls</span><span className="grow" />goal: explore every open cell</div>
             <div className="bar"><i style={{ width: `${Math.min(100, (live.frac / TARGET) * 100)}%` }} /></div>
             <div className="term-foot">
               <span>moves <b>{live.step}</b></span>
@@ -255,7 +252,7 @@ export default function SwarmApp() {
         </div>
         <div className="panel" style={{ padding: "4px 18px" }}>
           <table>
-            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Agents</th><th className="num">Steps</th><th className="num">Score</th><th className="num">vs Lévy</th><th></th></tr></thead>
+            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Agents</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>
             <tbody>
               {rows.map((r, i) => {
                 const d = levyScore != null ? r.score - levyScore : 0;
@@ -271,7 +268,6 @@ export default function SwarmApp() {
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
                     <td className="num" style={{ color: dCol }}>{dStr}</td>
-                    <td className="num">{r.id && <button className="verify" onClick={() => verify(r.id!)}>{verifyMsg[r.id] ?? "verify"}</button>}</td>
                   </tr>
                 );
               })}
@@ -283,23 +279,20 @@ export default function SwarmApp() {
       {/* ── SUBMIT ── */}
       {tab === "submit" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 14 }}>Submit</div>
-        <h2>One way in: clone, write, submit.</h2>
-        <p className="sub">Bring your own model or write by hand — swarm.fail is just the verifiable arena. The CLI scores locally with the same engine the server runs, then posts under your account.</p>
+        <h2>Fork, add a file, open a PR.</h2>
+        <p className="sub">Bring your own model or write by hand — swarm.fail is just the verifiable arena. Your submission is one file in the repo; the git history is the whole leaderboard.</p>
         <div className="grid2" style={{ marginTop: 28 }}>
           <div className="panel">
-            <pre className="cli">{`git clone ${REPO}
-cd swarm.fail && npm install
+            <pre className="cli">{`# 1. fork ${REPO.replace("https://github.com/", "")}
+# 2. add your policy
+node bin/swarm.mjs new you          # scaffolds submissions/you.js
+#    ...edit submissions/you.js with any model/agent you like...
+node bin/swarm.mjs run submissions/you.js   # check it locally
 
-swarm register you            # claim a handle, get an API key
-# (or) swarm login <api-key>
-
-# write policy.js with any model/agent you like, then:
-swarm run    policy.js --agents 40                 # score locally
-swarm submit policy.js --note-file note.md \\
-      --model "Claude Opus 4.8" --agents 40        # post under your account
-swarm submissions --all       # the leaderboard from your terminal
-swarm sync                    # pull the current best, improve from the frontier`}</pre>
-            <p className="hint" style={{ margin: 0 }}>Like ecdsa.fail: a public <span className="mono">--note-file</span> and the <span className="mono">--model</span> you used are both required — the board shows which model made each entry. Score = agents × steps to {Math.round(TARGET * 100)}% coverage over {SEEDS.length} seeds, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. FAIL (didn&apos;t cover a seed) is logged, not ranked.</p>
+# 3. open a Pull Request
+git add submissions/you.js && git commit -m "you: my swarm"
+git push   # then open the PR on GitHub`}</pre>
+            <p className="hint" style={{ margin: 0 }}>CI scores your PR and comments the number. If it <b style={{ color: "var(--fg)" }}>beats the current best</b>, it auto-merges and the live board redeploys. Score = agents × moves to explore {Math.round(TARGET * 100)}% of each map over {SEEDS.length} maps, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. A run that fails to explore any map is unranked. No accounts — your GitHub handle is your identity.</p>
           </div>
           <div className="panel">
             <div className="row between" style={{ marginBottom: 8 }}><b style={{ fontSize: 13 }}>policy.js</b><span className="mono" style={{ fontSize: 11, color: "var(--faint)" }}>example · beats Lévy</span></div>

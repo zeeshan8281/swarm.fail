@@ -76,6 +76,7 @@ canvas { width: 100%; height: auto; aspect-ratio: 1/1; display: block; backgroun
 .cap span { display: inline-flex; align-items: center; gap: 6px; }
 .cap .sw-dot { width: 9px; height: 9px; border-radius: 2px; background: #22d3ee; box-shadow: 0 0 6px #22d3ee; }
 .cap .sw-cell { width: 9px; height: 9px; border-radius: 2px; background: rgba(99,102,241,.35); }
+.cap .sw-wall { width: 9px; height: 9px; border-radius: 2px; background: #24242f; }
 .term-foot { display: flex; align-items: center; gap: 14px; margin-top: 12px; font-family: var(--font-geist-mono), monospace; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
 .term-foot b { color: var(--fg); }
 .term-foot .grow { flex: 1; }
