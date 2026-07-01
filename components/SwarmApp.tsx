@@ -244,7 +244,7 @@ export default function SwarmApp() {
         </p>
         <div className="frontier" style={{ marginBottom: 18 }}>
           <div className="row between" style={{ alignItems: "flex-end" }}>
-            <div><div className="big">{hasData ? best : "—"}</div><div className="biglbl">Best score · {aboveFloor != null ? `+${aboveFloor}% above floor` : "—"}</div></div>
+            <div><div className="big">{hasData ? best : "—"}</div><div className="biglbl">Best score · {aboveFloor != null ? `+${aboveFloor}% above the best possible` : "—"}</div></div>
             <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 24, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
           </div>
           <div className="track">
