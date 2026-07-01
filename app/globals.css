@@ -79,6 +79,14 @@ canvas { width: 100%; height: auto; aspect-ratio: 1/1; display: block; backgroun
 select { height: 30px; padding: 0 8px; font-family: var(--font-geist-mono), monospace; font-size: 12px; background: var(--card2); color: var(--fg); border: 1px solid var(--input); border-radius: var(--radius-md); outline: none; }
 input[type=range] { accent-color: var(--indigo); }
 
+/* tab bar — one section per tab, no endless scroll */
+.tabbar { border-bottom: 1px solid var(--border); background: rgba(8,8,10,.78); backdrop-filter: blur(12px); position: sticky; top: 58px; z-index: 15; }
+.tabbar-in { display: flex; gap: 2px; }
+.tabbar button { padding: 13px 16px; font: 500 14px/1 var(--font-geist-sans), sans-serif; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; transition: color .12s; }
+.tabbar button:hover { color: var(--fg); }
+.tabbar button.active { color: var(--fg); border-bottom-color: var(--indigo); }
+@media (max-width: 640px) { .tabbar button { padding: 12px 11px; font-size: 13px; } }
+
 /* objective band — the goal / score / win, in plain words */
 .obj { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); }
 .obj-in { display: grid; grid-template-columns: repeat(3, 1fr); }

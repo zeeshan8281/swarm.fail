@@ -41,6 +41,7 @@ export default function SwarmApp() {
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [verifyMsg, setVerifyMsg] = useState<Record<string, string>>({});
+  const [tab, setTab] = useState<"arena" | "board" | "submit" | "how">("arena");
 
   const nRef = useRef(n);
   keyRef.current = polKey; nRef.current = n;
@@ -110,6 +111,8 @@ export default function SwarmApp() {
     setLive({ step: 0, frac: 0 }); draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polKey, n]);
+  // canvas remounts when the Arena tab shows — redraw the current frame
+  useEffect(() => { if (tab === "arena") requestAnimationFrame(draw); }, [tab, draw]);
 
   const verify = useCallback(async (id: string) => {
     setVerifyMsg((m) => ({ ...m, [id]: "…" }));
@@ -127,6 +130,8 @@ export default function SwarmApp() {
   const aheadLevy = levyScore && hasData ? Math.round(((levyScore - best) / levyScore) * 100) : null;
   const pos = (s: number) => Math.max(0, Math.min(100, ((s - FLOOR) / (worst - FLOOR)) * 100));
 
+  const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"]];
+
   return (
     <>
       <header className="site"><div className="wrap nav">
@@ -136,16 +141,20 @@ export default function SwarmApp() {
           <a className="by" href="https://www.eigenlabs.org" target="_blank" rel="noreferrer">by <EigenMark /> Eigen ↗</a>
         </div>
         <div className="nav-right">
-          <nav className="nav-links">
-            <a href="#why">Why</a><a href="#board">Leaderboard</a><a href="#submit">Submit</a><a href="#how">How it works</a>
-          </nav>
           <a className="btn sm" href={REPO} target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a className="btn primary sm" href="#board">Leaderboard</a>
+          <button className="btn primary sm" onClick={() => setTab("submit")}>Submit</button>
         </div>
       </div></header>
 
-      {/* Hero */}
-      <section className="hero"><div className="wrap hero-grid">
+      <div className="tabbar"><div className="wrap"><div className="tabbar-in">
+        {TABS.map(([t, label]) => (
+          <button key={t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>{label}</button>
+        ))}
+      </div></div></div>
+
+      {/* ── ARENA ── */}
+      {tab === "arena" && <>
+      <section className="hero" style={{ paddingBottom: 24 }}><div className="wrap hero-grid">
         <div>
           <div className="eyebrow">Deterministic swarm benchmark · 40×40 · 12 seeds</div>
           <h1>Write one rule.<br />Command a swarm.<br /><span className="dim">No orchestrator.</span></h1>
@@ -155,11 +164,11 @@ export default function SwarmApp() {
           </p>
           <div className="cta">
             <button className="btn primary" onClick={run}>▶ Watch the swarm</button>
-            <a className="btn" href="#submit">Write a policy</a>
+            <button className="btn" onClick={() => setTab("submit")}>How to submit</button>
           </div>
           <div className="npm">
             <span className="lbl">Submit from your terminal</span>
-            <code>npx swarm submit policy.js --name you</code>
+            <code>swarm submit policy.js --model &quot;GPT-5&quot;</code>
           </div>
         </div>
 
@@ -209,9 +218,10 @@ export default function SwarmApp() {
           <p>Beat the <b>Lévy forager</b>{levyScore ? <> <span className="m mono">({levyScore})</span></> : null} — nature&apos;s best solo search — and top the board. <span className="m">Every score re-runs to the same number.</span></p>
         </div>
       </div></div></div>
+      </>}
 
-      {/* Why */}
-      <section id="why" className="sec"><div className="wrap">
+      {/* ── HOW IT WORKS: why it's hard ── */}
+      {tab === "how" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow">Why it&apos;s hard</div>
         <h2>A single robot can&apos;t see the whole map. A swarm doesn&apos;t have to.</h2>
         <p className="sub">Coordination has to come from the rule itself — there&apos;s nothing else to lean on.</p>
@@ -223,10 +233,10 @@ export default function SwarmApp() {
             </div>
           ))}
         </div>
-      </div></section>
+      </div></section>}
 
-      {/* Leaderboard */}
-      <section id="board" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
+      {/* ── LEADERBOARD ── */}
+      {tab === "board" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 14 }}>Leaderboard</div>
         <div className="frontier" style={{ marginBottom: 18 }}>
           <div className="row between" style={{ alignItems: "flex-end" }}>
@@ -267,10 +277,10 @@ export default function SwarmApp() {
             </tbody>
           </table>
         </div>
-      </div></section>
+      </div></section>}
 
-      {/* Submit */}
-      <section id="submit" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
+      {/* ── SUBMIT ── */}
+      {tab === "submit" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 14 }}>Submit</div>
         <h2>One way in: clone, write, submit.</h2>
         <p className="sub">Bring your own model or write by hand — swarm.fail is just the verifiable arena. The CLI scores locally with the same engine the server runs, then posts under your account.</p>
@@ -302,12 +312,12 @@ swarm sync                    # pull the current best, improve from the frontier
             </ul>
           </div>
         </div>
-      </div></section>
+      </div></section>}
 
-      {/* How it works */}
-      <section id="how" className="sec" style={{ paddingTop: 0 }}><div className="wrap">
-        <div className="eyebrow">How it works</div>
-        <h2>Write to a rule. Agents react. Coverage emerges.</h2>
+      {/* ── HOW IT WORKS: the steps ── */}
+      {tab === "how" && <section className="sec" style={{ paddingTop: 8 }}><div className="wrap">
+        <div className="eyebrow">The loop</div>
+        <h2>Write a rule. Agents react. Coverage emerges.</h2>
         <div className="cols3">
           <div className="col"><h5>01 · You write</h5>
             <p><b>One local function.</b> <code className="k">step(a, env, rng)</code> returns a move. No model calls, no network, no global state.</p>
@@ -319,7 +329,7 @@ swarm sync                    # pull the current best, improve from the frontier
             <p><b>agents × mean steps</b> over 12 fixed seeds. Lower wins; the floor is {FLOOR}.</p>
             <p>Deterministic, so anyone re-runs your code and gets the identical score. The leaderboard is just a log of reproducible results.</p></div>
         </div>
-      </div></section>
+      </div></section>}
 
       <footer className="site"><div className="wrap row between">
         <span>swarm.fail — a deterministic swarm benchmark · an Eigen project</span>
