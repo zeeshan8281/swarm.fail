@@ -194,12 +194,20 @@ export default function SwarmApp() {
         </div>
       </div></section>
 
-      {/* feature bar */}
-      <div className="fbar"><div className="wrap"><div className="fbar-in">
-        <div className="cell"><span className="k">Best score</span><span className="v"><b>{hasData ? best : "—"}</b></span></div>
-        <div className="cell"><span className="k">Floor</span><span className="v"><b>{FLOOR}</b> optimal</span></div>
-        <div className="cell"><span className="k">vs Lévy</span><span className="v"><b style={{ color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}% ahead` : "—"}</b></span></div>
-        <div className="cell lead2"><span className="k">Deterministic · reproducible</span><span className="v">Same policy → same score on any machine. Re-run to verify — no trust required.</span></div>
+      {/* objective — the goal / score / win, in plain words */}
+      <div className="obj"><div className="wrap"><div className="obj-in">
+        <div className="cell">
+          <span className="k"><span className="num">01</span> The goal</span>
+          <p>Cover a map you can&apos;t see. Hundreds of identical agents, <b>one shared rule, no leader</b> — each sees only its own cell.</p>
+        </div>
+        <div className="cell">
+          <span className="k"><span className="num">02</span> The score</span>
+          <p><b>agents × steps</b> to cover 95% of the grid. <span className="m">Lower wins. The best possible is <b>{FLOOR}</b>{hasData ? <> — best so far <b>{best}</b></> : null}.</span></p>
+        </div>
+        <div className="cell">
+          <span className="k"><span className="num">03</span> How you win</span>
+          <p>Beat the <b>Lévy forager</b>{levyScore ? <> <span className="m mono">({levyScore})</span></> : null} — nature&apos;s best solo search — and top the board. <span className="m">Every score re-runs to the same number.</span></p>
+        </div>
       </div></div></div>
 
       {/* Why */}
