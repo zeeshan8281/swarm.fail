@@ -37,6 +37,8 @@ function step(a, env, rng) {
 | `a.heading` | your last move direction |
 | `env.up/down/left/right` | is that neighbour a **wall or edge**? |
 | `env.here` | is your cell already explored? |
+| `env.near` | `{up,down,left,right}` — how many other agents are on each neighbour cell |
+| `env.trail` | `{here,up,down,left,right}` — shared scent field; drop scent with `return {..., mark: 0..1}`; evaporates each tick. Ant-style coordination — no leader, no messaging |
 | `rng()` | deterministic 0..1 — no `Math.random` / `Date` |
 
 Score = `agents × mean moves to explore 95%` of each map, over 12 fixed seeds.

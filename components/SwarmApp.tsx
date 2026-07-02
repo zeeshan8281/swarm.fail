@@ -314,6 +314,8 @@ git push   # then open the PR on GitHub`}</pre>
               <li><code className="k">a.x a.y</code> cell · <code className="k">a.id</code> index · <code className="k">a.n</code> size</li>
               <li><code className="k">a.mem</code> private scratch · <code className="k">a.heading</code> last dir</li>
               <li><code className="k">env.w env.h</code> grid ({W}×{H}) · <code className="k">env.here</code> covered?</li>
+              <li><code className="k">env.near</code> {`{up,down,left,right}`} — agents on each neighbour cell</li>
+              <li><code className="k">env.trail</code> {`{here,up,down,left,right}`} — shared scent; drop via <code className="k">return {`{mark}`}</code></li>
               <li><code className="k">rng()</code> deterministic 0..1 — no Math.random/Date</li>
             </ul>
           </div>
@@ -360,7 +362,7 @@ git push   # then open the PR on GitHub`}</pre>
           </div>
           <div className="faq-item">
             <h4>Do the robots learn or talk to each other?</h4>
-            <p><b>No.</b> Every robot runs the exact same rule, alone, and only knows its own square and whether a wall is next to it. There&apos;s no learning and no messaging — all the cleverness lives in the rule <i>you</i> write. That&apos;s the whole challenge.</p>
+            <p>They don&apos;t <i>talk</i> and they don&apos;t learn — but they <b>coordinate</b>. Every robot runs the same rule, alone, with no leader and no shared map. The only way they work together is through the world itself: each can drop a bit of <b>scent</b> on the square it&apos;s on (<code className="k">env.trail</code>) and smell it on the squares around it, and it can tell how many robots are standing next to it right now (<code className="k">env.near</code>). Scent fades over time, so it&apos;s a live signal, not a memory. It&apos;s exactly how ants coordinate — no messages, no boss, just marks in the environment — and it&apos;s enough for a swarm to fan out and cover ground far faster than robots that ignore each other. All the cleverness still lives in the rule <i>you</i> write.</p>
           </div>
           <div className="faq-item">
             <h4>How do I know the scores are real?</h4>
