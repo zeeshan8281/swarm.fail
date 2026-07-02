@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // submissions are sandboxed policy snippets (their step/rng signature is
+    // fixed by the engine, not imported) — don't lint them as app code.
+    "submissions/**",
   ]),
 ]);
 

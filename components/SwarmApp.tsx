@@ -43,7 +43,8 @@ export default function SwarmApp() {
   const [tab, setTab] = useState<"arena" | "board" | "submit" | "how" | "faq">("arena");
 
   const nRef = useRef(n);
-  keyRef.current = polKey; nRef.current = n;
+  // mirror latest state into refs so the rAF loop closure reads current values
+  useEffect(() => { keyRef.current = polKey; nRef.current = n; });
 
   const runScore = useCallback((key: string, agents: number) => {
     const r = scoreSeeds(compilePolicy(POLICIES[key].src), agents, SEEDS);
@@ -67,7 +68,7 @@ export default function SwarmApp() {
     ctx.shadowBlur = 0;
   }, []);
 
-  const loop = useCallback(() => {
+  const loop = useCallback(function loop() {
     const sim = simRef.current!;
     for (let i = 0; i < 3; i++) { if (sim.step >= CAP || sim.frac >= TARGET) break; sim.tick(); }
     draw(); setLive({ step: sim.step, frac: sim.frac });
