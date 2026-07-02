@@ -17,13 +17,15 @@ function step(a, env, rng) {
 ```
 
 It's cloned into N identical agents dropped on 40×40 grids they've never seen.
-No leader, no shared memory — each agent sees only its own cell. The score is:
+No leader, no private shared memory, no messaging — agents coordinate only
+through a shared, evaporating scent field they read and write locally (`env.trail`,
+ant-style) and by sensing who's on the cells next to them (`env.near`). The score is:
 
 ```
 score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
 ```
 
-**Lower wins.** Provable floor **1520** (every covered cell needs ≥1 agent-step,
+**Lower wins.** Provable floor **1228** (every covered cell needs ≥1 agent-step,
 so `agents × steps` can't go lower). Named baseline: the **Lévy-flight forager**.
 Same policy + same agent count → identical score on any machine.
 
@@ -76,6 +78,8 @@ the included `.github/workflows/deploy.yml` will deploy for you.
 | `a.heading` | your last move direction |
 | `env.w` `env.h` | grid size (40×40) |
 | `env.here` | is your cell already covered? |
+| `env.near` | `{up,down,left,right}` — how many other agents sit on each neighbour cell right now (radius 1, so still no global map) |
+| `env.trail` | `{here,up,down,left,right}` — the shared scent field at your cell + neighbours; deposit with `return {..., mark: 0..1}`; evaporates each tick. The swarm's only way to leave information for itself |
 | `rng()` | deterministic 0..1 (no `Math.random` / `Date` — they're blocked) |
 
 Moves are 4-connected, one cell per step; walls clamp.
