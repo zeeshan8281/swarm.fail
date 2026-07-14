@@ -3,12 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, type Sim } from "@/lib/sim";
 import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
-const COLORS: Record<string, string> = { random: "#f87171", levy: "#22d3ee", disperse: "#818cf8", stripes: "#4ade80" };
-const colorFor = (k: string) => COLORS[k] || "#818cf8";
+// light-mode agent colors — tuned to read on the white canvas
+const COLORS: Record<string, string> = { random: "#dc2626", levy: "#0891b2", disperse: "#1a0c6d", stripes: "#16a34a" };
+const colorFor = (k: string) => COLORS[k] || "#1a0c6d";
 const MEDAL = ["🥇", "🥈", "🥉"];
 
 function EigenMark({ className }: { className?: string }) {
@@ -23,7 +27,7 @@ function EigenMark({ className }: { className?: string }) {
 
 const CARDS = [
   { c: "var(--indigo)", l: "No orchestrator", h: "Nobody is in charge", p: "Every agent runs the identical rule. No leader hands out regions — any coordination has to emerge from local behavior alone." },
-  { c: "var(--teal)", l: "Local only", h: "Each agent sees one cell", p: "No global map, no messaging. An agent knows its own position, a private scratchpad, and whether its cell is covered. That's it." },
+  { c: "var(--teal)", l: "Local senses", h: "Each agent sees one cell", p: "An agent senses only its own cell and its four neighbours — but the swarm shares one brain: a common scratch object every agent reads and writes, plus scent it leaves on the grid." },
   { c: "var(--violet)", l: "Emergent", h: "Order from a single rule", p: "Hundreds of dumb agents, one policy, and the whole map gets covered — the way ants forage or birds flock, with no plan." },
   { c: "var(--amber)", l: "Reproducible", h: "Anyone re-runs your score", p: "Maps are seeded deterministically. Same policy + agent count → the identical number on any machine. No trust required." },
 ];
@@ -56,14 +60,14 @@ export default function SwarmApp() {
     if (!cv || !sim) return;
     const ctx = cv.getContext("2d")!;
     const cell = cv.width / W;
-    ctx.fillStyle = "#08070d"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = "#fbfbfd"; ctx.fillRect(0, 0, cv.width, cv.height);
     for (let i = 0; i < W * H; i++) {
       const x = i % W, y = (i / W) | 0;
-      if (sim.wall[i]) { ctx.fillStyle = "#24242f"; ctx.fillRect(x * cell, y * cell, cell, cell); }
-      else if (sim.covered[i]) { ctx.fillStyle = "rgba(99,102,241,.24)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      if (sim.wall[i]) { ctx.fillStyle = "#d4d4d8"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      else if (sim.covered[i]) { ctx.fillStyle = "rgba(26,12,109,.14)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
     }
     const c = colorFor(keyRef.current);
-    ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 7;
+    ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 4;
     for (const a of sim.agents) ctx.fillRect(a.x * cell + cell * 0.1, a.y * cell + cell * 0.1, cell * 0.8, cell * 0.8);
     ctx.shadowBlur = 0;
   }, []);
@@ -139,8 +143,8 @@ export default function SwarmApp() {
           <a className="by" href="https://www.eigenlabs.org" target="_blank" rel="noreferrer">by <EigenMark /> Eigen ↗</a>
         </div>
         <div className="nav-right">
-          <a className="btn sm" href={REPO} target="_blank" rel="noreferrer">GitHub ↗</a>
-          <button className="btn primary sm" onClick={() => setTab("submit")}>Submit</button>
+          <Button variant="outline" size="sm" asChild><a href={REPO} target="_blank" rel="noreferrer">GitHub ↗</a></Button>
+          <Button size="sm" onClick={() => setTab("submit")}>Submit</Button>
         </div>
       </div></header>
 
@@ -158,12 +162,12 @@ export default function SwarmApp() {
           <h1>One rule.<br />A hundred robots.<br /><span className="dim">Explore the whole map.</span></h1>
           <p className="lead">
             You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred robots and drop them into a maze
-            they&apos;ve never seen — no leader, no map, no talking. No single robot is smart; the right rule makes the whole crowd
+            they&apos;ve never seen — no leader, no map to start with, just one shared brain they build together as they go. No single robot is smart; the right rule makes the whole crowd
             smart. <b style={{ color: "var(--fg)" }}>Write a better rule than everyone else and climb the leaderboard.</b>
           </p>
           <div className="cta">
-            <button className="btn primary" onClick={run}>▶ Watch them explore</button>
-            <button className="btn" onClick={() => setTab("how")}>How it works</button>
+            <Button size="lg" onClick={run}>▶ Watch them explore</Button>
+            <Button variant="outline" size="lg" onClick={() => setTab("how")}>How it works</Button>
           </div>
           <div className="npm">
             <span className="lbl">Contribute</span>
@@ -196,8 +200,8 @@ export default function SwarmApp() {
                 <input type="range" min={10} max={300} step={5} value={n} onChange={(e) => setN(+e.target.value)} style={{ width: 120 }} />
               </label>
               <span className="grow" />
-              <button className="btn sm" onClick={running ? pause : run}>{running ? "Pause" : "▶ Watch"}</button>
-              <button className="btn sm" onClick={score}>Score</button>
+              <Button variant="outline" size="sm" onClick={running ? pause : run}>{running ? "Pause" : "▶ Watch"}</Button>
+              <Button variant="outline" size="sm" onClick={score}>Score</Button>
             </div>
           </div>
         </div>
@@ -211,7 +215,7 @@ export default function SwarmApp() {
         </div>
         <div className="cell">
           <span className="k"><span className="num">02</span> The catch</span>
-          <p>They all follow <b>the same one rule</b> you write. <span className="m">No leader, no map, no talking — each robot sees only the cell it&apos;s standing on.</span></p>
+          <p>They all follow <b>the same one rule</b> you write. <span className="m">No leader, no map to start with — each robot sees only the cell it&apos;s standing on, plus whatever the swarm has written into its shared brain.</span></p>
         </div>
         <div className="cell">
           <span className="k"><span className="num">03</span> The win</span>
@@ -227,10 +231,13 @@ export default function SwarmApp() {
         <p className="sub">Coordination has to come from the rule itself — there&apos;s nothing else to lean on.</p>
         <div className="cards">
           {CARDS.map((c) => (
-            <div className="card" key={c.l}>
-              <span className="lbl" style={{ color: c.c }}>{c.l}</span>
-              <h4>{c.h}</h4><p>{c.p}</p>
-            </div>
+            <Card key={c.l}>
+              <CardContent style={{ padding: 22 }}>
+                <span className="card-lbl" style={{ color: c.c }}>{c.l}</span>
+                <h4 style={{ fontSize: 18, margin: "12px 0 8px", fontWeight: 600 }}>{c.h}</h4>
+                <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.55 }}>{c.p}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div></section>}
@@ -266,12 +273,12 @@ export default function SwarmApp() {
                 const dStr = d === 0 ? "—" : d < 0 ? `▼ ${-d}` : `▲ ${d}`;
                 const dCol = d < 0 ? "var(--good)" : d > 0 ? "var(--destructive)" : "var(--faint)";
                 const isRef = r.model === "reference";
-                const tg = r.tag === "baseline" ? <span className="tag base">baseline</span> : r.tag === "win" ? <span className="tag win">beats Lévy</span> : r.tag === "floor" ? <span className="tag">worst</span> : null;
+                const tg = r.tag === "baseline" ? <Badge variant="secondary">baseline</Badge> : r.tag === "win" ? <Badge variant="outline" style={{ color: "var(--good)", borderColor: "var(--good)" }}>beats Lévy</Badge> : r.tag === "floor" ? <Badge variant="outline">worst</Badge> : null;
                 return (
                   <tr key={`${r.key}-${r.id ?? i}`}>
                     <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
-                    <td style={{ fontWeight: 500 }}>{r.name} {tg}</td>
-                    <td>{isRef ? <span className="tag">reference</span> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
+                    <td style={{ fontWeight: 500 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>{r.name} {tg}</span></td>
+                    <td>{isRef ? <Badge variant="outline">reference</Badge> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
                     <td className="num" style={{ color: dCol }}>{dStr}</td>
@@ -281,9 +288,9 @@ export default function SwarmApp() {
             </tbody>
           </table>
         </div>
-        <p className="hint" style={{ marginTop: 14 }}>
-          <span className="tag">reference</span> = built-in example rules to beat ·{" "}
-          <span className="tag base">baseline</span> = Lévy Flight, a natural landmark to pass ·{" "}
+        <p className="hint" style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <Badge variant="outline">reference</Badge> = built-in example rules to beat ·{" "}
+          <Badge variant="secondary">baseline</Badge> = Lévy Flight, a natural landmark to pass ·{" "}
           <b style={{ color: "var(--good)" }}>▼</b> better than Lévy, <b style={{ color: "var(--destructive)" }}>▲</b> worse ·{" "}
           🥇 current best · <b style={{ color: "var(--fg)" }}>Robots × Moves = Score</b>, lower wins.
         </p>
@@ -317,6 +324,7 @@ git push   # then open the PR on GitHub`}</pre>
               <li><code className="k">env.w env.h</code> grid ({W}×{H}) · <code className="k">env.here</code> covered?</li>
               <li><code className="k">env.near</code> {`{up,down,left,right}`} — agents on each neighbour cell</li>
               <li><code className="k">env.trail</code> {`{here,up,down,left,right}`} — shared scent; drop via <code className="k">return {`{mark}`}</code></li>
+              <li><code className="k">env.shared</code> the swarm&apos;s shared brain — one object all agents read/write, reset per map</li>
               <li><code className="k">rng()</code> deterministic 0..1 — no Math.random/Date</li>
             </ul>
           </div>
@@ -332,7 +340,7 @@ git push   # then open the PR on GitHub`}</pre>
             <p><b>One local function.</b> <code className="k">step(a, env, rng)</code> returns a move. No model calls, no network, no global state.</p>
             <p>The same rule is copied into every agent — identical, anonymous, on a map none of them has seen.</p></div>
           <div className="col"><h5>02 · The swarm reacts</h5>
-            <p><b>Each agent moves one cell.</b> It only knows its own position and a private scratchpad — never the full map or the other agents.</p>
+            <p><b>Each agent moves one cell.</b> It knows its own position, a private scratchpad, and the swarm&apos;s shared brain — a collective memory every agent reads and writes in real time.</p>
             <p>Run it until 95% of the grid is covered. Coordination, if any, is emergent.</p></div>
           <div className="col"><h5>03 · One number</h5>
             <p><b>agents × mean steps</b> over 12 fixed seeds. Lower wins; the floor is {FLOOR}.</p>
@@ -363,7 +371,7 @@ git push   # then open the PR on GitHub`}</pre>
           </div>
           <div className="faq-item">
             <h4>Do the robots learn or talk to each other?</h4>
-            <p>They don&apos;t <i>talk</i> and they don&apos;t learn — but they <b>coordinate</b>. Every robot runs the same rule, alone, with no leader and no shared map. The only way they work together is through the world itself: each can drop a bit of <b>scent</b> on the square it&apos;s on (<code className="k">env.trail</code>) and smell it on the squares around it, and it can tell how many robots are standing next to it right now (<code className="k">env.near</code>). Scent fades over time, so it&apos;s a live signal, not a memory. It&apos;s exactly how ants coordinate — no messages, no boss, just marks in the environment — and it&apos;s enough for a swarm to fan out and cover ground far faster than robots that ignore each other. All the cleverness still lives in the rule <i>you</i> write.</p>
+            <p>They don&apos;t learn, but they <b>coordinate</b> — three ways, all in real time. They share a <b>brain</b> (<code className="k">env.shared</code>): one collective memory every robot reads and writes each step, so the swarm can build a map together, claim squares, and leave notes for each other. Each robot can also drop <b>scent</b> on its square (<code className="k">env.trail</code>) that fades over time — how ants do it — and sense how many robots stand next to it right now (<code className="k">env.near</code>). There&apos;s still no leader: nobody hands out orders, the same one rule runs in every robot, and the smart behavior emerges from what they write into the brain. All the cleverness lives in the rule <i>you</i> write.</p>
           </div>
           <div className="faq-item">
             <h4>How do I know the scores are real?</h4>

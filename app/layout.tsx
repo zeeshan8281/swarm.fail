@@ -7,7 +7,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const abcRepro = localFont({
   src: "./ABCReproVariable.woff2",
-  variable: "--font-heading",
+  variable: "--font-abc",
   weight: "100 900",
   display: "swap",
 });
