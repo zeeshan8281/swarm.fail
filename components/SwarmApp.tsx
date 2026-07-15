@@ -316,7 +316,7 @@ node bin/swarm.mjs run submissions/you.js   # check it locally
 # 3. open a Pull Request
 git add submissions/you.js && git commit -m "you: my swarm"
 git push   # then open the PR on GitHub`}</pre>
-            <p className="hint" style={{ margin: 0 }}>CI scores your PR and comments the number. If it <b style={{ color: "var(--fg)" }}>beats the current best</b>, it auto-merges and the live board redeploys. Score = agents × moves to explore {Math.round(TARGET * 100)}% of each map over {SEEDS.length} maps, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. A run that fails to explore any map is unranked. No accounts — your GitHub handle is your identity.</p>
+            <p className="hint" style={{ margin: 0 }}>CI scores your PR and comments the number. If it <b style={{ color: "var(--fg)" }}>beats the current best</b>, it auto-merges and the live board redeploys. Score = agents × moves to explore {Math.round(TARGET * 100)}% of each map over {SEEDS.length} maps, floor <b style={{ color: "var(--fg)" }}>{FLOOR}</b>. A run that fails to explore any map — or fields <b style={{ color: "var(--fg)" }}>fewer than 50 agents</b> (it&apos;s a swarm, not a solo sweeper) — is unranked. No accounts — your GitHub handle is your identity.</p>
           </div>
           <div className="panel">
             <div className="row between" style={{ marginBottom: 8 }}><b style={{ fontSize: 13 }}>policy.js</b><span className="mono" style={{ fontSize: 11, color: "var(--faint)" }}>example · beats Lévy</span></div>

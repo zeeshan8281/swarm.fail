@@ -10,7 +10,7 @@
  *   swarm benchmark                  show the fixed task
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { scorePolicy } from "../lib/score.mjs";
+import { scorePolicy, MIN_AGENTS } from "../lib/score.mjs";
 import { FLOOR, W, H, TARGET, SEEDS } from "../lib/engine.mjs";
 
 function metaOf(src, key, dflt) { const m = src.match(new RegExp("^//\\s*@" + key + "\\s+(.+)$", "m")); return m ? m[1].trim() : dflt; }
@@ -34,7 +34,8 @@ function printScore(handle, model, r) {
   console.log(`  who         @${handle}  (${model})`);
   console.log(`  agents      ${r.n}`);
   console.log(`  mean moves  ${r.meanSteps}   to explore ${Math.round(TARGET * 100)}% of ${W}×${H}, ${SEEDS.length} maps`);
-  console.log(`  status      ${r.ok ? "OK" : "FAIL — did not explore every map (unranked)"}`);
+  const why = r.n < MIN_AGENTS ? `FAIL — needs ≥${MIN_AGENTS} agents to count as a swarm (unranked)` : "FAIL — did not explore every map (unranked)";
+  console.log(`  status      ${r.ok ? "OK" : why}`);
   console.log(`  ────────────────────────────`);
   console.log(`  SCORE       ${r.score}   (agents × moves, lower wins)`);
   console.log(`  floor       ${FLOOR}   (+${above}% above the floor)`);
