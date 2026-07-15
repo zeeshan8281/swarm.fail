@@ -131,6 +131,9 @@ export default function SwarmApp() {
   const aboveFloor = hasData ? Math.round(((best - FLOOR) / FLOOR) * 100) : null;
   const aheadLevy = levyScore && hasData ? Math.round(((levyScore - best) / levyScore) * 100) : null;
   const pos = (s: number) => Math.max(0, Math.min(100, ((s - FLOOR) / (worst - FLOOR)) * 100));
+  // keep track labels from overflowing / colliding at the ends: left-anchor near 0%,
+  // right-anchor near 100%, centered in the middle.
+  const lblAlign = (p: number) => (p < 14 ? { transform: "none" } : p > 86 ? { transform: "translateX(-100%)" } : undefined);
 
   const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"], ["faq", "FAQ"]];
 
@@ -256,11 +259,12 @@ export default function SwarmApp() {
             <div style={{ textAlign: "right" }}><div className="big" style={{ fontSize: 24, color: "var(--good)" }}>{aheadLevy != null ? `${aheadLevy}%` : "—"}</div><div className="biglbl">ahead of Lévy</div></div>
           </div>
           <div className="track">
-            <span className="lbl top" style={{ left: 0, transform: "none" }}>{FLOOR}</span><span className="lbl bot" style={{ left: 0, transform: "none" }}>best possible</span>
+            {/* floor number folded into its own bottom label so it can't collide with the best pin */}
+            <span className="lbl bot" style={{ left: 0, transform: "none" }}>{FLOOR} · best possible</span>
             {hasData && <span className="pin" style={{ left: `${pos(best)}%`, background: "var(--good)" }} />}
-            {hasData && <span className="lbl top" style={{ left: `${pos(best)}%` }}>best so far {best}</span>}
+            {hasData && <span className="lbl top" style={{ left: `${pos(best)}%`, ...lblAlign(pos(best)) }}>best so far · {best}</span>}
             {levyScore && <span className="pin" style={{ left: `${pos(levyScore)}%`, background: "var(--cyan)" }} />}
-            {levyScore && <span className="lbl bot" style={{ left: `${pos(levyScore)}%` }}>Lévy</span>}
+            {levyScore && <span className="lbl top" style={{ left: `${pos(levyScore)}%`, ...lblAlign(pos(levyScore)) }}>Lévy</span>}
             <span className="lbl bot" style={{ left: "100%", transform: "translateX(-100%)" }}>aimless</span>
           </div>
         </div>
