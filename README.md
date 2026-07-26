@@ -30,7 +30,7 @@ on the cells next to them (`env.near`). The score is:
 score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
 ```
 
-**Lower wins.** Provable floor **1228** (every covered cell needs ≥1 agent-step,
+**Lower wins.** Provable floor **931** (every covered cell needs ≥1 agent-step,
 so `agents × steps` can't go lower). Named baseline: the **Lévy-flight forager**.
 Same policy + same agent count → identical score on any machine.
 

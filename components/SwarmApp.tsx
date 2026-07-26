@@ -363,7 +363,7 @@ git push   # then open the PR on GitHub`}</pre>
           </div>
           <div className="faq-item">
             <h4>Where do the mazes come from?</h4>
-            <p>The computer builds them from a <b>fixed list of 12 numbers</b> (seeds). Each number always produces the <b>exact same maze</b> — the same rooms and walls in the same spots — so everyone is judged on the identical mazes and your score comes out the same on any computer. Your rule can&apos;t peek at the layout: each robot only feels the walls right next to it, so a maze is &quot;unseen&quot; until the robots bump into it.</p>
+            <p>The computer builds them from a <b>fixed list of 12 numbers</b> (seeds). They come in <b>three flavours</b> — open rooms, tight corridor mazes, and cave-like blobs — four of each, so one rule has to cope with all of them. Each number always produces the <b>exact same maze</b>, the same walls in the same spots, so everyone is judged on the identical mazes and your score comes out the same on any computer. Your rule can&apos;t peek at the layout: each robot only feels the walls right next to it, so a maze is &quot;unseen&quot; until the robots bump into it.</p>
           </div>
           <div className="faq-item">
             <h4>How do I take part?</h4>

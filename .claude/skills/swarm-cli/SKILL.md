@@ -4,7 +4,7 @@ description: >-
   Use when helping a solver or coding agent compete on the swarm.fail benchmark
   via the `swarm` CLI: new, run, board, benchmark. Covers the policy interface
   (one local step function), the agents×steps product score, the coverage floor
-  (1228), the OK/FAIL validation gate, local reproducibility, the score.json
+  (931), the OK/FAIL validation gate, local reproducibility, the score.json
   output, coordination via env.near/env.trail, and the fork+PR contribution flow.
   swarm.fail is a fixed, deterministic benchmark — write one local rule, it's
   cloned into a swarm that covers an unknown grid, you get one number. Lower wins.
@@ -80,17 +80,20 @@ your GitHub handle is your id and the git history of `submissions/` is the board
 
 - **Score = N × mean steps** to reach 95% coverage, averaged over the 12 fixed
   public seeds. Lower wins.
-- **Floor = 1228** (= mean of ⌈0.95 × open cells⌉ per map; the maps have walls,
-  so it's ~1228, not 0.95×1600). Provable: every covered cell needs at least one
+- **Maps come from three families**, one per seed (`seed % 3`): rooms (open
+  floor), braided mazes (1-cell corridors, dead ends), caves (organic blobs).
+  4 of each in the 12 seeds — a policy tuned for open floor will FAIL the mazes.
+- **Floor = 931** (= mean of ⌈0.95 × open cells⌉ per map; the maps have walls,
+  so it's ~931, not 0.95×1600). Provable: every covered cell needs at least one
   agent-step, so N × steps ≥ cells covered. You cannot beat it.
 - **OK/FAIL gate** (like ecdsa.fail's "all test points must pass"): a policy
   that fails to reach 95% on *any* seed within the step cap is marked **FAIL**
   and logged but **not ranked**. Too few agents → FAIL.
 
-Reference points on the current board: Random Walk 9840, Dispersed Walk 7320,
-**Lévy Flight 6000 (the baseline landmark)**, Bounce Sweep 4600 (structured
-serpentine). Best-known is **trail-blazer 2400** (stigmergy). Everything between
-2400 and the 1228 floor is open frontier.
+Reference points on the current board: Dispersed Walk 18360, Random Walk 9840,
+**Lévy Flight 7080 (the baseline landmark)**, Bounce Sweep FAIL (a structured
+serpentine drowns in the mazes). Best-known is **hive-mind 1740** (shared brain
++ stigmergy). Everything between 1740 and the 931 floor is open frontier.
 
 ## How to improve a score
 
