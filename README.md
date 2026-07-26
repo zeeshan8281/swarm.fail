@@ -69,14 +69,15 @@ function step(a, env, rng) {       // dx,dy each in {-1,0,1}
 
 ## Deploys
 
-The live site is on **Vercel**, connected to this repo — every merge to `main`
-promotes to production, every PR gets a preview URL. Nothing to configure.
+Two hosts, both connected to this repo, both deploying every merge to `main`:
 
-There's also a **Railway** project wired to the same repo
-(`web-production-54527.up.railway.app`). It is currently **frozen on an old
-build — its trial has expired**, so it can't deploy until a plan is selected.
-Pick one in the Railway dashboard and it resumes on the next push; otherwise
-ignore that URL.
+| | |
+|---|---|
+| **Vercel** | https://swarmfail.vercel.app — the link above. PRs also get preview URLs. |
+| **Railway** | https://web-production-54527.up.railway.app — same build, same board. |
+
+Nothing to configure on either. The board itself is prerendered at build time
+from the committed submissions, so a deploy is what publishes a new score.
 
 ### Policy inputs (read-only)
 
