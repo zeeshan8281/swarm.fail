@@ -77,7 +77,8 @@ try {
   } else if (cmd === "benchmark") {
     console.log(`\nswarm.fail · the fixed task\n`);
     console.log(`  ${SEEDS.length} procedurally-generated ${W}×${H} maps, one per seed —`);
-    console.log(`  4 rooms (open floor), 4 braided mazes (1-cell corridors), 4 caves (blobs).`);
+    const fam = ["rooms (open floor)", "braided mazes (1-cell corridors)", "caves (blobs)"];
+    console.log(`  ${fam.map((f, k) => SEEDS.filter((s) => s % 3 === k).length + " " + f).join(", ")}.`);
     console.log(`  N agents run ONE shared local policy; explore ${Math.round(TARGET * 100)}% of every map.`);
     console.log(`  score = agents × mean moves to cover · lower wins · floor ${FLOOR}\n`);
   } else {

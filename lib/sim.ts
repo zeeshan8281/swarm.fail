@@ -2,10 +2,10 @@
 // so the CLI, the server sandbox, and the browser all run the identical code.
 import {
   ENGINE_SRC, simulate, scoreOne, scoreSeeds, mulberry32,
-  W, H, TARGET, CAP, SEEDS, FLOOR,
+  W, H, TARGET, CAP, SEEDS, FLOOR, MIN_AGENTS,
 } from "./engine.mjs";
 
-export { ENGINE_SRC, W, H, TARGET, CAP, SEEDS, FLOOR };
+export { ENGINE_SRC, W, H, TARGET, CAP, SEEDS, FLOOR, MIN_AGENTS };
 
 export type Move = { dx: number; dy: number };
 export type Agent = { id: number; n: number; x: number; y: number; heading: number; mem: Record<string, unknown> };

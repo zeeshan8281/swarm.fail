@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, type Sim } from "@/lib/sim";
+import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, MIN_AGENTS, type Sim } from "@/lib/sim";
 import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +14,9 @@ const REPO = "https://github.com/zeeshan8281/swarm.fail";
 const COLORS: Record<string, string> = { random: "#dc2626", levy: "#0891b2", disperse: "#1a0c6d", stripes: "#16a34a" };
 const colorFor = (k: string) => COLORS[k] || "#1a0c6d";
 const MEDAL = ["🥇", "🥈", "🥉"];
+// which map family a seed produces — the engine picks with seed % 3
+const FAMILY = ["rooms", "maze", "cave"];
+const familyOf = (seed: number) => FAMILY[seed % 3];
 
 function EigenMark({ className }: { className?: string }) {
   return (
@@ -36,23 +39,42 @@ export default function SwarmApp() {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const simRef = useRef<Sim | null>(null);
   const rafRef = useRef<number>(0);
+  const scoreRafRef = useRef<number>(0);
+  const boardRafRef = useRef<number>(0);
   const keyRef = useRef<string>("levy");
 
   const [polKey, setPolKey] = useState("levy");
   const [n, setN] = useState(DEFAULT_N);
   const [running, setRunning] = useState(false);
   const [live, setLive] = useState({ step: 0, frac: 0 });
-  const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean } | null>(null);
+  const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean; partial: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [tab, setTab] = useState<"arena" | "board" | "submit" | "how" | "faq">("arena");
+  // the arena used to be hardcoded to seed 1 — which is a maze, so every visitor
+  // only ever saw corridors. Start on rooms and cycle a new map on each watch.
+  const [seed, setSeed] = useState<number>(SEEDS.find((s: number) => s % 3 === 0) ?? SEEDS[0]);
 
   const nRef = useRef(n);
+  const seedRef = useRef(seed);
   // mirror latest state into refs so the rAF loop closure reads current values
-  useEffect(() => { keyRef.current = polKey; nRef.current = n; });
+  useEffect(() => { keyRef.current = polKey; nRef.current = n; seedRef.current = seed; });
 
+  // Score one seed per animation frame. A policy that never covers burns the full
+  // step cap on all 12 maps — seconds of work — and doing that in one synchronous
+  // call locked up the tab. The number ticks up as seeds land.
   const runScore = useCallback((key: string, agents: number) => {
-    const r = scoreSeeds(compilePolicy(POLICIES[key].src), agents, SEEDS);
-    setScored({ score: r.score, meanSteps: r.meanSteps, ok: r.ok });
+    cancelAnimationFrame(scoreRafRef.current);
+    const step = compilePolicy(POLICIES[key].src);
+    let sum = 0, done = 0, ok = true;
+    const nextSeed = () => {
+      const s = simulate(step, agents, SEEDS[done]);
+      s.runToScore();
+      sum += s.step; done++; ok = ok && s.frac >= TARGET;
+      const mean = Math.round(sum / done);
+      setScored({ score: agents * mean, meanSteps: mean, ok: ok && agents >= MIN_AGENTS, partial: done < SEEDS.length });
+      if (done < SEEDS.length) scoreRafRef.current = requestAnimationFrame(nextSeed);
+    };
+    nextSeed();
   }, []);
 
   const draw = useCallback(() => {
@@ -81,11 +103,13 @@ export default function SwarmApp() {
   }, [draw, runScore]);
 
   const run = useCallback(() => {
-    cancelAnimationFrame(rafRef.current); setScored(null);
-    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, 1);
+    cancelAnimationFrame(rafRef.current); cancelAnimationFrame(scoreRafRef.current); setScored(null);
+    const next = SEEDS[(SEEDS.indexOf(seed) + 1) % SEEDS.length];   // walk the seed list; families interleave, all three inside four watches
+    setSeed(next); seedRef.current = next;
+    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, next);
     setLive({ step: 0, frac: 0 }); setRunning(true);
     rafRef.current = requestAnimationFrame(loop);
-  }, [polKey, n, loop]);
+  }, [polKey, n, seed, loop]);
 
   const pause = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); }, []);
   const score = useCallback(() => { cancelAnimationFrame(rafRef.current); setRunning(false); runScore(polKey, n); }, [polKey, n, runScore]);
@@ -101,23 +125,33 @@ export default function SwarmApp() {
         tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
       })));
     } catch {
-      // fall back to just the built-ins if the API is unreachable
-      setRows(ORDER.map((k) => {
-        const b = POLICIES[k], r = scoreSeeds(compilePolicy(b.src), b.n, SEEDS);
-        return { key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score, model: "reference" };
-      }).sort((a, b) => a.score - b.score));
+      // Fall back to the built-ins if the API is unreachable — one policy per
+      // frame, and drop the ones that can't cover the maps, the same as the API
+      // does. Scoring the whole set in one go is ~13s of frozen tab, and this is
+      // exactly the path a visitor hits when the API is down.
+      const out: Row[] = [];
+      let i = 0;
+      const nextPolicy = () => {
+        const k = ORDER[i++], b = POLICIES[k];
+        const r = scoreSeeds(compilePolicy(b.src), b.n, SEEDS);
+        if (r.ok) out.push({ key: k, name: b.name, tag: b.tag, n: b.n, meanSteps: r.meanSteps, score: r.score, model: "reference" });
+        setRows([...out].sort((a, b2) => a.score - b2.score));
+        if (i < ORDER.length) boardRafRef.current = requestAnimationFrame(nextPolicy);
+      };
+      nextPolicy();
     }
   }, []);
 
   useEffect(() => {
-    simRef.current = simulate(compilePolicy(POLICIES.levy.src), DEFAULT_N, 1);
+    simRef.current = simulate(compilePolicy(POLICIES.levy.src), DEFAULT_N, seedRef.current);
     draw(); refreshBoard();
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => { cancelAnimationFrame(rafRef.current); cancelAnimationFrame(scoreRafRef.current); cancelAnimationFrame(boardRafRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    cancelAnimationFrame(rafRef.current); setRunning(false); setScored(null);
-    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, 1);
+    cancelAnimationFrame(rafRef.current); cancelAnimationFrame(scoreRafRef.current);
+    setRunning(false); setScored(null);
+    simRef.current = simulate(compilePolicy(POLICIES[polKey].src), n, seedRef.current);
     setLive({ step: 0, frac: 0 }); draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polKey, n]);
@@ -182,7 +216,7 @@ export default function SwarmApp() {
         <div className="term">
           <div className="term-bar">
             <span className="dot" /><span className="dot" /><span className="dot" />
-            <span className="t">{n} robots · rule: {POLICIES[polKey].name.toLowerCase()}</span>
+            <span className="t">{n} robots · rule: {POLICIES[polKey].name.toLowerCase()} · map: {familyOf(seed)}</span>
           </div>
           <div className="term-body">
             <canvas ref={cvRef} width={400} height={400} />
@@ -191,7 +225,7 @@ export default function SwarmApp() {
             <div className="term-foot">
               <span>moves <b>{live.step}</b></span>
               <span>explored <b>{Math.round(live.frac * 100)}%</b></span>
-              <span>score <b style={{ color: scored ? (scored.ok ? "var(--good)" : "var(--destructive)") : "var(--fg)" }}>{scored ? scored.score : "—"}</b></span>
+              <span>score <b style={{ color: scored && !scored.partial ? (scored.ok ? "var(--good)" : "var(--destructive)") : "var(--fg)" }}>{scored ? scored.score : "—"}{scored?.partial ? "…" : ""}</b></span>
               <span className="grow" />
               <select value={polKey} onChange={(e) => setPolKey(e.target.value)}>
                 {ORDER.map((k) => <option key={k} value={k}>{POLICIES[k].name}</option>)}

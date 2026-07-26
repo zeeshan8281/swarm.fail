@@ -1,7 +1,7 @@
 // Engine self-check — run: node scripts/selfcheck.mjs
 // Guards the invariants the stigmergy field could break: determinism and
 // order-independence (every agent senses the SAME pre-move trail this tick).
-import { scoreSeeds, simulate, SEEDS } from "../lib/engine.mjs";
+import { scoreSeeds, simulate, genMap, SEEDS, W } from "../lib/engine.mjs";
 import assert from "node:assert";
 
 const trail = (a, env) => {
@@ -47,4 +47,25 @@ assert.deepStrictEqual(h1.per, h2.per, "shared-brain policy is not deterministic
 assert.notStrictEqual(h1.score, scoreSeeds(blind, 120, SEEDS).score,
   "shared-brain policy scores identically to a blind one — is env.shared wired?");
 
-console.log("selfcheck OK — deterministic, stable, field wired, brain wired");
+// 5. the maps: every seed must be deterministic, connected, and big enough to be
+// worth covering — and the seed set must actually contain all three families.
+// A generator that silently emits a 3-cell pocket would make the floor a lie.
+const kinds = new Set();
+for (const s of SEEDS) {
+  const m = genMap(s), again = genMap(s);
+  assert.deepStrictEqual([...m.wall], [...again.wall], `genMap(${s}) is not deterministic`);
+  assert.strictEqual(m.cells.length, m.openCount, `genMap(${s}) cell list disagrees with openCount`);
+  assert.ok(m.openCount > 300, `genMap(${s}) has only ${m.openCount} open cells — too small to be a real map`);
+  // cells must be ONE 4-connected region, or 95% coverage may be unreachable
+  const open = new Set(m.cells), seen = new Set([m.cells[0]]), stack = [m.cells[0]];
+  while (stack.length) {
+    const c = stack.pop(), cx = c % W;
+    for (const [nb, ok] of [[c + 1, cx < W - 1], [c - 1, cx > 0], [c + W, true], [c - W, true]])
+      if (ok && open.has(nb) && !seen.has(nb)) { seen.add(nb); stack.push(nb); }
+  }
+  assert.strictEqual(seen.size, m.openCount, `genMap(${s}) open cells are not one connected region`);
+  kinds.add(s % 3);
+}
+assert.strictEqual(kinds.size, 3, "the seed set no longer covers all three map families");
+
+console.log("selfcheck OK — deterministic, stable, field wired, brain wired, maps connected");
