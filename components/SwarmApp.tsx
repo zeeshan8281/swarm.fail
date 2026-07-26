@@ -11,12 +11,16 @@ type Row = { key: string; name: string; tag: string; n: number; meanSteps: numbe
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
 // light-mode agent colors — tuned to read on the white canvas
-const COLORS: Record<string, string> = { random: "#dc2626", levy: "#0891b2", disperse: "#1a0c6d", stripes: "#16a34a" };
-const colorFor = (k: string) => COLORS[k] || "#1a0c6d";
+// agent colours read on the navy arena panel, not on white
+const COLORS: Record<string, string> = { random: "#ff9a8b", levy: "#7fd8e8", disperse: "#b5c7ff", stripes: "#8fe6ab" };
+const colorFor = (k: string) => COLORS[k] || "#b5c7ff";
 const MEDAL = ["🥇", "🥈", "🥉"];
 // which map family a seed produces — the engine picks with seed % 3
 const FAMILY = ["rooms", "maze", "cave"];
 const familyOf = (seed: number) => FAMILY[seed % 3];
+// deterministic monogram tint per handle — these are file names, not GitHub
+// accounts, so we must not fetch anyone's avatar for them
+const monoHue = (h: string) => (Array.from(h).reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7));
 
 function EigenMark({ className }: { className?: string }) {
   return (
@@ -82,11 +86,11 @@ export default function SwarmApp() {
     if (!cv || !sim) return;
     const ctx = cv.getContext("2d")!;
     const cell = cv.width / W;
-    ctx.fillStyle = "#fbfbfd"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = "#232246"; ctx.fillRect(0, 0, cv.width, cv.height);
     for (let i = 0; i < W * H; i++) {
       const x = i % W, y = (i / W) | 0;
-      if (sim.wall[i]) { ctx.fillStyle = "#d4d4d8"; ctx.fillRect(x * cell, y * cell, cell, cell); }
-      else if (sim.covered[i]) { ctx.fillStyle = "rgba(26,12,109,.14)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      if (sim.wall[i]) { ctx.fillStyle = "#4b4b78"; ctx.fillRect(x * cell, y * cell, cell, cell); }
+      else if (sim.covered[i]) { ctx.fillStyle = "rgba(181,199,255,.20)"; ctx.fillRect(x * cell, y * cell, cell, cell); }
     }
     const c = colorFor(keyRef.current);
     ctx.fillStyle = c; ctx.shadowColor = c; ctx.shadowBlur = 4;
@@ -122,6 +126,7 @@ export default function SwarmApp() {
       setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; n: number; meanSteps: number; score: number }) => ({
         key: e.kind + e.handle,
         name: e.kind === "reference" ? e.handle : "@" + e.handle,
+        handle: e.kind === "submission" ? e.handle : undefined,
         tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
       })));
     } catch {
@@ -315,7 +320,16 @@ export default function SwarmApp() {
                 return (
                   <tr key={`${r.key}-${r.id ?? i}`}>
                     <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
-                    <td style={{ fontWeight: 500 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>{r.name} {tg}</span></td>
+                    <td style={{ fontWeight: 500 }}><span className="solver">
+                      {r.handle
+                        ? <a className="solver" href={`${REPO}/blob/main/submissions/${r.handle}.js`} target="_blank" rel="noreferrer">
+                            <span className="avatar" style={{ background: `oklch(0.86 0.07 ${monoHue(r.handle)})` }}>{r.handle[0].toUpperCase()}</span>
+                            {r.name}
+                          </a>
+                        : r.name}
+                      {i === 0 && <span className="pill record">current record</span>}
+                      {tg}
+                    </span></td>
                     <td>{isRef ? <Badge variant="outline">reference</Badge> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
@@ -323,6 +337,11 @@ export default function SwarmApp() {
                   </tr>
                 );
               })}
+              {!rows.length && Array.from({ length: 6 }, (_, i) => (
+                <tr key={`sk${i}`}>
+                  <td colSpan={7}><span className="skeleton" style={{ display: "block", height: 18 }} /></td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
