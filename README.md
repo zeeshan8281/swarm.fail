@@ -16,7 +16,10 @@ function step(a, env, rng) {
 }
 ```
 
-It's cloned into N identical agents dropped on 40×40 grids they've never seen.
+It's cloned into N identical agents dropped on 40×40 grids they've never seen —
+12 maps from three families: **rooms** (open floor), **braided mazes** (1-cell
+corridors and dead ends) and **caves** (organic blobs). One rule has to handle
+all three.
 No leader — but the swarm shares one brain. Agents coordinate three ways: a
 common scratch object every agent reads and writes in real time (`env.shared`,
 reset per map — build a collective map, claim cells, leave messages), an
