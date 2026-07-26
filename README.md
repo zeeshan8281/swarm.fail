@@ -95,6 +95,13 @@ Moves are 4-connected, one cell per step; walls clamp.
 A policy that fails to reach 95% coverage on **any** of the 12 seeds is marked
 **FAIL** and logged but not ranked — like ecdsa.fail's "all test points must pass."
 
+## References
+
+Every mechanic here — the coverage task, the pheromone field, the three map
+generators, the provable floor — is borrowed from published work.
+**[REFERENCES.md](REFERENCES.md)** lists what came from where, plus what was
+considered and deliberately left out.
+
 ## Develop
 
 ```bash
