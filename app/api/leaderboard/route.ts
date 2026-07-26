@@ -5,6 +5,9 @@ import { scorePolicy } from "@/lib/score.mjs";
 import { POLICIES, ORDER } from "@/lib/policies";
 
 export const runtime = "nodejs";
+// cold start rescores the whole board in-process; failing policies burn the full
+// step cap on all 12 maps, so this needs more than the default budget
+export const maxDuration = 60;
 
 type Entry = { kind: "reference" | "submission"; handle: string; model: string; tag: string; note: string; n: number; meanSteps: number; score: number };
 let cache: { key: string; entries: Entry[] } | null = null;
@@ -18,7 +21,9 @@ export async function GET() {
     for (const k of ORDER) {
       const b = POLICIES[k];
       const r = scorePolicy(b.src, b.n);
-      entries.push({ kind: "reference", handle: b.name, model: "reference", tag: b.tag, note: "", n: r.n, meanSteps: r.meanSteps, score: r.score });
+      // same gate as submissions — a reference that can't cover the maps (Bounce
+      // Sweep, since the mazes landed) is not a leaderboard entry either
+      if (r.ok) entries.push({ kind: "reference", handle: b.name, model: "reference", tag: b.tag, note: "", n: r.n, meanSteps: r.meanSteps, score: r.score });
     }
     for (const s of subs) {
       try {
