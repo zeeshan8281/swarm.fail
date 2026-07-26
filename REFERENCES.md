@@ -62,7 +62,7 @@ The three ways agents can talk, and why each exists.
 
 ## The maps
 
-Three families, one per seed (`seed % 3`), in `lib/engine.mjs:37`.
+Three families, one per seed (`seed % 3`), in `genMap` (`lib/engine.mjs`).
 
 ### rooms — scattered rectangles
 
@@ -108,7 +108,7 @@ exactly 4 → unchanged.* Noise erodes, blobs consolidate.
 ### the shared post-step
 
 All three go through one 4-connected flood fill; the largest open component is
-kept and every other pocket is filled solid (`lib/engine.mjs:87`). This is the
+kept and every other pocket is filled solid (end of `genMap`). This is the
 standard PCG fix for "the generator made an unreachable room" — RogueBasin's
 cave article recommends the same connectivity pass — and it's what makes the
 benchmark honest: `openCount` is exactly the reachable set, so 95% coverage is
@@ -144,7 +144,7 @@ always achievable and the floor is always well defined.
   work-optimality bound in parallel algorithms.
 - **The ≥50-agent gate.** Because the floor is achieved by *one* robot walking a
   perfect Hamiltonian-ish sweep, an unconstrained product score is really a
-  single-robot path-planning benchmark. `MIN_AGENTS = 50` (`lib/score.mjs`)
+  single-robot path-planning benchmark. `MIN_AGENTS = 50` (`lib/engine.mjs`, so the browser arena applies it too)
   makes it a swarm benchmark again.
 - **Lévy Flight as the named baseline.** Its step lengths are drawn from an
   inverse-square power law, which is the optimal blind-search distribution for
