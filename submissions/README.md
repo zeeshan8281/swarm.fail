@@ -38,7 +38,8 @@ function step(a, env, rng) {
 | `env.up/down/left/right` | is that neighbour a **wall or edge**? |
 | `env.here` | is your cell already explored? |
 | `env.near` | `{up,down,left,right}` — how many other agents are on each neighbour cell |
-| `env.trail` | `{here,up,down,left,right}` — shared scent field; drop scent with `return {..., mark: 0..1}`; evaporates each tick. Ant-style coordination — no leader, no messaging |
+| `env.trail` | `{here,up,down,left,right}` — shared scent field; drop scent with `return {..., mark: 0..1}`; evaporates each tick. Ant-style coordination |
+| `env.shared` | the swarm's shared brain — one object all agents read/write, reset per map. Collective maps, cell claims, messages. Use this, not module-level vars (those leak across maps) |
 | `rng()` | deterministic 0..1 — no `Math.random` / `Date` |
 
 Score = `agents × mean moves to explore 95%` of each map, over 12 fixed seeds.

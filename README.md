@@ -17,9 +17,11 @@ function step(a, env, rng) {
 ```
 
 It's cloned into N identical agents dropped on 40×40 grids they've never seen.
-No leader, no private shared memory, no messaging — agents coordinate only
-through a shared, evaporating scent field they read and write locally (`env.trail`,
-ant-style) and by sensing who's on the cells next to them (`env.near`). The score is:
+No leader — but the swarm shares one brain. Agents coordinate three ways: a
+common scratch object every agent reads and writes in real time (`env.shared`,
+reset per map — build a collective map, claim cells, leave messages), an
+evaporating scent field on the grid (`env.trail`, ant-style), and sensing who's
+on the cells next to them (`env.near`). The score is:
 
 ```
 score = agents × mean steps to 95% coverage   (over 12 fixed seeds)
@@ -79,7 +81,8 @@ the included `.github/workflows/deploy.yml` will deploy for you.
 | `env.w` `env.h` | grid size (40×40) |
 | `env.here` | is your cell already covered? |
 | `env.near` | `{up,down,left,right}` — how many other agents sit on each neighbour cell right now (radius 1, so still no global map) |
-| `env.trail` | `{here,up,down,left,right}` — the shared scent field at your cell + neighbours; deposit with `return {..., mark: 0..1}`; evaporates each tick. The swarm's only way to leave information for itself |
+| `env.trail` | `{here,up,down,left,right}` — the shared scent field at your cell + neighbours; deposit with `return {..., mark: 0..1}`; evaporates each tick |
+| `env.shared` | the swarm's shared brain: one plain object all agents read/write, reset per map. Agents run in fixed id order, so writes are visible to later agents the same tick. Use this — module-level vars leak across maps |
 | `rng()` | deterministic 0..1 (no `Math.random` / `Date` — they're blocked) |
 
 Moves are 4-connected, one cell per step; walls clamp.
