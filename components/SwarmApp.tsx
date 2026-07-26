@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { simulate, scoreSeeds, compilePolicy, W, H, TARGET, CAP, SEEDS, FLOOR, MIN_AGENTS, type Sim } from "@/lib/sim";
 import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string };
+type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string; note?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
 // light-mode agent colors — tuned to read on the white canvas
@@ -54,6 +54,9 @@ export default function SwarmApp() {
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean; partial: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [tab, setTab] = useState<"arena" | "board" | "submit" | "how" | "faq">("arena");
+  // which board row has its note open — every entry says what it tried, like the
+  // sibling site's submission list
+  const [openRow, setOpenRow] = useState<string | null>(null);
   // the arena used to be hardcoded to seed 1 — which is a maze, so every visitor
   // only ever saw corridors. Start on rooms and cycle a new map on each watch.
   const [seed, setSeed] = useState<number>(SEEDS.find((s: number) => s % 3 === 0) ?? SEEDS[0]);
@@ -123,10 +126,11 @@ export default function SwarmApp() {
     try {
       const res = await fetch("/api/leaderboard");
       const { entries } = await res.json();
-      setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; n: number; meanSteps: number; score: number }) => ({
+      setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; note: string; n: number; meanSteps: number; score: number }) => ({
         key: e.kind + e.handle,
         name: e.kind === "reference" ? e.handle : "@" + e.handle,
         handle: e.kind === "submission" ? e.handle : undefined,
+        note: e.note,
         tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
       })));
     } catch {
@@ -317,8 +321,11 @@ export default function SwarmApp() {
                 const dCol = d < 0 ? "var(--good)" : d > 0 ? "var(--destructive)" : "var(--faint)";
                 const isRef = r.model === "reference";
                 const tg = r.tag === "baseline" ? <Badge variant="secondary">baseline</Badge> : r.tag === "win" ? <Badge variant="outline" style={{ color: "var(--good)", borderColor: "var(--good)" }}>beats Lévy</Badge> : r.tag === "floor" ? <Badge variant="outline">worst</Badge> : null;
+                const rowKey = `${r.key}-${r.id ?? i}`;
+                const open = openRow === rowKey;
                 return (
-                  <tr key={`${r.key}-${r.id ?? i}`}>
+                  <Fragment key={rowKey}>
+                  <tr className={r.note ? "clickable" : undefined} onClick={r.note ? () => setOpenRow(open ? null : rowKey) : undefined}>
                     <td>{i < 3 ? <span className="medal">{MEDAL[i]}</span> : <span className="rank">{i + 1}</span>}</td>
                     <td style={{ fontWeight: 500 }}><span className="solver">
                       {r.handle
@@ -329,12 +336,23 @@ export default function SwarmApp() {
                         : r.name}
                       {i === 0 && <span className="pill record">current record</span>}
                       {tg}
+                      {r.note && <span className={open ? "caret open" : "caret"} aria-hidden>›</span>}
                     </span></td>
                     <td>{isRef ? <Badge variant="outline">reference</Badge> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{r.score}</td>
                     <td className="num" style={{ color: dCol }}>{dStr}</td>
                   </tr>
+                  {open && r.note && (
+                    <tr className="detail"><td colSpan={7}>
+                      <div className="note">
+                        <span className="k">approach</span>
+                        <p>{r.note}</p>
+                        {r.handle && <a href={`${REPO}/blob/main/submissions/${r.handle}.js`} target="_blank" rel="noreferrer">read the rule ↗</a>}
+                      </div>
+                    </td></tr>
+                  )}
+                  </Fragment>
                 );
               })}
               {!rows.length && Array.from({ length: 6 }, (_, i) => (

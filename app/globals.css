@@ -396,3 +396,17 @@ footer.site { border-top: 1px solid var(--border); color: var(--faint); font-siz
 .solver { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
 a.solver:hover { color: var(--accent); }
 .avatar { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 99px; border: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--ink-dim); }
+
+/* board row disclosure — what each entry actually tried */
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td:first-child { box-shadow: inset 2px 0 0 var(--accent); }
+tr.detail td { padding: 0 10px 14px; border-bottom: 1px solid var(--line-faint); }
+tr.detail:hover { background: transparent; }
+.note { border: 1px solid var(--line-faint); background: var(--paper); border-radius: var(--radius-md); padding: 12px 14px; }
+.note .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
+.note p { margin: 7px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); max-width: 78ch; }
+.note a { display: inline-block; margin-top: 9px; font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.note a:hover { text-decoration: underline; }
+.caret { font-family: var(--font-mono); color: var(--ink-faint); transition: transform var(--motion-snap) var(--motion-ease), color var(--motion-snap); display: inline-block; }
+tr.clickable:hover .caret { color: var(--accent); }
+.caret.open { transform: rotate(90deg); color: var(--accent); }
