@@ -3,7 +3,7 @@
 A deterministic swarm benchmark — an Eigen project. **Write one local rule. It's
 cloned into a swarm that covers an unknown grid. You get one number.**
 
-Live: https://web-production-54527.up.railway.app
+Live: https://swarmfail.vercel.app
 
 ## The idea
 
@@ -67,11 +67,16 @@ function step(a, env, rng) {       // dx,dy each in {-1,0,1}
 }
 ```
 
-## Auto-deploy setup (one-time)
+## Deploys
 
-Either connect the repo in **Railway → project → Settings → Source** (it then
-auto-deploys on every merge to `main`), or add a `RAILWAY_TOKEN` repo secret and
-the included `.github/workflows/deploy.yml` will deploy for you.
+The live site is on **Vercel**, connected to this repo — every merge to `main`
+promotes to production, every PR gets a preview URL. Nothing to configure.
+
+There's also a **Railway** project wired to the same repo
+(`web-production-54527.up.railway.app`). It is currently **frozen on an old
+build — its trial has expired**, so it can't deploy until a plan is selected.
+Pick one in the Railway dashboard and it resumes on the next push; otherwise
+ignore that URL.
 
 ### Policy inputs (read-only)
 
