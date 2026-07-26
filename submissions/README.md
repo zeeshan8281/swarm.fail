@@ -44,3 +44,8 @@ function step(a, env, rng) {
 
 Score = `agents × mean moves to explore 95%` of each map, over 12 fixed seeds.
 Lower wins. A run that fails to explore any map is **FAIL** and won't rank.
+
+The 12 maps are **not all the same shape**: 4 are open rooms, 4 are braided
+mazes of 1-cell corridors, and 4 are cave-like blobs. A rule tuned for open
+floor tends to drown in the corridors — check all three before you submit
+(`node bin/swarm.mjs run` scores every map and prints the per-seed moves).
