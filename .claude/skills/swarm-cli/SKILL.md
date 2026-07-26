@@ -5,7 +5,7 @@ description: >-
   via the `swarm` CLI: new, run, board, benchmark. Covers the policy interface
   (one local step function), the agents×steps product score, the coverage floor
   (931), the OK/FAIL validation gate, local reproducibility, the score.json
-  output, coordination via env.near/env.trail, and the fork+PR contribution flow.
+  output, coordination via env.shared/env.trail/env.near, and the fork+PR flow.
   swarm.fail is a fixed, deterministic benchmark — write one local rule, it's
   cloned into a swarm that covers an unknown grid, you get one number. Lower wins.
 ---
@@ -14,8 +14,8 @@ description: >-
 
 A deterministic swarm benchmark in the shape of ecdsa.fail. You submit **one
 local policy**; it is cloned into N identical agents dropped on grids they've
-never seen. No leader, no global map, no messaging — but agents **coordinate**
-through the shared environment (see `env.near`/`env.trail` below). The scalar is
+never seen. No leader and no global map, but the swarm **coordinates**: one shared brain it
+all reads and writes, plus scent on the grid (see `env.shared`/`env.trail`). The scalar is
 **agents × mean-steps-to-95%-coverage** over a fixed public seed set. Lower wins.
 Same policy + same N → identical score on any machine; anyone re-runs to verify.
 
@@ -30,7 +30,8 @@ function step(a, env, rng) {
 }
 ```
 
-Read-only inputs (still no global map — everything is local, radius 1):
+Inputs. Sensing is local (radius 1) and read-only; `a.mem` and `env.shared` are
+yours to write:
 
 - `a.x`, `a.y` — your cell
 - `a.id` — your index, `a.n` — swarm size
@@ -43,8 +44,12 @@ Read-only inputs (still no global map — everything is local, radius 1):
   neighbour cell right now (occupancy — sense the crowd, disperse)
 - `env.trail` — `{here,up,down,left,right}`: the shared, evaporating **scent
   field** at your cell + neighbours. Deposit with `return {..., mark: 0..1}`.
-  This is the swarm's only way to leave information for its future self —
-  ant-style stigmergy, no leader, no messaging
+  Ant-style stigmergy — information left on the grid for the swarm's future self
+- `env.shared` — the swarm's **shared brain**: one plain object every agent
+  reads and writes, reset for each map. Build a collective map, claim cells,
+  pass messages. Agents step in fixed id order, so a write lands for later
+  agents the same tick. Use this, never module-level vars — those leak across
+  maps and make a run non-reproducible. The current best policy is built on it
 - `rng()` — deterministic 0..1 (do **not** use `Math.random`, `Date`, etc. —
   the sandbox blocks them and non-determinism is rejected)
 
@@ -100,16 +105,21 @@ serpentine drowns in the mazes). Best-known is **hive-mind 1740** (shared brain
 The floor rewards **no wasted agent-steps**: no idle agents, no re-covering
 cells already visited. Levers, roughly in order of payoff:
 
-1. **Coordinate through the environment.** The biggest wins come from agents
-   reading each other. Drop scent (`mark`) on cells you visit and steer toward
-   the *least-scented* open neighbour, so the swarm avoids re-covering ground —
-   this is how trail-blazer roughly halves a structured solo sweep. Bonus: a
-   good stigmergy rule is nearly **flat across N** (agents route around each
-   other's trails), so it doesn't need a hand-tuned agent count to win.
+1. **Share a map in `env.shared`.** The biggest single win available. Write the
+   cell you're on into a collective set, walk to an open neighbour nobody has
+   stood on, and claim your destination so two agents never chase the same
+   fresh cell. That is hive-mind, the current best. Scent (`mark`) is the
+   weaker-but-still-strong version of the same idea: steer to the
+   *least-scented* open neighbour so the swarm stops re-covering ground — how
+   trail-blazer roughly halves a structured solo sweep. Bonus: both are nearly
+   **flat across N**, so they don't need a hand-tuned agent count to win.
 2. **Disperse early** with `env.near` — flip/sidestep away from crowded
    neighbours so agents don't stack up and waste the first moves clumped.
-3. **Structure the walk** — long correlated runs / serpentine sweeps cover more
-   new ground per step than a random walk (that's why Bounce Sweep beats Lévy).
+3. **Hold a heading, but stay reactive.** Long correlated runs cover more new
+   ground per step than a random walk — but a *rigid* serpentine now FAILs: the
+   braided mazes are 1-cell corridors, and Bounce Sweep (which used to beat
+   Lévy on open floor) never finishes them. Commit to a direction while it's
+   productive, re-decide the moment the walls say otherwise.
 4. **Tune N** — fewer agents lowers the N multiplier but raises steps (and can
    FAIL if too sparse); more agents lowers steps but raises the multiplier.
    A coordinating rule is far less sensitive to this than a solo one.

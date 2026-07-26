@@ -4,6 +4,9 @@
 // @note early when a robot is directly ahead and always sidestep toward the
 // @note emptier flank (env.near). Same swarm size as the field — it wins by
 // @note spreading instead of stacking.
+// @note HISTORICAL: this scored 4080 when every map was open rooms. It FAILs
+// @note since the braided mazes landed — a rigid vertical serpentine cannot
+// @note clear 1-cell corridors, so it is kept as an unranked cautionary entry.
 function step(a, env, rng) {
   if (a.mem.vy === undefined) { a.mem.vy = a.id % 2 ? 1 : -1; a.mem.sx = (a.id >> 1) % 2 ? 1 : -1; }
   var vBlocked = a.mem.vy > 0 ? env.down : env.up;
