@@ -36,11 +36,13 @@ if (args[0] === "--check") {
     try { const r = scorePolicy(s.src, s.agents); rows.push({ who: s.handle, model: s.model, ...r }); }
     catch (e) { rows.push({ who: s.handle, model: s.model, ok: false, score: Infinity, n: s.agents, meanSteps: 0, err: e.message }); }
   }
-  rows.sort((a, b) => a.score - b.score);
+  // unranked rows sort last and print FAIL — the API already drops them, so the
+  // CLI board must not show a not-ok policy sitting on the leaderboard.
+  rows.sort((a, b) => (a.ok === b.ok ? a.score - b.score : a.ok ? -1 : 1));
   console.log(`\nswarm.fail leaderboard · floor ${FLOOR}\n`);
   console.log("   score  agents  moves  who               model");
   rows.forEach((r) => console.log(
-    `  ${String(r.score === Infinity ? "FAIL" : r.score).padStart(6)}  ${String(r.n).padStart(6)}  ${String(r.meanSteps).padStart(5)}  ${String(r.who).padEnd(16)}  ${r.model || ""}`
+    `  ${String(r.ok ? r.score : "FAIL").padStart(6)}  ${String(r.n).padStart(6)}  ${String(r.meanSteps).padStart(5)}  ${String(r.who).padEnd(16)}  ${r.model || ""}`
   ));
   console.log("");
 }

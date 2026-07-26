@@ -30,4 +30,21 @@ const blind = (a, env, rng) => ({ dx: rng() < 0.5 ? 1 : -1, dy: 0 });
 assert.notStrictEqual(scoreSeeds(trail,120,SEEDS).score, scoreSeeds(blind,120,SEEDS).score,
   "trail policy scores identically to a policy that ignores the field — is env.trail wired?");
 
-console.log("selfcheck OK — deterministic, stable, field wired");
+// 4. shared brain (env.shared) is wired, deterministic, and reset per map:
+// two scoreSeeds runs must agree exactly (a leak across sims would diverge).
+const hive = (a, env, rng) => {
+  const seen = env.shared.seen || (env.shared.seen = {});
+  seen[a.x + "," + a.y] = 1;
+  const d = [[1,0,env.right],[-1,0,env.left],[0,1,env.down],[0,-1,env.up]].filter(x=>!x[2]);
+  if (!d.length) return { dx:0, dy:0 };
+  const f = d.filter(x => !seen[(a.x+x[0])+","+(a.y+x[1])]);
+  const pool = f.length ? f : d;
+  const p = pool[(rng() * pool.length) | 0];
+  return { dx: p[0], dy: p[1] };
+};
+const h1 = scoreSeeds(hive, 120, SEEDS), h2 = scoreSeeds(hive, 120, SEEDS);
+assert.deepStrictEqual(h1.per, h2.per, "shared-brain policy is not deterministic (env.shared leaking across sims?)");
+assert.notStrictEqual(h1.score, scoreSeeds(blind, 120, SEEDS).score,
+  "shared-brain policy scores identically to a blind one — is env.shared wired?");
+
+console.log("selfcheck OK — deterministic, stable, field wired, brain wired");
