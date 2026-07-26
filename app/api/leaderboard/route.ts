@@ -5,8 +5,14 @@ import { scorePolicy } from "@/lib/score.mjs";
 import { POLICIES, ORDER } from "@/lib/policies";
 
 export const runtime = "nodejs";
-// cold start rescores the whole board in-process; failing policies burn the full
-// step cap on all 12 maps, so this needs more than the default budget
+// The board is derived entirely from files committed to this repo, so it is
+// build-time data: prerender it once instead of rescoring every submission on
+// every cold start. That was ~13s of CPU per cold start and had already blown
+// the function budget once (a bare 500 in production). Route Handlers are not
+// cached by default in Next 16 — force-static is the opt-in, and it applies
+// because this project does not enable cacheComponents.
+export const dynamic = "force-static";
+// belt and braces: if it ever does run at request time, give it room
 export const maxDuration = 60;
 
 type Entry = { kind: "reference" | "submission"; handle: string; model: string; tag: string; note: string; n: number; meanSteps: number; score: number };
