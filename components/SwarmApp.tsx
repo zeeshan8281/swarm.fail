@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import RecordChart, { type Point } from "@/components/RecordChart";
+import type { Board, Attempt } from "@/lib/board";
 
-type Attempt = { handle: string; model: string; note: string; n: number; score: number | null; ok: boolean; reason: string; landedAt: string | null; author: string | null; login: string | null };
 type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string; note?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
@@ -51,7 +51,15 @@ const CARDS = [
   { c: "var(--amber)", l: "Reproducible", h: "Anyone re-runs your score", p: "Maps are seeded deterministically. Same policy + agent count → the identical number on any machine. No trust required." },
 ];
 
-export default function SwarmApp() {
+const toRows = (entries: Board["entries"]): Row[] => entries.map((e) => ({
+  key: e.kind + e.handle,
+  name: e.kind === "reference" ? e.handle : "@" + e.handle,
+  handle: e.kind === "submission" ? e.handle : undefined,
+  note: e.note,
+  tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
+}));
+
+export default function SwarmApp({ initial }: { initial: Board }) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const simRef = useRef<Sim | null>(null);
   const rafRef = useRef<number>(0);
@@ -64,14 +72,14 @@ export default function SwarmApp() {
   const [running, setRunning] = useState(false);
   const [live, setLive] = useState({ step: 0, frac: 0 });
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean; partial: boolean } | null>(null);
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<Row[]>(() => toRows(initial.entries));
   const [tab, setTab] = useState<"arena" | "board" | "attempts" | "submit" | "how" | "faq">("arena");
   // which board row has its note open — every entry says what it tried, like the
   // sibling site's submission list
   const [openRow, setOpenRow] = useState<string | null>(null);
-  const [progression, setProgression] = useState<Point[]>([]);
-  const [models, setModels] = useState<{ model: string; gained: number; records: number; best: number; entries: number }[]>([]);
-  const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [progression, setProgression] = useState<Point[]>(initial.progression);
+  const [models, setModels] = useState(initial.models);
+  const [attempts, setAttempts] = useState<Attempt[]>(initial.attempts);
   // the arena used to be hardcoded to seed 1 — which is a maze, so every visitor
   // only ever saw corridors. Start on rooms and cycle a new map on each watch.
   const [seed, setSeed] = useState<number>(SEEDS.find((s: number) => s % 3 === 0) ?? SEEDS[0]);
@@ -142,13 +150,7 @@ export default function SwarmApp() {
       const res = await fetch("/api/leaderboard");
       const { entries, progression: prog, models: mods, attempts: atts } = await res.json();
       setProgression(prog ?? []); setModels(mods ?? []); setAttempts(atts ?? []);
-      setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; note: string; n: number; meanSteps: number; score: number }) => ({
-        key: e.kind + e.handle,
-        name: e.kind === "reference" ? e.handle : "@" + e.handle,
-        handle: e.kind === "submission" ? e.handle : undefined,
-        note: e.note,
-        tag: e.tag, n: e.n, meanSteps: e.meanSteps, score: e.score, model: e.model,
-      })));
+      setRows(toRows(entries));
     } catch {
       // Fall back to the built-ins if the API is unreachable — one policy per
       // frame, and drop the ones that can't cover the maps, the same as the API
