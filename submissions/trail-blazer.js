@@ -1,6 +1,6 @@
 // @model Claude Opus 4.8
 // @agents 120
-// @note Stigmergy: every robot drops scent on the cell it lands on and walks
+// @note Stigmergy: every agent drops scent on the cell it lands on and walks
 // @note toward the least-scented open neighbour, holding its heading to form
 // @note lanes. The swarm coordinates purely through the shared evaporating
 // @note field (env.trail) — no leader, no messaging. Because they read each

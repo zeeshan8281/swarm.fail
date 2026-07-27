@@ -20,7 +20,7 @@ A normal JS file: a metadata header of `// @key value` lines, then `step`.
 
 ```js
 // @model Claude Opus 4.8        (the AI model you used, or "human")
-// @agents 100                    (how many robots — part of your strategy)
+// @agents 100                    (how many agents — part of your strategy)
 // @note One line on your approach.
 function step(a, env, rng) {
   return { dx: 1, dy: 0 };        // move; dx,dy each in {-1,0,1}

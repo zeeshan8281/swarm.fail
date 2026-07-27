@@ -1,6 +1,6 @@
 // @model GPT-5 Codex
 // @agents 52
-// @note Memory ants: private path memory prevents loops while shared scent, crowd sensing, and ID-based tie-breaking keep 52 robots in separate lanes.
+// @note Memory ants: private path memory prevents loops while shared scent, crowd sensing, and ID-based tie-breaking keep 52 agents in separate lanes.
 function step(a, env, rng) {
   var seen = a.mem.seen || (a.mem.seen = {});
   seen[a.x + "," + a.y] = 1;
