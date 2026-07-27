@@ -39,7 +39,7 @@ function EigenMark({ className }: { className?: string }) {
 const STEPS = [
   { title: "One rule, cloned into a swarm", body: "You write a single step(a, env, rng) function. It is copied into every agent — 50 to 500 of them — and they all run it at the same time. There is no leader and no second rule for special cases." },
   { title: "Twelve maps, three shapes", body: "Four open-room maps, four braided mazes of 1-cell corridors, four cave systems. Same twelve every run, generated from fixed seeds. A rule tuned for open floor tends to drown in the corridors." },
-  { title: "Score is agents × moves", body: "Mean moves to explore 95% of each map, multiplied by how many agents you fielded. Lower wins. You cannot buy your way up with more robots, and you cannot win by taking forever with one." },
+  { title: "Score is agents × moves", body: "Mean moves to explore 95% of each map, multiplied by how many agents you fielded. Lower wins. You cannot buy your way up with more agents, and you cannot win by taking forever with one." },
   { title: "Covering every map is the gate", body: "Miss 95% on any one of the twelve, or field fewer than 50 agents, and the run is logged but unranked — no partial credit. Both failure modes show up on the board with the reason." },
   { title: "The git history is the leaderboard", body: "Open a PR adding submissions/<you>.js. CI re-scores it in a sandbox and comments the number; beat the record and it merges itself and the site redeploys. Same engine in your terminal, in CI, and in the browser — anyone can re-run your score." },
 ];
@@ -230,10 +230,10 @@ export default function SwarmApp() {
       <section className="hero" style={{ paddingBottom: 24 }}><div className="wrap hero-grid">
         <div>
           <div className="eyebrow">A swarm coordination puzzle</div>
-          <h1>One rule.<br />A hundred robots.<br /><span className="dim">Explore the whole map.</span></h1>
+          <h1>One rule.<br />A hundred agents.<br /><span className="dim">Explore the whole map.</span></h1>
           <p className="lead">
-            You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred robots and drop them into a maze
-            they&apos;ve never seen — no leader, no map to start with, just one shared brain they build together as they go. No single robot is smart; the right rule makes the whole crowd
+            You write <b style={{ color: "var(--fg)" }}>one simple rule</b>. We copy it into a hundred agents and drop them into a maze
+            they&apos;ve never seen — no leader, no map to start with, just one shared brain they build together as they go. No single agent is smart; the right rule makes the whole crowd
             smart. <b style={{ color: "var(--fg)" }}>Write a better rule than everyone else and climb the leaderboard.</b>
           </p>
           <div className="cta">
@@ -250,11 +250,11 @@ export default function SwarmApp() {
         <div className="term">
           <div className="term-bar">
             <span className="dot" /><span className="dot" /><span className="dot" />
-            <span className="t">{n} robots · rule: {POLICIES[polKey].name.toLowerCase()} · map: {familyOf(seed)}</span>
+            <span className="t">{n} agents · rule: {POLICIES[polKey].name.toLowerCase()} · map: {familyOf(seed)}</span>
           </div>
           <div className="term-body">
             <canvas ref={cvRef} width={400} height={400} />
-            <div className="cap"><span><i className="sw-dot" /> robots</span><span><i className="sw-cell" /> explored</span><span><i className="sw-wall" /> walls</span><span className="grow" />goal: explore every open cell</div>
+            <div className="cap"><span><i className="sw-dot" /> agents</span><span><i className="sw-cell" /> explored</span><span><i className="sw-wall" /> walls</span><span className="grow" />goal: explore every open cell</div>
             <div className="bar"><i style={{ width: `${Math.min(100, (live.frac / TARGET) * 100)}%` }} /></div>
             <div className="term-foot">
               <span>moves <b>{live.step}</b></span>
@@ -282,11 +282,11 @@ export default function SwarmApp() {
       <div className="obj"><div className="wrap"><div className="obj-in">
         <div className="cell">
           <span className="k"><span className="num">01</span> The goal</span>
-          <p>Get the robots to <b>explore the whole map</b> — every cell visited at least once.</p>
+          <p>Get the agents to <b>explore the whole map</b> — every cell visited at least once.</p>
         </div>
         <div className="cell">
           <span className="k"><span className="num">02</span> The catch</span>
-          <p>They all follow <b>the same one rule</b> you write. <span className="m">No leader, no map to start with — each robot sees only the cell it&apos;s standing on, plus whatever the swarm has written into its shared brain.</span></p>
+          <p>They all follow <b>the same one rule</b> you write. <span className="m">No leader, no map to start with — each agent sees only the cell it&apos;s standing on, plus whatever the swarm has written into its shared brain.</span></p>
         </div>
         <div className="cell">
           <span className="k"><span className="num">03</span> The win</span>
@@ -350,7 +350,7 @@ export default function SwarmApp() {
 
       {tab === "how" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow">Why it&apos;s hard</div>
-        <h2>A single robot can&apos;t see the whole map. A swarm doesn&apos;t have to.</h2>
+        <h2>A single agent can&apos;t see the whole map. A swarm doesn&apos;t have to.</h2>
         <p className="sub">Coordination has to come from the rule itself — there&apos;s nothing else to lean on.</p>
         <div className="cards">
           {CARDS.map((c) => (
@@ -369,7 +369,7 @@ export default function SwarmApp() {
       {tab === "board" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow" style={{ marginBottom: 12 }}>Leaderboard</div>
         <p className="sub" style={{ marginTop: 0, marginBottom: 20, maxWidth: 680 }}>
-          Each row is one rule. <b style={{ color: "var(--fg)" }}>Score = robots × moves to explore every maze — lower wins.</b> The bar
+          Each row is one rule. <b style={{ color: "var(--fg)" }}>Score = agents × moves to explore every maze — lower wins.</b> The bar
           below runs from the <b style={{ color: "var(--fg)" }}>best score physically possible</b> (left) to <b style={{ color: "var(--fg)" }}>aimless
           wandering</b> (right). Your goal: <b style={{ color: "var(--fg)" }}>beat whoever&apos;s #1 and creep toward the best-possible score on the left</b> — that gap is the open challenge. <b style={{ color: "var(--fg)" }}>Lévy Flight</b> (the pattern real animals use) is just a landmark you pass along the way.
         </p>
@@ -423,7 +423,7 @@ export default function SwarmApp() {
 
         <div className="panel" style={{ padding: "4px 18px" }}>
           <table>
-            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Robots</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>
+            <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Agents</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>
             <tbody>
               {rows.map((r, i) => {
                 const d = levyScore != null ? r.score - levyScore : 0;
@@ -477,7 +477,7 @@ export default function SwarmApp() {
           <Badge variant="outline">reference</Badge> = built-in example rules to beat ·{" "}
           <Badge variant="secondary">baseline</Badge> = Lévy Flight, a natural landmark to pass ·{" "}
           <b style={{ color: "var(--good)" }}>▼</b> better than Lévy, <b style={{ color: "var(--destructive)" }}>▲</b> worse ·{" "}
-          🥇 current best · <b style={{ color: "var(--fg)" }}>Robots × Moves = Score</b>, lower wins.
+          🥇 current best · <b style={{ color: "var(--fg)" }}>Agents × Moves = Score</b>, lower wins.
         </p>
       </div></section>}
 
@@ -540,11 +540,11 @@ git push   # then open the PR on GitHub`}</pre>
         <div className="faq">
           <div className="faq-item">
             <h4>What is this?</h4>
-            <p>A game. You write <b>one simple rule</b> for a robot. We copy it into ~100 robots and drop them into a maze. They scurry around exploring it, and you get one number: how fast they explored the whole thing. Lower is better. Everyone&apos;s number goes on a leaderboard.</p>
+            <p>A game. You write <b>one simple rule</b> for a agent. We copy it into ~100 agents and drop them into a maze. They scurry around exploring it, and you get one number: how fast they explored the whole thing. Lower is better. Everyone&apos;s number goes on a leaderboard.</p>
           </div>
           <div className="faq-item">
             <h4>Where do the mazes come from?</h4>
-            <p>The computer builds them from a <b>fixed list of 12 numbers</b> (seeds). They come in <b>three flavours</b> — open rooms, tight corridor mazes, and cave-like blobs — four of each, so one rule has to cope with all of them. Each number always produces the <b>exact same maze</b>, the same walls in the same spots, so everyone is judged on the identical mazes and your score comes out the same on any computer. Your rule can&apos;t peek at the layout: each robot only feels the walls right next to it, so a maze is &quot;unseen&quot; until the robots bump into it.</p>
+            <p>The computer builds them from a <b>fixed list of 12 numbers</b> (seeds). They come in <b>three flavours</b> — open rooms, tight corridor mazes, and cave-like blobs — four of each, so one rule has to cope with all of them. Each number always produces the <b>exact same maze</b>, the same walls in the same spots, so everyone is judged on the identical mazes and your score comes out the same on any computer. Your rule can&apos;t peek at the layout: each agent only feels the walls right next to it, so a maze is &quot;unseen&quot; until the agents bump into it.</p>
           </div>
           <div className="faq-item">
             <h4>How do I take part?</h4>
@@ -552,11 +552,11 @@ git push   # then open the PR on GitHub`}</pre>
           </div>
           <div className="faq-item">
             <h4>How is the score worked out? What&apos;s a good one?</h4>
-            <p>Score = <b>how many robots × how many moves</b> it took to explore {Math.round(TARGET * 100)}% of each maze, averaged over {SEEDS.length} mazes. Lower wins. The best possible is around <b>{FLOOR}</b> — you can&apos;t beat that (it&apos;s the number of squares to visit), so the real game is getting as <i>close</i> to it as you can. You&apos;re racing <b>everyone else on the board</b>, not one policy. <b>Lévy Flight</b>{levyScore ? <> (<span className="mono">{levyScore}</span>)</> : null} — the pattern real animals use — is just a famous landmark: pass it and you know your rule is genuinely good.</p>
+            <p>Score = <b>how many agents × how many moves</b> it took to explore {Math.round(TARGET * 100)}% of each maze, averaged over {SEEDS.length} mazes. Lower wins. The best possible is around <b>{FLOOR}</b> — you can&apos;t beat that (it&apos;s the number of squares to visit), so the real game is getting as <i>close</i> to it as you can. You&apos;re racing <b>everyone else on the board</b>, not one policy. <b>Lévy Flight</b>{levyScore ? <> (<span className="mono">{levyScore}</span>)</> : null} — the pattern real animals use — is just a famous landmark: pass it and you know your rule is genuinely good.</p>
           </div>
           <div className="faq-item">
-            <h4>Do the robots learn or talk to each other?</h4>
-            <p>They don&apos;t learn, but they <b>coordinate</b> — three ways, all in real time. They share a <b>brain</b> (<code className="k">env.shared</code>): one collective memory every robot reads and writes each step, so the swarm can build a map together, claim squares, and leave notes for each other. Each robot can also drop <b>scent</b> on its square (<code className="k">env.trail</code>) that fades over time — how ants do it — and sense how many robots stand next to it right now (<code className="k">env.near</code>). There&apos;s still no leader: nobody hands out orders, the same one rule runs in every robot, and the smart behavior emerges from what they write into the brain. All the cleverness lives in the rule <i>you</i> write.</p>
+            <h4>Do the agents learn or talk to each other?</h4>
+            <p>They don&apos;t learn, but they <b>coordinate</b> — three ways, all in real time. They share a <b>brain</b> (<code className="k">env.shared</code>): one collective memory every agent reads and writes each step, so the swarm can build a map together, claim squares, and leave notes for each other. Each agent can also drop <b>scent</b> on its square (<code className="k">env.trail</code>) that fades over time — how ants do it — and sense how many agents stand next to it right now (<code className="k">env.near</code>). There&apos;s still no leader: nobody hands out orders, the same one rule runs in every agent, and the smart behavior emerges from what they write into the brain. All the cleverness lives in the rule <i>you</i> write.</p>
           </div>
           <div className="faq-item">
             <h4>How do I know the scores are real?</h4>

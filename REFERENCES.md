@@ -12,7 +12,7 @@ Each entry: **what the code does** → **where it's from**.
 
 ## The task: multi-robot coverage of unknown terrain
 
-N robots with no map, local sensing only, must visit every cell of an unknown
+N agents with no map, local sensing only, must visit every cell of an unknown
 region. That's a named problem with 25 years of literature behind it.
 
 - **Coverage as a robotics problem.** Choset, *Coverage for robotics — a survey
@@ -135,16 +135,16 @@ always achievable and the floor is always well defined.
 `score = agents × mean steps to 95% coverage`, lower wins.
 
 - **Why a product.** It prices both resources at once — you can't win by
-  throwing 500 robots at the problem, and you can't win by taking forever with
+  throwing 500 agents at the problem, and you can't win by taking forever with
   one. Product-of-resources objectives are standard in distributed algorithms
   (work × time), and it's what makes the floor provable.
 - **The floor.** Every covered cell needs at least one agent-step, so
   `agents × steps ≥ cells covered`. Mean of `⌈0.95 × openCount⌉` over the 12
   maps = **931**. No policy can go below it. This is the same trick as a
   work-optimality bound in parallel algorithms.
-- **The ≥50-agent gate.** Because the floor is achieved by *one* robot walking a
+- **The ≥50-agent gate.** Because the floor is achieved by *one* agent walking a
   perfect Hamiltonian-ish sweep, an unconstrained product score is really a
-  single-robot path-planning benchmark. `MIN_AGENTS = 50` (`lib/engine.mjs`, so the browser arena applies it too)
+  single-agent path-planning benchmark. `MIN_AGENTS = 50` (`lib/engine.mjs`, so the browser arena applies it too)
   makes it a swarm benchmark again.
 - **Lévy Flight as the named baseline.** Its step lengths are drawn from an
   inverse-square power law, which is the optimal blind-search distribution for
@@ -160,7 +160,7 @@ always achievable and the floor is always well defined.
 
 - **Hidden/holdout seeds.** Would kill overfitting, but also kills "run it on
   your laptop and get the same number", which is the point.
-- **Continuous space, diagonal moves, sensor noise, robot collisions.** Each is
+- **Continuous space, diagonal moves, sensor noise, agent collisions.** Each is
   more realistic and each adds a tuning knob that turns the score into a
   simulator-fitting exercise.
 - **Per-policy pheromone decay.** The 0.9 evaporation rate is fixed for

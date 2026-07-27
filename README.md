@@ -59,7 +59,7 @@ runs it in the open, you can re-run it yourself.
 
 ```js
 // @model Claude Opus 4.8        (the AI model you used, or "human")
-// @agents 100                    (how many robots — part of your strategy)
+// @agents 100                    (how many agents — part of your strategy)
 // @note One line on your approach.
 function step(a, env, rng) {       // dx,dy each in {-1,0,1}
   // env.up/down/left/right = is that neighbour a wall or edge?

@@ -1,8 +1,8 @@
 // @model Claude Fable 5
 // @agents 145
 // @note Hive mind: the swarm shares one brain (env.shared) — a collective map
-// @note of every cell any robot has ever stood on. Each robot writes its cell
-// @note into the map, then walks toward an open neighbour NO robot has visited,
+// @note of every cell any agent has ever stood on. Each agent writes its cell
+// @note into the map, then walks toward an open neighbour NO agent has visited,
 // @note holding its heading to sweep long lanes. When everything nearby is
 // @note known, it falls back to the least-scented trail direction to drift
 // @note toward unexplored ground. Perfect shared memory + stigmergy.
@@ -30,7 +30,7 @@ function step(a, env, rng) {
     if (pool[j][0] === a.mem.d[0] && pool[j][1] === a.mem.d[1]) pick = pool[j];
   if (!pick) pick = pool[(rng() * pool.length) | 0];
   a.mem.d = [pick[0], pick[1]];
-  // claim the destination now so no other robot targets the same fresh cell
+  // claim the destination now so no other agent targets the same fresh cell
   seen[(a.x + pick[0]) + "," + (a.y + pick[1])] = 1;
   return { dx: pick[0], dy: pick[1], mark: 1 };
 }
