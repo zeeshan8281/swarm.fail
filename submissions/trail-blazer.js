@@ -2,7 +2,7 @@
 // @agents 120
 // @note Stigmergy: every agent drops scent on the cell it lands on and walks
 // @note toward the least-scented open neighbour, holding its heading to form
-// @note lanes. The swarm coordinates purely through the shared evaporating
+// @note lanes. The swarm coordinates only through the shared evaporating
 // @note field (env.trail) — no leader, no messaging. Because they read each
 // @note other's trails, coverage barely gets worse as the swarm grows.
 function step(a, env, rng) {
