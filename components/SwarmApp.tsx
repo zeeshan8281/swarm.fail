@@ -6,7 +6,9 @@ import { POLICIES, ORDER, DEFAULT_N } from "@/lib/policies";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import RecordChart, { type Point } from "@/components/RecordChart";
 
+type Attempt = { handle: string; model: string; note: string; n: number; score: number | null; ok: boolean; reason: string; landedAt: string | null; author: string | null; login: string | null };
 type Row = { key: string; name: string; tag: string; n: number; meanSteps: number; score: number; id?: string; handle?: string; model?: string; note?: string };
 
 const REPO = "https://github.com/zeeshan8281/swarm.fail";
@@ -32,6 +34,16 @@ function EigenMark({ className }: { className?: string }) {
   );
 }
 
+// The five things a solver has to understand before their first submission,
+// in the order they hit them.
+const STEPS = [
+  { title: "One rule, cloned into a swarm", body: "You write a single step(a, env, rng) function. It is copied into every agent — 50 to 500 of them — and they all run it at the same time. There is no leader and no second rule for special cases." },
+  { title: "Twelve maps, three shapes", body: "Four open-room maps, four braided mazes of 1-cell corridors, four cave systems. Same twelve every run, generated from fixed seeds. A rule tuned for open floor tends to drown in the corridors." },
+  { title: "Score is agents × moves", body: "Mean moves to explore 95% of each map, multiplied by how many agents you fielded. Lower wins. You cannot buy your way up with more robots, and you cannot win by taking forever with one." },
+  { title: "Covering every map is the gate", body: "Miss 95% on any one of the twelve, or field fewer than 50 agents, and the run is logged but unranked — no partial credit. Both failure modes show up on the board with the reason." },
+  { title: "The git history is the leaderboard", body: "Open a PR adding submissions/<you>.js. CI re-scores it in a sandbox and comments the number; beat the record and it merges itself and the site redeploys. Same engine in your terminal, in CI, and in the browser — anyone can re-run your score." },
+];
+
 const CARDS = [
   { c: "var(--indigo)", l: "No orchestrator", h: "Nobody is in charge", p: "Every agent runs the identical rule. No leader hands out regions — any coordination has to emerge from local behavior alone." },
   { c: "var(--teal)", l: "Local senses", h: "Each agent sees one cell", p: "An agent senses only its own cell and its four neighbours — but the swarm shares one brain: a common scratch object every agent reads and writes, plus scent it leaves on the grid." },
@@ -53,10 +65,13 @@ export default function SwarmApp() {
   const [live, setLive] = useState({ step: 0, frac: 0 });
   const [scored, setScored] = useState<{ score: number; meanSteps: number; ok: boolean; partial: boolean } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
-  const [tab, setTab] = useState<"arena" | "board" | "submit" | "how" | "faq">("arena");
+  const [tab, setTab] = useState<"arena" | "board" | "attempts" | "submit" | "how" | "faq">("arena");
   // which board row has its note open — every entry says what it tried, like the
   // sibling site's submission list
   const [openRow, setOpenRow] = useState<string | null>(null);
+  const [progression, setProgression] = useState<Point[]>([]);
+  const [models, setModels] = useState<{ model: string; gained: number; records: number; best: number; entries: number }[]>([]);
+  const [attempts, setAttempts] = useState<Attempt[]>([]);
   // the arena used to be hardcoded to seed 1 — which is a maze, so every visitor
   // only ever saw corridors. Start on rooms and cycle a new map on each watch.
   const [seed, setSeed] = useState<number>(SEEDS.find((s: number) => s % 3 === 0) ?? SEEDS[0]);
@@ -125,7 +140,8 @@ export default function SwarmApp() {
     // the board is scored server-side from the committed submissions + built-ins
     try {
       const res = await fetch("/api/leaderboard");
-      const { entries } = await res.json();
+      const { entries, progression: prog, models: mods, attempts: atts } = await res.json();
+      setProgression(prog ?? []); setModels(mods ?? []); setAttempts(atts ?? []);
       setRows(entries.map((e: { kind: string; handle: string; model: string; tag: string; note: string; n: number; meanSteps: number; score: number }) => ({
         key: e.kind + e.handle,
         name: e.kind === "reference" ? e.handle : "@" + e.handle,
@@ -178,7 +194,16 @@ export default function SwarmApp() {
   // right-anchor near 100%, centered in the middle.
   const lblAlign = (p: number) => (p < 14 ? { transform: "none" } : p > 86 ? { transform: "translateX(-100%)" } : undefined);
 
-  const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["submit", "Submit"], ["how", "How it works"], ["faq", "FAQ"]];
+  const TABS: [typeof tab, string][] = [["arena", "Arena"], ["board", "Leaderboard"], ["attempts", "Attempts"], ["submit", "Submit"], ["how", "How it works"], ["faq", "FAQ"]];
+
+  // group every attempt under the account that committed it — the git author is
+  // the only identity this benchmark has, and it is the one that opened the PR
+  const byPerson = attempts.reduce<Record<string, { who: string; login: string | null; items: Attempt[] }>>((acc, a) => {
+    const id = a.login || a.author || "unattributed";
+    (acc[id] ||= { who: a.author || id, login: a.login, items: [] }).items.push(a);
+    return acc;
+  }, {});
+  const people = Object.values(byPerson).sort((a, b) => b.items.length - a.items.length);
 
   return (
     <>
@@ -270,7 +295,59 @@ export default function SwarmApp() {
       </div></div></div>
       </>}
 
+      {/* ── ATTEMPTS: every submission, ranked or not, per account ── */}
+      {tab === "attempts" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
+        <div className="eyebrow" style={{ marginBottom: 12 }}>Attempts</div>
+        <p className="sub" style={{ marginTop: 0, marginBottom: 22, maxWidth: 680 }}>
+          Every rule anyone has landed, ranked or not, grouped by the account that committed it.
+          A run that misses a map or fields too few agents still shows up here — <b style={{ color: "var(--fg)" }}>with the
+          reason it didn&apos;t rank</b>. Failing in the open is the point.
+        </p>
+        {!people.length && <div className="skeleton" style={{ height: 120 }} />}
+        {people.map((p) => {
+          const ranked = p.items.filter((a) => a.ok).length;
+          return (
+            <div className="who" key={p.who}>
+              <div className="who-head">
+                <span className="avatar" style={{ background: `oklch(0.86 0.07 ${monoHue(p.who)})` }}>{p.who[0].toUpperCase()}</span>
+                <span className="n">
+                  {p.login
+                    ? <a href={`https://github.com/${p.login}`} target="_blank" rel="noreferrer">{p.who} <span style={{ color: "var(--ink-faint)" }}>@{p.login}</span></a>
+                    : p.who}
+                </span>
+                <span className="grow" />
+                <span className="tally">{ranked}/{p.items.length} ranked</span>
+              </div>
+              {p.items.map((a) => (
+                <div className="att" key={a.handle}>
+                  <span className="h">
+                    <a href={`${REPO}/blob/main/submissions/${a.handle}.js`} target="_blank" rel="noreferrer">{a.handle}.js</a>
+                    {" "}<span className={a.ok ? "pill ok" : "pill fail"}>{a.ok ? "ranked" : "unranked"}</span>
+                  </span>
+                  <span className="sc">{a.ok ? a.score : "FAIL"} · {a.n} agents · {a.model}</span>
+                  {!a.ok && <p className="why">{a.reason}</p>}
+                  {a.ok && a.note && <p className="why">{a.note}</p>}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div></section>}
+
       {/* ── HOW IT WORKS: why it's hard ── */}
+      {tab === "how" && <section className="sec" style={{ paddingTop: 36, paddingBottom: 0 }}><div className="wrap">
+        <div className="eyebrow">How it works</div>
+        <h2 style={{ marginTop: 10 }}>One rule, one number.</h2>
+        <ol className="steps">
+          {STEPS.map((st, i) => (
+            <li key={st.title}>
+              <span className="sn">{String(i + 1).padStart(2, "0")}</span>
+              <div><h4>{st.title}</h4><p>{st.body}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div></section>}
+
       {tab === "how" && <section className="sec" style={{ paddingTop: 36 }}><div className="wrap">
         <div className="eyebrow">Why it&apos;s hard</div>
         <h2>A single robot can&apos;t see the whole map. A swarm doesn&apos;t have to.</h2>
@@ -311,6 +388,39 @@ export default function SwarmApp() {
             <span className="lbl bot" style={{ left: "100%", transform: "translateX(-100%)" }}>aimless</span>
           </div>
         </div>
+        {progression.length > 0 && (
+          <div style={{ marginBottom: 18 }}>
+            <RecordChart points={progression} floor={FLOOR} />
+          </div>
+        )}
+
+        {models.length > 0 && (() => {
+          const top = Math.max(...models.map((m) => m.gained), 1);
+          return (
+            <div className="panel" style={{ marginBottom: 18 }}>
+              <span className="eyebrow">Which model moved the frontier</span>
+              <p className="sub" style={{ margin: "8px 0 0", fontSize: 13.5, maxWidth: 620 }}>
+                Taking the record earns a model the percentage it cut off the previous one. Holding
+                the record isn&apos;t the same as having moved it.
+              </p>
+              <div className="models">
+                {models.map((m) => (
+                  <div className="mrow" key={m.model}>
+                    <div className="mname">
+                      <span className="avatar" style={{ background: `oklch(0.86 0.07 ${monoHue(m.model)})` }}>{m.model[0]}</span>
+                      <span>{m.model}</span>
+                    </div>
+                    <div className="mbar"><i style={{ width: `${(m.gained / top) * 100}%` }} /></div>
+                    <div className="mnum"><b>{m.gained}%</b><br />
+                      <span style={{ fontSize: 10.5, color: "var(--ink-faint)" }}>{m.records} record{m.records === 1 ? "" : "s"}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         <div className="panel" style={{ padding: "4px 18px" }}>
           <table>
             <thead><tr><th>#</th><th>Author</th><th>Model</th><th className="num">Robots</th><th className="num">Moves</th><th className="num">Score</th><th className="num">vs Lévy</th></tr></thead>

@@ -410,3 +410,53 @@ tr.detail:hover { background: transparent; }
 .caret { font-family: var(--font-mono); color: var(--ink-faint); transition: transform var(--motion-snap) var(--motion-ease), color var(--motion-snap); display: inline-block; }
 tr.clickable:hover .caret { color: var(--accent); }
 .caret.open { transform: rotate(90deg); color: var(--accent); }
+
+/* ── record progression chart ── */
+.chart { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift); padding: 18px 20px 12px; }
+.chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.chart-head .k { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
+.chart-head p { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-dim); }
+.chart-now { text-align: right; }
+.chart-now b { display: block; font-family: var(--font-mono); font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.chart-now span { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+.chart svg { width: 100%; height: auto; margin-top: 10px; display: block; overflow: visible; }
+.chart .c-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.chart .c-dot { fill: var(--surface); stroke: var(--accent); stroke-width: 2; transition: r var(--motion-snap) var(--motion-ease); vector-effect: non-scaling-stroke; }
+.chart .c-floor { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.chart .c-lbl { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-faint); }
+.chart-foot { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line-faint); font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); flex-wrap: wrap; }
+.chart-foot .grow { flex: 1; }
+.chart-foot b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.chart-foot .down { color: var(--good); }
+
+/* ── model credit table ── */
+.models { display: grid; gap: 8px; margin-top: 14px; }
+.models .mrow { display: grid; grid-template-columns: minmax(0,1fr) 90px 74px; align-items: center; gap: 12px; padding: 9px 12px; border: 1px solid var(--line-faint); border-radius: var(--radius-md); background: var(--surface); }
+.models .mname { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.models .mname span { font-size: 13.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.models .mbar { position: relative; height: 6px; border-radius: 99px; background: var(--line-faint); overflow: hidden; }
+.models .mbar > i { display: block; height: 100%; background: var(--accent); }
+.models .mnum { font-family: var(--font-mono); font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-dim); }
+.models .mnum b { color: var(--ink); font-weight: 500; }
+
+/* ── attempts, grouped by the account that landed them ── */
+.who { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-lift); padding: 16px 18px; margin-bottom: 12px; }
+.who-head { display: flex; align-items: center; gap: 10px; }
+.who-head .n { font-size: 15px; color: var(--ink); }
+.who-head .grow { flex: 1; }
+.who-head .tally { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); }
+.att { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line-faint); }
+.att:last-child { border-bottom: none; }
+.att .h { font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+.att .why { grid-column: 1 / -1; font-size: 12.5px; color: var(--ink-faint); margin: 0; }
+.att .sc { font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-dim); }
+
+/* ── numbered steps ── */
+.steps { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lift); }
+.steps li { display: grid; grid-template-columns: 54px 1fr; gap: 14px; padding: 18px 20px; background: var(--surface); }
+.steps .sn { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: .06em; padding-top: 3px; }
+.steps h4 { font-family: var(--font-sans); font-size: 15px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
+.steps p { margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: var(--ink-dim); max-width: 74ch; }
+@media (max-width: 620px) { .steps li { grid-template-columns: 1fr; gap: 6px; } }
+.chart .c-gap { fill: color-mix(in srgb, var(--accent) 5%, transparent); stroke: none; }
+.chart .c-gap-lbl { font-family: var(--font-mono); font-size: 10.5px; fill: var(--ink-faint); }
