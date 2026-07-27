@@ -17,7 +17,10 @@ jobs:
   score:
     runs-on: ubuntu-latest
     steps:
+      # full history: data/landed.json is refreshed from the add-commit of each
+      # submission, and a shallow clone makes those dates wrong, not missing
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
 
@@ -72,4 +75,15 @@ jobs:
           gh pr comment "$PR" --body-file body.md
           if [ "$(cat merge.txt)" = "1" ]; then
             gh pr merge "$PR" --squash || gh pr merge "$PR" --squash --admin
+            # stamp when the new entry landed, so the record timeline survives
+            # the shallow clones the deploy hosts use
+            git fetch origin main
+            git checkout main && git pull --ff-only
+            node scripts/landed.mjs
+            if ! git diff --quiet -- data/landed.json; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git commit -q -m "chore: stamp when ${{ steps.find.outputs.handle }} landed" -- data/landed.json
+              git push origin main
+            fi
           fi
