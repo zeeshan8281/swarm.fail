@@ -68,4 +68,23 @@ for (const s of SEEDS) {
 }
 assert.strictEqual(kinds.size, 3, "the seed set no longer covers all three map families");
 
-console.log("selfcheck OK — deterministic, stable, field wired, brain wired, maps connected");
+// 6. a move must be exactly -1/0/1. Math.sign returns NaN for a string or an
+// object, and NaN coordinates slip past every bounds check: wall[NaN] and
+// covered[NaN] are undefined, so an agent teleports off the grid and re-counts
+// itself as fresh coverage every tick. {dx:"x"} once "covered" 96% of a map
+// while standing still and scored 900 — below the supposedly unbeatable floor.
+for (const [label, mv] of [
+  ["strings", { dx: "x", dy: {} }],
+  ["NaN", { dx: NaN, dy: NaN }],
+  ["Infinity", { dx: Infinity, dy: -Infinity }],
+  ["arrays", { dx: [1], dy: [1] }],
+  ["booleans", { dx: true, dy: true }],
+]) {
+  const junk = () => mv;
+  const s = simulate(junk, 60, SEEDS[0]);
+  s.runToScore();
+  assert.ok(s.frac < 0.2, `a policy returning ${label} reported ${(s.frac * 100).toFixed(0)}% coverage — non-±1 moves must be a no-op, not a teleport`);
+  assert.ok(!scoreSeeds(junk, 60, SEEDS).ok, `a policy returning ${label} was ranked`);
+}
+
+console.log("selfcheck OK — deterministic, stable, field wired, brain wired, maps connected, moves clamped");

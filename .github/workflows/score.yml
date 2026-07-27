@@ -31,8 +31,10 @@ jobs:
 
       - name: Find the changed submission
         id: find
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          base="${{ github.event.pull_request.base.sha }}"
+          base="$BASE"
           # A PR that also changes the engine/scorer can't be scored here: this job
           # deliberately runs the BASE scorer, so the policy would be judged against
           # an engine it wasn't written for (and would look broken when it isn't).
@@ -59,19 +61,31 @@ jobs:
             echo "msg=❌ A submission PR must add exactly one \`submissions/<handle>.js\` (found $n)." >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          handle=$(basename "$files" .js)
+          # This value comes from a file name in an untrusted fork PR and is used
+          # in later steps. Anything but a plain handle is rejected outright.
+          case "$handle" in
+            *[!A-Za-z0-9._-]* | "" | .* )
+              echo "ok=false" >> "$GITHUB_OUTPUT"
+              echo "msg=❌ Submission file names must be plain — letters, digits, dot, dash, underscore." >> "$GITHUB_OUTPUT"
+              exit 0 ;;
+          esac
           echo "ok=true" >> "$GITHUB_OUTPUT"
-          echo "handle=$(basename "$files" .js)" >> "$GITHUB_OUTPUT"
+          echo "handle=$handle" >> "$GITHUB_OUTPUT"
 
       - name: Score + comment + maybe merge
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
+          OK: ${{ steps.find.outputs.ok }}
+          MSG: ${{ steps.find.outputs.msg }}
+          HANDLE: ${{ steps.find.outputs.handle }}
         run: |
-          if [ "${{ steps.find.outputs.ok }}" != "true" ]; then
-            gh pr comment "$PR" --body "${{ steps.find.outputs.msg }}"
+          if [ "$OK" != "true" ]; then
+            gh pr comment "$PR" --body "$MSG"
             exit 0
           fi
-          node scripts/score-submissions.mjs --check "${{ steps.find.outputs.handle }}" > result.json
+          node scripts/score-submissions.mjs --check "$HANDLE" > result.json
           cat result.json
           node -e '
             const r=require("./result.json"), fs=require("fs");
@@ -87,13 +101,14 @@ jobs:
             gh pr merge "$PR" --squash || gh pr merge "$PR" --squash --admin
             # stamp when the new entry landed, so the record timeline survives
             # the shallow clones the deploy hosts use
+            git reset --hard            # drop the overlaid PR files first
             git fetch origin main
-            git checkout main && git pull --ff-only
+            git checkout -B main origin/main
             node scripts/landed.mjs
             if ! git diff --quiet -- data/landed.json; then
               git config user.name "github-actions[bot]"
               git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git commit -q -m "chore: stamp when ${{ steps.find.outputs.handle }} landed" -- data/landed.json
+              git commit -q -m "chore: stamp when $HANDLE landed" -- data/landed.json
               git push origin main
             fi
           fi

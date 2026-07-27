@@ -183,6 +183,7 @@ export default function SwarmApp() {
   // canvas remounts when the Arena tab shows — redraw the current frame
   useEffect(() => { if (tab === "arena") requestAnimationFrame(draw); }, [tab, draw]);
 
+  const leader = rows[0];   // the API sorts by score, so row 0 is the record
   const best = rows.reduce((m, r) => Math.min(m, r.score), Infinity);
   const worst = rows.reduce((m, r) => Math.max(m, r.score), FLOOR);
   const levyScore = rows.find((r) => r.tag === "baseline")?.score;
@@ -240,10 +241,31 @@ export default function SwarmApp() {
             <Button size="lg" onClick={run}>▶ Watch them explore</Button>
             <Button variant="outline" size="lg" onClick={() => setTab("how")}>How it works</Button>
           </div>
-          <div className="npm">
-            <span className="lbl">Contribute</span>
-            <code>fork → add submissions/you.js → open a PR</code>
+          {/* the three numbers that say what you are actually up against */}
+          <div className="beat">
+            <div className="b-item target">
+              <span className="k">the score to beat</span>
+              {leader
+                ? <><b>{leader.score}</b><span className="v">{leader.name} · {leader.model}</span></>
+                : <><span className="skeleton" style={{ display: "block", height: 30, width: 90, margin: "2px 0 6px" }} /><span className="v">loading the record…</span></>}
+            </div>
+            <div className="b-item">
+              <span className="k">a good rule passes</span>
+              {levyScore ? <b>{levyScore}</b> : <b>—</b>}
+              <span className="v">Lévy Flight — the natural baseline</span>
+            </div>
+            <div className="b-item">
+              <span className="k">nothing can beat</span>
+              <b>{FLOOR}</b>
+              <span className="v">one visit per cell, nothing less</span>
+            </div>
           </div>
+          <p className="beat-line">
+            {leader
+              ? <>Land a rule under <b>{leader.score}</b> and you are #1. Everything between it and <b>{FLOOR}</b> is unsolved.</>
+              : <>Land a rule under the current record and you are #1. Everything between it and {FLOOR} is unsolved.</>}
+            {" "}<button className="linkish" onClick={() => setTab("board")}>See the board →</button>
+          </p>
         </div>
 
         {/* live terminal panel */}

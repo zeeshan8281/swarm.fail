@@ -140,8 +140,11 @@ always achievable and the floor is always well defined.
   (work × time), and it's what makes the floor provable.
 - **The floor.** Every covered cell needs at least one agent-step, so
   `agents × steps ≥ cells covered`. Mean of `⌈0.95 × openCount⌉` over the 12
-  maps = **931**. No policy can go below it. This is the same trick as a
-  work-optimality bound in parallel algorithms.
+  maps = **931**. Same trick as a work-optimality bound in parallel algorithms.
+  Strictly the bound is `cells − agents`, because the cells agents spawn on are
+  covered for free before the first step; with the 500-agent ceiling and ~1245
+  cells to cover that slack can't be cashed in, and the best score is 1740, so
+  it has never been the binding constraint.
 - **The ≥50-agent gate.** Because the floor is achieved by *one* agent walking a
   perfect Hamiltonian-ish sweep, an unconstrained product score is really a
   single-agent path-planning benchmark. `MIN_AGENTS = 50` (`lib/engine.mjs`, so the browser arena applies it too)

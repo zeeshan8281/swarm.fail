@@ -460,3 +460,17 @@ tr.clickable:hover .caret { color: var(--accent); }
 @media (max-width: 620px) { .steps li { grid-template-columns: 1fr; gap: 6px; } }
 .chart .c-gap { fill: color-mix(in srgb, var(--accent) 5%, transparent); stroke: none; }
 .chart .c-gap-lbl { font-family: var(--font-mono); font-size: 10.5px; fill: var(--ink-faint); }
+
+/* ── "what you're beating": the three numbers, in the hero ── */
+.beat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 26px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lift); }
+.beat .b-item { background: var(--surface); padding: 13px 15px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.beat .b-item.target { background: var(--accent-soft); }
+.beat .k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--ink-faint); }
+.beat b { font-family: var(--font-mono); font-size: 27px; font-weight: 500; line-height: 1.15; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.beat .b-item.target b { color: var(--accent); }
+.beat .v { font-size: 11.5px; line-height: 1.35; color: var(--ink-faint); }
+.beat-line { margin: 12px 0 0; font-size: 13.5px; color: var(--ink-dim); }
+.beat-line b { color: var(--ink); font-weight: 600; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.linkish { background: none; border: none; padding: 0; font: inherit; color: var(--accent); cursor: pointer; }
+.linkish:hover { text-decoration: underline; }
+@media (max-width: 620px) { .beat { grid-template-columns: 1fr; } }
