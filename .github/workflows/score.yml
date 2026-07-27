@@ -70,6 +70,19 @@ jobs:
               echo "msg=❌ Submission file names must be plain — letters, digits, dot, dash, underscore." >> "$GITHUB_OUTPUT"
               exit 0 ;;
           esac
+          # Auto-merge lands the WHOLE pull request, not just the policy. A PR
+          # that beat the record while also carrying .github/workflows/*, or a
+          # package.json with a postinstall, would put attacker code on main —
+          # where it runs with the repo's secrets and the deploy credentials.
+          # Score anything, but only ever merge a pull request that is nothing
+          # but submissions/.
+          outside=$(git diff --name-only "$base" prhead | grep -v '^submissions/' || true)
+          if [ -n "$outside" ]; then
+            echo "outside submissions/: $outside"
+            echo "mergeable=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "mergeable=true" >> "$GITHUB_OUTPUT"
+          fi
           echo "ok=true" >> "$GITHUB_OUTPUT"
           echo "handle=$handle" >> "$GITHUB_OUTPUT"
 
@@ -80,6 +93,7 @@ jobs:
           OK: ${{ steps.find.outputs.ok }}
           MSG: ${{ steps.find.outputs.msg }}
           HANDLE: ${{ steps.find.outputs.handle }}
+          MERGEABLE: ${{ steps.find.outputs.mergeable }}
         run: |
           if [ "$OK" != "true" ]; then
             gh pr comment "$PR" --body "$MSG"
@@ -89,9 +103,11 @@ jobs:
           cat result.json
           node -e '
             const r=require("./result.json"), fs=require("fs");
+            const mergeable=process.env.MERGEABLE==="true";
             let body, merge=false;
             if(r.error) body="❌ **"+r.handle+"** could not be scored: `"+r.error+"`";
             else if(!r.ok) body="❌ **"+r.handle+"** — FAIL: the swarm did not explore every map. score `"+r.score+"`.";
+            else if(r.beats && !mergeable) body="🏆 **"+r.handle+"** scores **"+r.score+"** — beats the current best `"+r.best+"`. Not auto-merging: this pull request also changes files outside `submissions/`, and auto-merge would land those on `main` too. Split the policy into its own PR and it lands itself.";
             else if(r.beats){ body="✅ **"+r.handle+"** scores **"+r.score+"** — beats the current best `"+r.best+"` (floor "+r.floor+"). Auto-merging 🎉"; merge=true; }
             else body="🟡 **"+r.handle+"** scores **"+r.score+"**, but the current best is `"+r.best+"`. Beat it to auto-merge.";
             fs.writeFileSync("body.md",body); fs.writeFileSync("merge.txt",merge?"1":"0");

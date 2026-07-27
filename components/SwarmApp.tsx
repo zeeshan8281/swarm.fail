@@ -470,7 +470,16 @@ export default function SwarmApp({ initial }: { initial: Board }) {
                         : r.name}
                       {i === 0 && <span className="pill record">current record</span>}
                       {tg}
-                      {r.note && <span className={open ? "caret open" : "caret"} aria-hidden>›</span>}
+                      {r.note && (
+                        <button
+                          className="caret-btn"
+                          aria-expanded={open}
+                          aria-label={`${open ? "Hide" : "Show"} ${r.name}'s approach`}
+                          onClick={(e) => { e.stopPropagation(); setOpenRow(open ? null : rowKey); }}
+                        >
+                          <span className={open ? "caret open" : "caret"} aria-hidden>›</span>
+                        </button>
+                      )}
                     </span></td>
                     <td>{isRef ? <Badge variant="outline">reference</Badge> : <span className="mono" style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.model}</span>}</td>
                     <td className="num">{r.n}</td><td className="num">{r.meanSteps}</td>
