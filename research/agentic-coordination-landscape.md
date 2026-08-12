@@ -2,7 +2,7 @@
 
 **Research date:** 13 August 2026
 
-**Decision this brief supports:** Which research question, benchmark design, and academic partner could turn swarm.fail from a good interactive demo into a legitimate technical challenge?
+**Decision this brief supports:** Which research question, company problem owner, benchmark design, and academic partner could turn swarm.fail from a good interactive demo into a legitimate technical challenge?
 
 ## Executive recommendation
 
@@ -14,11 +14,16 @@ Launch it as a benchmark for this question:
 
 This is unusually well timed. In April 2026, Volker Strobel, Marco Dorigo, and Mario Fritz argued in *Science Robotics* that foundation models can act as **swarm designers**: translating a desired collective behavior into code for individual robot controllers. They identify validation of the resulting collective behavior—the classic **micro–macro link problem**—as a central difficulty. That validation loop is almost exactly what swarm.fail can become: a model writes microscopic code; the simulator measures whether reliable macroscopic behavior emerges. ([paper](https://iridia.ulb.ac.be/~vstrobel/articles/StrDorFri2026scirob.pdf), [journal record](https://pubmed.ncbi.nlm.nih.gov/42054475/))
 
-The strongest first partnership target is **Dr. Volker Strobel at IRIDIA/ULB**, approached together with **Prof. Marco Dorigo**. Their LLM2Swarm project already synthesizes and validates swarm controllers, but it is presented through proofs of concept rather than a broad public coding-model benchmark. ([LLM2Swarm paper](https://arxiv.org/abs/2410.11387), [code](https://github.com/Pold87/LLM2Swarm), [Strobel profile](https://iridia.ulb.ac.be/~vstrobel/))
+Use a two-sided partnership model:
+
+- **Academic legitimacy:** **Dr. Volker Strobel and Prof. Marco Dorigo at IRIDIA/ULB**. Their LLM2Swarm work already synthesizes and validates swarm controllers, but not as a broad, held-out public coding-model benchmark. ([LLM2Swarm paper](https://arxiv.org/abs/2410.11387), [code](https://github.com/Pold87/LLM2Swarm), [Strobel profile](https://iridia.ulb.ac.be/~vstrobel/))
+- **Commercial problem owner:** contact **SwarmFarm Robotics** first, with **Eagle Ray Robotics** and **Burro** as alternate verticals. These companies expose respectively field coverage/task allocation, bandwidth-starved underwater coordination, and outdoor human–robot fleet logistics. ([SwarmFarm](https://www.swarmfarm.com/), [Eagle Ray](https://www.eaglerayrobotics.com/), [Burro](https://burro.ai/))
 
 The second target is **Prof. Shiyu Zhao at Westlake University**, corresponding author of GenSwarm. GenSwarm turns natural-language instructions into white-box multi-robot code policies and deploys them in simulation and on real robots. An independent, held-out evaluation challenge is a natural complement to that work. ([GenSwarm](https://www.nature.com/articles/s44182-025-00065-w), [code](https://github.com/WindyLab/GenSwarm), [profile](https://www.shiyuzhao.net/))
 
-The third target is **Prof. Amanda Prorok at Cambridge** for benchmark methodology: strict decentralization, learned communication, behavioral diversity, robustness, scaling, and a path from simulation to physical teams. ([profile](https://www.proroklab.org/people/amanda-prorok/), [decentralized coordination program](https://www.proroklab.org/research/decentralized-coordination/), [VMAS](https://arxiv.org/abs/2207.03530))
+The methodology target is **Prof. Amanda Prorok at Cambridge**: strict decentralization, learned communication, behavioral diversity, robustness, scaling, and a path from simulation to physical teams. ([profile](https://www.proroklab.org/people/amanda-prorok/), [decentralized coordination program](https://www.proroklab.org/research/decentralized-coordination/), [VMAS](https://arxiv.org/abs/2207.03530))
+
+The recommended first challenge is therefore not generic exploration. It is **Resilient Coverage under Communication Collapse**: one generated controller must coordinate a team across unseen layouts while bandwidth shrinks, messages drop, and agents fail. That single evaluator can be skinned as agricultural coverage, underwater sensing, inspection, or search-and-rescue without changing its scientific core.
 
 ### The one-line founder pitch
 
@@ -39,6 +44,25 @@ The five challenge properties that matter are the same ones visible across ECDSA
 5. a hero artifact that makes the result immediately legible.
 
 swarm.fail already has most of (3) and (5). The research partnership must supply (1), (2), and a path for (4).
+
+---
+
+## Scope and method
+
+This pass answers four questions:
+
+1. What changed in swarm and multi-agent research from 2024 through 13 August 2026?
+2. Which companies operate genuine multi-robot systems, and what concrete coordination problem do they own?
+3. Which problems can become an open, objective, visually legible coding-agent challenge?
+4. Who should Yukon contact first for academic legitimacy and commercial relevance?
+
+Sources were included when they were a primary paper, official repository, official university/challenge page, official company product or deployment page, or a public regulatory/program record. Company performance claims are labeled as company-reported unless independently supported. Search-result snippets, generic listicles, and unsupported “largest/first/true swarm” claims were not used as proof.
+
+Evidence labels used in the audit:
+
+- **High:** peer-reviewed paper, official challenge/program, source code, or clearly verifiable deployment/regulatory record;
+- **Medium:** preprint or detailed official company technical/deployment claim;
+- **Low:** marketing claim without enough public technical or independent evidence. Low-confidence items are not used to drive the recommendation.
 
 ---
 
@@ -123,6 +147,28 @@ This yields a second publishable question:
 
 That can become a later track without changing the core brand.
 
+### 2.5 What changed in the 2025–2026 literature
+
+This is the recent-paper scan, not a historical survey.
+
+| Work | Date/status | What it contributes | Consequence for swarm.fail |
+|---|---|---|---|
+| **LLM2Swarm** | 2024 preprint, active code | LLM-generated controllers plus validation in a canonical swarm stack | Treat controller synthesis as established early work; own independent, held-out evaluation |
+| **GenSwarm** | 2025 article, published 2026 | Natural-language-to-white-box policies tested in simulation and on robots | White-box code and physical transfer are plausible; compare generalization, not a single demo |
+| **Online automatic code generation for robot swarms** | 2025 preprint | Generates replacement code when a swarm gets stuck; six real robots and larger simulations | Add failure-triggered adaptation only as a later track; the first benchmark should keep one fixed controller ([paper](https://arxiv.org/abs/2510.04774)) |
+| **SwarmBench** | 2025 preprint | Online LLM agents across five canonical swarm tasks | Direct overlap warning: differentiate on offline coding models, deterministic execution, and code budgets |
+| **GradPS** | ICML 2025 | Learns when agents should share parameters rather than forcing identical behavior | One-policy versus bounded-role tracks are scientifically grounded |
+| **Alem** | June 2026 preprint | Procedural long-horizon environment; low scores and strong communication ablation | Coordination is a separate capability; hidden procedural evaluation matters |
+| **CHORUS** | June 2026 preprint | One shared VLA policy across heterogeneous robot bodies with local observation | Shared policies need not imply identical behavior; embodiment and observation can induce roles |
+| **MECoBench** | June 2026 preprint | Measures embodied collaboration under coordination complexity and communication perturbations | Add coordination-complexity and communication axes rather than more decorative map types |
+| **Mosaic** | July 2026 preprint | Diagnoses shared-state and redundant/conflicting-action failures | Publish failure replays and a coordination-tax card, not only completion scores |
+| **TeamBench / CooperBench** | 2026 preprints | Controlled evaluation of role-separated language and coding-agent teams | Useful model-evaluation methodology, but not substitutes for embodied control |
+| **When Is Diversity Rewarded?** | ICLR 2026 | Formal/empirical conditions under which agent diversity helps | Make diversity an experimentally priced resource, not an assumption |
+| **MARS Challenge** | NeurIPS 2025 workshop challenge | Multi-agent robotic planning and control benchmark | Evidence of active competition demand; avoid claiming the category is empty ([paper](https://arxiv.org/abs/2601.18733)) |
+| **ISRO Robotics Challenge 2026** | 2026 official challenge | Swarm expedition without external navigation infrastructure | Confirms interest in autonomous exploration under denied infrastructure ([challenge](https://www.ursc.gov.in/IRoC-U2026/challenge.jsp)) |
+
+The literature does **not** say that “swarms are solved.” It says individual ingredients now work in demonstrations, while robust evaluation across unseen environments, communication constraints, heterogeneous teams, and failure remains open. That is the benchmark opportunity.
+
 ---
 
 ## 3. Existing benchmarks and where the white space is
@@ -169,7 +215,124 @@ No source reviewed here combines all seven as a public challenge.
 
 ---
 
-## 4. What the current repository gets right
+## 4. What the company research actually says
+
+### 4.1 “Swarm company” is not one category
+
+The market scan becomes misleading unless companies are separated by architecture rather than branding.
+
+| Category | How decisions are made | Representative companies | What swarm.fail can learn |
+|---|---|---|---|
+| **Decentralized physical swarm** | Each vehicle acts from local state and peer messages; the group should survive lost links or members | Palladyne AI, Shield AI, Eagle Ray Robotics, SwarmFarm in some workflows | Closest scientific match: local policy, bounded communication, failure recovery |
+| **Centrally orchestrated fleet** | A fleet manager assigns tasks/routes and maintains global state | Amazon Robotics, Ocado, Locus, Exotec, Symbotic, Percepto | Real industrial pain, but call it fleet coordination rather than decentralized swarm intelligence |
+| **Heterogeneous embodied team** | Different robot types share missions, roles, or data | Anduril, Auterion, Helsing, Energy Robotics | Strong interoperability and dynamic-role problem; difficult public data and integration |
+| **Software-agent orchestration** | Language/coding agents exchange messages and invoke tools | CrewAI, LangGraph, Swarms.ai, AutoGen | Possible model/harness sponsors; not owners of a physical coordination problem |
+| **Unverified swarm branding** | Public copy makes scale claims without enough technical or deployment evidence | Several early drone and robotics vendors | Watchlist only; do not build a challenge thesis on company claims alone |
+
+“True swarm” is not automatically better. A central controller can be correct for a warehouse with reliable networking. The research distinction is whether the challenge tests **decentralized emergence**, **fleet optimization**, or **multi-vendor orchestration**. The current product and the strongest papers point to the first.
+
+### 4.2 The recurring problems across industries
+
+Across official product pages, research papers, and deployed challenge programs, ten bottlenecks repeat:
+
+1. **Task and role allocation:** who covers which region or handles which target without duplicated work?
+2. **Limited communication:** what happens when bandwidth, range, latency, or packet loss prevents a global view?
+3. **Heterogeneous interoperability:** how do vehicles from different vendors with different capabilities coordinate?
+4. **Failure recovery:** can the mission continue when a robot, sensor, link, or planner fails?
+5. **Collision, congestion, and deadlock:** do locally sensible movements create group-level blockage?
+6. **One-human-to-many supervision:** how can one operator express intent without micromanaging every vehicle?
+7. **Generalization:** does a controller survive a new layout, terrain, weather condition, or team size?
+8. **Assurance:** how do we verify an emergent collective behavior before physical deployment?
+9. **Edge budgets:** can the behavior run within energy, compute, sensing, and communication limits?
+10. **Coordination tax:** how many messages, duplicate actions, delays, or conflicts are spent on teamwork itself?
+
+Recent evidence reinforces this list. **MECoBench** finds that gains from collaboration depend on coordination complexity and that communication is a key variable. **Mosaic** traces failures to partial shared-state tracking and redundant or conflicting actions. **CHORUS** studies a single shared vision-language-action policy controlling heterogeneous robots using only local observations. **When Is Diversity Rewarded?** asks when heterogeneous policies actually help rather than add complexity. ([MECoBench](https://arxiv.org/abs/2606.31966), [Mosaic](https://arxiv.org/abs/2607.09603), [CHORUS](https://arxiv.org/abs/2606.12352), [Prorok Lab](https://www.proroklab.org/publications/iclr2026-diversity-rewarded/))
+
+### 4.3 Company landscape by sector
+
+The rows below distinguish published facts from our strategic inference. “Fit” means fit for a public Yukon-style research challenge, not company quality.
+
+#### Agriculture and outdoor autonomy
+
+| Company | Public evidence | Actual coordination problem | Challenge fit |
+|---|---|---|---|
+| **SwarmFarm Robotics** | Commercial field robots can work alone or cooperatively; the company explicitly invites partners and reports more than 5.1 million commercially farmed acres and 220,000 operating hours. These figures are company-reported. ([media](https://www.swarmfarm.com/media/), [journey](https://www.swarmfarm.com/journey/), [applications](https://www.swarmfarm.com/applications/)) | Coverage and treatment allocation across large fields; coordinating vehicles under changing field conditions; recovering when one unit cannot complete an area. The exact benchmark formulation is our inference from the deployment model. | **Best first company target.** Non-defence, visual, directly compatible with coverage, and publicly partnership-oriented. |
+| **Burro** | Burro reports a large deployed outdoor fleet; robots compute locally, can share a learned route, and are managed through Burro Operating System Software. ([company](https://burro.ai/), [robot](https://burro.ai/burro/), [BOSS](https://burro.ai/boss/)) | Outdoor material movement, human-adaptive routing, docking/charging, and scheduling many robots around workers. | **Strong alternate.** Better deployment evidence than pure swarm novelty; less clearly decentralized agent-to-agent research. |
+
+**Verdict:** agriculture is the best first commercial vertical because the artifact stays understandable—colored agents covering a field—while the hidden evaluator can introduce weather closures, depleted batteries, communication loss, different tools, and failed vehicles.
+
+#### Underwater and maritime autonomy
+
+| Company / program | Public evidence | Actual coordination problem | Challenge fit |
+|---|---|---|---|
+| **Eagle Ray Robotics** | Positions hardware-agnostic underwater vehicles as a coordinated sensing network; its architecture runs on each asset and is designed for low-bandwidth acoustic links. The company was founded in 2023, so these remain emerging-company claims. ([official site](https://www.eaglerayrobotics.com/), [technology](https://www.eaglerayrobotics.com/technology)) | Distributed sensing, sparse acoustic communication, uncertain localization, heterogeneous vehicles, and reconnecting partial maps. | **Best sharp-problem alternate.** High scientific clarity and likely accessibility; early-company maturity raises execution risk. |
+| **Sedna Robotics** | Develops fleets of low-cost autonomous ocean robots intended to work alone or in groups. ([official site](https://sednarobotics.com/)) | Persistent ocean monitoring, mission allocation, energy-aware coverage, recovery, and sparse communications. | Good mission story; public evidence of sophisticated group coordination is still limited. |
+| **European Defence Agency SABUVIS II** | A 2026 program for mixed underwater swarms cites bandwidth, latency, environmental unpredictability, and interoperability as core constraints. ([EDA](https://eda.europa.eu/news-and-events/news/2026/02/17/eda-project-develops-technology-for-underwater-drones-to-move-in-swarms)) | This is independent evidence that the underwater constraints are real, not just startup marketing. | Useful research anchor, but defence sponsorship adds procurement and policy friction. |
+
+**Verdict:** underwater coordination has the cleanest “why decentralization?” answer: reliable continuous communication often does not exist. It is a compelling second outreach lane if SwarmFarm is not available.
+
+#### Warehousing and logistics
+
+| Company | Public evidence | Actual coordination problem | Challenge fit |
+|---|---|---|---|
+| **Amazon Robotics** | DeepFleet is a suite of fleet foundation models trained on large-scale robot movement data; Amazon also sponsors the League of Robot Runners challenge. ([paper](https://arxiv.org/abs/2508.08574), [Amazon Science](https://www.amazon.science/blog/amazon-builds-first-foundation-model-for-multirobot-coordination), [League](https://www.leagueofrobotrunners.org/)) | Lifelong task scheduling, path planning, traffic, delays, and congestion at huge scale. | Excellent proof that challenge-backed legitimacy works; **poor first target because the public niche is already occupied**. |
+| **Ocado** | Describes thousands of grid robots communicating frequently in difficult radio environments and, in 2026, an AMR offering spanning thousands of robots and many sites. ([robot evolution](https://www.ocadogroup.com/newsroom/stories/engineering-the-future-the-evolution-of-ocados-fulfilment-robots), [AMR systems](https://www.ocadogroup.com/newsroom/stories/introducing-ocados-amr-solutions)) | Wireless reliability, queueing, congestion, fulfillment sequencing, and layout-specific optimization. | Real owner, spectacular artifact, but algorithms and operational data are highly proprietary. |
+| **Locus Robotics** | LocusONE manages heterogeneous fleets and advertises support for more than 1,000 robots at a site. ([LocusONE](https://locusrobotics.com/locusone)) | Work allocation across robot types and workflows while people share the floor. | Plausible future partner; centrally orchestrated and less differentiated from existing fleet benchmarks. |
+| **Exotec** | SkyPod and Deepsky coordinate high-throughput storage robots; 2026 Decathlon deployments plan roughly 150–200 robots per site. ([SkyPod](https://www.exotec.com/news/exotec-launches-next-generation-of-skypod-system-an-all-in-one-robot-based-as-rs-that-addresses-the-majority-of-processes-within-a-warehouse/), [Decathlon](https://www.exotec.com/en-gb/news/decathlon-automates-seven-sites-with-exotec-skyfleet-program/)) | Storage/retrieval scheduling, workstation flow, congestion, and expansion to new layouts. | Commercially real, but not an open decentralized-swarm question. |
+| **Symbotic** | Operates AI-coordinated autonomous warehouse robot systems at industrial scale. ([official site](https://www.symbotic.com/)) | End-to-end routing, sequencing, packing, and reliability. | Credible reference, unlikely early open partner. |
+
+**Verdict:** do not pitch swarm.fail as a warehouse challenge. Cite the sector as evidence of economic value and copy its benchmark discipline, especially hidden execution delays, but do not clone it.
+
+#### Inspection and industrial operations
+
+| Company | Public evidence | Actual coordination problem | Challenge fit |
+|---|---|---|---|
+| **Percepto** | Reports FAA authorization for one operator to remotely manage up to 30 autonomous drone systems; AIM manages remote inspection fleets. ([FAA announcement](https://percepto.co/percepto-receives-significant-faa-approval-to-remotely-operate-full-drone-fleet-by-one-operator/), [AIM](https://percepto.co/aim/)) | Inspection coverage, priority replanning, exception handling, and one-to-many supervision across sites. | **Strong later problem owner.** The mission is legible, but coordination is mostly centralized fleet management. |
+| **Energy Robotics / ANYbotics** | Energy Robotics offers hardware-agnostic management of heterogeneous robots and drones; ANYbotics deploys autonomous industrial inspection robots. ([Energy Robotics](https://www.energy-robotics.com/de/ki-software), [partnership](https://www.anybotics.com/news/anybotics-energy-robotics-partnership-achema-2024/)) | Multi-vendor mission scheduling, data fusion, handoffs, charging, and failure recovery in hazardous plants. | Strong interoperability story; public simulation assets and openness are unclear. |
+
+**Verdict:** this sector supports a future **heterogeneous interoperability** challenge more than the first shared-controller challenge.
+
+#### Defence and contested autonomy
+
+This sector contains the clearest technical claims and the hardest partnership barriers. It should inform non-kinetic resilience tests, not determine the first challenge.
+
+| Company | Public evidence | Actual coordination problem | Challenge fit |
+|---|---|---|---|
+| **Shield AI / Hivemind** | Hivemind describes coordinated teams operating without GPS or reliable communications; public demonstrations include multi-aircraft teaming. ([Hivemind](https://shield.ai/hivemind/), [swarming demo](https://shield.ai/hivemind-for-operational-read-and-react-swarming/)) | Communication-denied autonomy, composable behaviors, dynamic team decisions, and human command. | Exact technical relevance; low likelihood of an open first partnership and high safety/IP constraints. |
+| **Anduril / Lattice** | Mission Autonomy teams heterogeneous systems under human command; a SOCOM contract covers integration, test, validation, and deployment. ([product](https://www.anduril.com/lattice/mission-autonomy), [program](https://www.anduril.com/article/special-operations-command-selects-anduril-as-mission-autonomy-systems-integration-partner/)) | Interoperability plus verification and validation across many vendors and domains. | Important evidence for the assurance problem; too closed and defence-specific for the first public challenge. |
+| **Auterion / Nemyx** | Nemyx coordinates cross-manufacturer drone fleets through a resilient network and dynamic prioritization; Auterion raised a reported $130 million Series B in 2025. ([Nemyx](https://auterion.com/product/nemyx/), [launch](https://auterion.com/auterion-launches-nemyx-enabling-fully-coordinated-drone-swarms/), [financing](https://auterion.com/auterion-raises-130-million-series-b-as-their-ai-enabled-software-powering-low-cost-commercial-hardware-at-scale-transforms-warfare/)) | Vendor-neutral interoperability, lost links, dynamic task allocation, and reduced operator load. | Strong evidence of market demand; partnership and benchmark data would be sensitive. |
+| **Palladyne AI / SwarmOS** | SwarmOS claims decentralized coordination, feature-based communication, dynamic roles, and heterogeneous teams; the company reported a 2026 U.S. Army exercise deployment. ([SwarmOS](https://www.palladyneai.com/products/ai-software/swarmos/), [deployment](https://www.palladyneai.com/press-releases/palladyne-ai-deploys-true-autonomy-drone-swarming-software-swarmos-during-u-s-army-4th-infantry-division-ivy-mass-exercise/)) | Bandwidth-efficient perception sharing, distributed roles, mixed platforms, and resilience. | Direct scientific match, but evidence is primarily company-reported and the domain is sensitive. |
+| **Helsing / Altra** | Helsing markets swarm-compatible HX-2 systems and Altra software for one-operator control in contested environments, alongside a technical assurance agenda. ([HX-2](https://helsing.ai/hx-2), [Altra](https://helsing.ai/altra), [assurance paper](https://helsing.ai/assets/download/55c619c900d22049e894ea288be49bee0533eb9e.pdf)) | Assuring software-defined, heterogeneous systems whose collective behavior changes dynamically. | The **assurance** framing is highly relevant; use it as methodology, not the initial application vertical. |
+| **Swarm Aero / Swarmbotics AI** | Both publish direct claims about multi-system autonomy; Swarm Aero reports one-operator heterogeneous exercises and Swarmbotics develops teams of ground robots. ([Swarm Aero](https://www.swarm.aero/), [exercise](https://www.swarm.aero/news-release/swarm-aeros-command-and-control-software-successfully-completes-manned-unmanned-teaming-exercises-at-u-s-navy-fleet-experimentation-flex-2026), [Swarmbotics](https://www.swarmbotics.ai/)) | Scaling human supervision and coordinating mixed vehicles or low-cost ground teams. | More approachable than defence primes, but still sensitive and dependent on company-reported validation. |
+
+### 4.4 Software-agent “swarm” companies are adjacent, not problem owners
+
+**CrewAI**, **LangGraph**, **Swarms.ai**, and **Microsoft AutoGen** coordinate language or coding agents. They matter because they can supply agent harnesses, model comparisons, or sponsorship, but they do not give a physical swarm challenge domain legitimacy. ([CrewAI](https://crewai.com/), [LangGraph](https://www.langchain.com/langgraph), [Swarms.ai](https://www.swarms.ai/products), [AutoGen](https://www.microsoft.com/en-us/research/uploads/prod/2025/01/WEF-2025_Leave-Behind_AutoGen.pdf))
+
+The relevant opportunity is to let these systems compete as **controller designers** under a fixed budget. Do not turn swarm.fail into another chat-agent framework benchmark.
+
+### 4.5 Ranked company outreach shortlist
+
+Scores are analytical judgments from the public evidence above, not measured company attributes. Five is best. “Openness” estimates whether a public benchmark partnership appears plausible.
+
+| Rank | Problem owner | Problem specificity | Public evidence | Openness | Hero artifact | Current-engine fit | Overall judgment |
+|---:|---|---:|---:|---:|---:|---:|---|
+| **1** | **SwarmFarm Robotics** | 5 | 4 | 5 | 5 | 5 | Best combination of real deployment, partnership posture, safe vertical, and coverage fit |
+| **2** | **Eagle Ray Robotics** | 5 | 3 | 4 | 5 | 4 | Sharpest limited-communication research problem; compensate for startup maturity risk |
+| **3** | **Burro** | 4 | 5 | 4 | 5 | 4 | Strong real-world proof and outdoor story; frame as fleet logistics, not pure swarm |
+| **4** | **Percepto** | 4 | 5 | 3 | 5 | 3 | Credible one-to-many inspection problem; more centralized than the thesis |
+| **5** | **Energy Robotics / ANYbotics** | 4 | 5 | 3 | 4 | 3 | Best later heterogeneous-fleet partner |
+| **6** | **Amazon Robotics** | 5 | 5 | 2 | 5 | 4 | Gold-standard reference, but it already owns a competition and is unlikely as first partner |
+| **7** | **Ocado** | 5 | 5 | 2 | 5 | 4 | Valuable problem owner; proprietary system and data make a public pilot unlikely |
+| **8** | **Shield AI / Auterion / Palladyne** | 5 | 4 | 1 | 5 | 3 | Technically direct, but defence, export, safety, and disclosure barriers dominate |
+
+The outreach message should not say “sponsor our swarm game.” It should say:
+
+> We are turning one coordination failure you already face into a reproducible public evaluator. You define the constraints and success criteria; an academic partner makes the methodology defensible; we build the verifier, coding-agent interface, leaderboard, and replay.
+
+---
+
+## 5. What the current repository gets right
 
 The existing product is not wasted work. It is a strong prototype of the future hero artifact.
 
@@ -185,11 +348,11 @@ The right move is therefore not a rewrite. It is to turn the current engine into
 
 ---
 
-## 5. What an academic reviewer will challenge
+## 6. What an academic reviewer will challenge
 
 These are not cosmetic issues. They determine what the benchmark can honestly claim.
 
-### 5.1 The current “local/decentralized” claim is too strong
+### 6.1 The current “local/decentralized” claim is too strong
 
 In the [current engine](../lib/engine.mjs), every agent receives global coordinates (`a.x`, `a.y`) and access to `env.shared`, one global object that every agent can read and write. Agents are evaluated in fixed ID order, so higher-ID agents can see writes made by lower-ID agents during the same tick.
 
@@ -202,13 +365,13 @@ That is a **global blackboard with serial update semantics**, not strict local-o
 
 The local-only track is the scientific core. The shared-memory track is still valuable as an ablation: how much does global communication buy?
 
-### 5.2 The maps are public and fixed
+### 6.2 The maps are public and fixed
 
 All 12 seeds are public. This is excellent for exact local reproduction, but it allows direct specialization to the test set.
 
 **Recommendation:** retain public development seeds, but score final submissions on private seeds sampled from versioned generators. Reveal those seeds after the competition. This preserves post-hoc reproducibility without allowing test-set tuning during the event.
 
-### 5.3 The benchmark does not yet measure coding-model ability fairly
+### 6.3 The benchmark does not yet measure coding-model ability fairly
 
 The current leaderboard permits humans and any model, with unlimited prompts, test runs, and manual edits. It measures the best policy a contestant eventually produces—not the capability of a model or coding agent.
 
@@ -219,7 +382,7 @@ The current leaderboard permits humans and any model, with unlimited prompts, te
 
 Without this separation, claims such as “Model X is better at coordination” would not be supported.
 
-### 5.4 The score hides important behavior
+### 6.4 The score hides important behavior
 
 `agents × mean steps` is simple and useful for the game, but one scalar cannot explain robustness, communication cost, collisions, or performance across scales. It also encourages teams to cluster at the minimum allowed number of agents.
 
@@ -234,13 +397,13 @@ Without this separation, claims such as “Model X is better at coordination” 
 - generalization gap between public and held-out scenarios;
 - scaling curve across team sizes.
 
-### 5.5 The stated floor is not currently a strict lower bound
+### 6.5 The stated floor is not currently a strict lower bound
 
 The README calls 931 a “provable floor,” but agents spawn across the open map and their initial cells count as covered before any step. Those cells are therefore free under an `agents × steps` score. The repository’s own [references](../REFERENCES.md) acknowledge this slack.
 
 **Recommendation:** call 931 a **cell-count reference** in the current arena, not a provable bound. For a true work bound, charge initial placements or subtract them consistently in the derivation.
 
-### 5.6 Other simulator artifacts need explicit treatment
+### 6.6 Other simulator artifacts need explicit treatment
 
 - Multiple agents may occupy the same cell; there is no physical collision model.
 - All maps are 40×40; scale generalization is not tested.
@@ -253,7 +416,7 @@ None of these invalidate the prototype. They mean the first academic design sess
 
 ---
 
-## 6. Candidate challenge directions
+## 7. Candidate challenge directions
 
 Scores are 1–5, where 5 is strongest. “Buildability” means a higher score is easier to ship from the current repository.
 
@@ -309,7 +472,72 @@ The lazy and stronger move is to prove the controller-synthesis question in the 
 
 ---
 
-## 7. Recommended benchmark specification
+## 8. Recommended challenge: Resilient Coverage under Communication Collapse
+
+The company scan changes the recommendation from an abstract task to a constraint-driven one.
+
+### Public challenge brief
+
+> Write one compact controller that lets a team cover an unknown environment. The same controller runs on every agent. During hidden tests, communication becomes unreliable, terrain changes, and agents fail. Complete the mission with the least time, movement, communication, and unsafe interaction.
+
+This is not a maze contest. It isolates a common problem behind field robotics, underwater sensing, infrastructure inspection, and emergency search: **maintain useful collective behavior when the shared picture falls apart**.
+
+### Why this version is strategically stronger
+
+- **Company-specific:** SwarmFarm can map it to field treatment; Eagle Ray to submerged sensing; Percepto to inspection; Burro to outdoor logistics.
+- **Academically current:** it operationalizes micro–macro validation, bounded communication, failure recovery, shared-policy limitations, and diversity.
+- **Compatible with the repo:** coverage, one-file policies, deterministic replay, and map generation already exist.
+- **Hard to fake with visuals:** hidden link failures, agent failures, and unseen topologies expose brittle policies.
+- **Easy to explain:** “Can the team finish when it can no longer talk reliably?”
+
+### Hidden scenario families
+
+| Family | What changes | Capability exposed |
+|---|---|---|
+| Unseen topology | open regions, corridors, bottlenecks, clusters, disconnected closures | spatial generalization |
+| Lost link | range limits, packet loss, delay, blackout windows | dependence on global coordination |
+| Team damage | agent or sensor dropout at unknown times | graceful degradation and reallocation |
+| Unequal agents | bounded differences in sensor, speed, energy, or tool | role formation and diversity |
+| Dynamic mission | new target, closed region, or priority area appears | replanning without central reset |
+| Scale shift | map and team sizes outside public examples | whether local rules really scale |
+
+### Scorecard
+
+Mission success is a gate. Among successful runs, publish a Pareto card before collapsing it into one leaderboard score:
+
+- completion time and coverage efficiency;
+- distance/energy spent;
+- messages and bytes transmitted;
+- collisions, deadlocks, and unsafe proximity;
+- performance retained after link loss or agent failure;
+- public-to-private generalization gap;
+- controller source size and runtime budget.
+
+### Tracks
+
+1. **One shared local policy:** the scientific core; no global blackboard.
+2. **Bounded communication:** same policy, explicit message budget.
+3. **Bounded roles:** up to `K` controllers or a small per-agent role vector, priced in the score.
+4. **Model designer:** coding models receive identical prompts, tools, tokens, wall time, retries, and no human edits.
+
+### Hero artifact
+
+The landing-page replay should show a successful policy and a brittle baseline side by side. At a visible moment, the network drops and two agents fail. The viewer immediately sees whether the rest reallocate, duplicate work, freeze, or collide. A small timeline shows coverage, active agents, messages, and failure events.
+
+### Partner-specific wrappers
+
+Do not fork four simulators. Keep one evaluator and change the task narrative and parameters with the partner:
+
+- **SwarmFarm:** sections of a field require treatment by vehicles with different tools and battery levels.
+- **Eagle Ray:** vehicles collect spatial samples while acoustic messages are sparse and delayed.
+- **Burro:** robots move material between workers, rows, and charging docks while paths change.
+- **Percepto:** drones inspect prioritized assets while links, weather, or vehicles become unavailable.
+
+The academic paper can remain domain-neutral; the launch story and hero artifact can use the partner’s domain.
+
+---
+
+## 9. Recommended benchmark specification
 
 ### Core research question
 
@@ -417,7 +645,7 @@ That gives the team the playable “hero artifact” discussed in the meeting wi
 
 ---
 
-## 8. Ranked academic partner shortlist
+## 10. Ranked academic partner shortlist
 
 ### Tier 1 — contact first
 
@@ -435,7 +663,7 @@ That gives the team the playable “hero artifact” discussed in the meeting wi
 |---|---|---|
 | **Prof. Sabine Hauert, Bristol** | Swarm engineering, real-world applications, public communication, responsible deployment | Problem framing, real-world narrative, trustworthy swarm metrics. ([profile](https://hauertlab.com/sabine-hauert/)) |
 | **Prof. Jakob Foerster, Oxford FLAIR** | MARL, open-ended learning, JaxMARL ecosystem | Model/MARL baselines and open-ended coordination methodology. ([lab](https://foersterlab.com/)) |
-| **Prof. Stefano Albrecht, Edinburgh AARG** | Parameter sharing, ad-hoc teams, multi-agent learning, alliance-aware robot foundation models | Role diversity and heterogeneous-team track. ([Edinburgh faculty page](https://informatics.ed.ac.uk/eliai/people/faculty), [2026 viewpoint](https://doi.org/10.1126/scirobotics.aea1822)) |
+| **Prof. Stefano Albrecht, Edinburgh AARG** | Parameter sharing, ad-hoc teams, multi-agent learning, alliance-aware robot foundation models | Role diversity and heterogeneous-team track. ([Edinburgh profile](https://www.research.ed.ac.uk/en/persons/stefano-albrecht), [2026 viewpoint](https://doi.org/10.1126/scirobotics.aea1822)) |
 | **Prof. Radhika Nagpal, Princeton SSR** | Foundational self-organization and large robot collectives | Scientific advisory credibility and classical swarm baselines; less direct for ML benchmark design. ([lab](https://ssr.princeton.edu/research)) |
 | **Robotarium, Georgia Tech** | Free remote access to physical multi-robot experiments; Python and MATLAB simulation-to-real flow | Final-round hardware validation once the controller API is compatible. ([official site](https://www.robotarium.gatech.edu/get-started)) |
 | **League of Robot Runners organizers** | Established Amazon/AAMAS competition with robust execution under uncertainty | Learn challenge operations or create a future controller-generation exhibition track; avoid duplicating MAPF. ([official site](https://www.leagueofrobotrunners.org/)) |
@@ -452,7 +680,7 @@ Avoid a mass “please partner with us” email. Each outreach should contain on
 
 ---
 
-## 9. Draft outreach email to the best-fit partner
+## 11. Draft outreach email to the best-fit partner
 
 **Subject:** A public benchmark for foundation-model-generated swarm controllers
 
@@ -466,9 +694,9 @@ Avoid a mass “please partner with us” email. Each outreach should contain on
 >
 > Would you be open to a 30-minute call to tell us whether this benchmark would be useful to the field, and what task or evaluation design would make it scientifically meaningful? If there is alignment, we would love to explore co-designing the benchmark with IRIDIA rather than asking for a superficial endorsement.
 >
-> Working artifact: [link]
+> Working artifact: https://swarm.fail/
 >
-> Two-page concept: [link]
+> I can also send a two-page benchmark concept and the current evaluator notes before the call.
 >
 > Best,
 >
@@ -478,7 +706,7 @@ For Shiyu Zhao, replace the second paragraph with the GenSwarm connection and as
 
 ---
 
-## 10. Suggested 30-day path
+## 12. Suggested 30-day path
 
 ### Week 1 — partner-ready concept, no major build
 
@@ -486,10 +714,12 @@ For Shiyu Zhao, replace the second paragraph with the GenSwarm connection and as
 - Record a 30–45 second replay showing one controller succeeding and failing.
 - Write the exact research question and the distinction from SwarmBench, Alem, GenSwarm, and League of Robot Runners.
 - Send the first two targeted emails: Strobel and Zhao.
+- Prepare one one-page company variant for SwarmFarm and one for Eagle Ray. Change the story and constraints, not the evaluator.
 
 ### Week 2 — methodology conversations
 
 - Conduct calls with interested researchers.
+- Ask SwarmFarm which coordination failure is costly enough to expose publicly; ask Eagle Ray which communication/localization assumptions can be safely abstracted.
 - Decide whether the first challenge is pure coverage or a small multi-task suite.
 - Lock definitions of local observation, communication, simultaneity, collision, and agent identity.
 - Decide what the academic partner will genuinely own: task, metric, baseline, paper, or hardware validation.
@@ -512,24 +742,29 @@ Do not build Minecraft, real-robot integration, five task families, or a new sim
 
 ---
 
-## 11. Decision summary
+## 13. Decision summary
 
 ### What to say yes to
 
 - **Field:** foundation models for decentralized swarm-controller synthesis.
-- **First scientific question:** can a coding model turn a global objective into one robust local controller?
-- **Application narrative:** robust exploration/search in unknown environments.
+- **First scientific question:** can a coding model turn a global objective into one robust local controller that survives communication loss and member failure?
+- **First challenge:** Resilient Coverage under Communication Collapse.
+- **Application narrative:** agricultural field coverage first; underwater sensing or inspection as alternates.
 - **Primary partner:** Volker Strobel + Marco Dorigo / IRIDIA.
 - **Secondary partner:** Shiyu Zhao / GenSwarm.
 - **Methodology partner:** Amanda Prorok.
+- **Primary company outreach:** SwarmFarm Robotics.
+- **Alternate company outreach:** Eagle Ray Robotics, then Burro.
 - **Competitive distinction:** offline white-box code synthesis, not an LLM call for every agent action.
 - **Product advantage:** deterministic, cheap, inspectable, and visually compelling.
 
 ### What to say no to for now
 
 - a generic maze competition presented as new coordination research;
+- calling every centrally managed robot fleet a decentralized swarm;
 - a warehouse MAPF clone;
 - Minecraft as the first substrate;
+- defence as the initial challenge vertical;
 - claiming strict decentralization while retaining a free global blackboard;
 - claiming model comparisons without standardized attempt budgets;
 - adding many scenario types before one task has a partner-backed metric.
@@ -538,9 +773,13 @@ Do not build Minecraft, real-robot integration, five task families, or a new sim
 
 > **The challenge is not “can ants cover a maze?” It is “can an AI engineer a reliable society from one local rule?”**
 
+For a company meeting, make it concrete:
+
+> **We turn your hardest coordination failure into a public test that coding agents can attack. You bring the real constraints; a research lab validates the methodology; Yukon runs the verifier, leaderboard, and interactive replay.**
+
 ---
 
-## 12. Primary-source reading list
+## 14. Primary-source reading list
 
 ### Read first
 
@@ -577,3 +816,45 @@ Do not build Minecraft, real-robot integration, five task families, or a new sim
 ### Evidence quality note
 
 This brief prioritizes papers, official project repositories, university profiles, and official challenge sites. The newest 2026 works should still be treated as early evidence: several are viewpoints, preprints, or first-generation systems rather than settled consensus. The central recommendation is therefore a partner-backed pilot and benchmark paper, not an immediate claim that the research problem has already been solved.
+
+---
+
+## 15. Evidence audit
+
+This table makes the reasoning traceable. “Use” is the conclusion the source supports; it is not a verbatim claim.
+
+| Evidence | Type | Confidence | Used for |
+|---|---|---|---|
+| Strobel, Dorigo, Fritz, *How foundation models will revolutionize robot swarms* | 2026 peer-reviewed viewpoint | High | Foundation model as swarm designer; micro–macro validation problem |
+| LLM2Swarm paper and repository | Preprint + public code | High | Generated swarm controllers already have a working research lineage |
+| GenSwarm paper and repository | Published article + public code | High | Natural-language-to-white-box control and simulation-to-real evidence |
+| SwarmBench paper and repository | Preprint + public code | High | Closest competing benchmark; online-agent overlap to avoid |
+| Alem paper and environment | 2026 preprint + public code | High | Procedural evaluation and evidence that coordination remains difficult |
+| CHORUS | 2026 preprint | Medium | One shared policy can control heterogeneous embodiments from local observations |
+| MECoBench | 2026 preprint | Medium | Communication and coordination complexity should be evaluation axes |
+| Mosaic | 2026 preprint | Medium | Redundant/conflicting action and partial shared state are measurable failure modes |
+| GradPS | ICML 2025 paper | High | Identical sharing versus adaptive specialization is an active problem |
+| When Is Diversity Rewarded? | ICLR 2026 paper/project | High | Diversity should be a controlled resource rather than an assumed benefit |
+| TeamBench / CooperBench | 2026 preprints | Medium | Fixed roles, budgets, and collaboration-specific evaluation for model tracks |
+| League of Robot Runners | Official AAMAS/Amazon challenge | High | Warehouse fleet challenge already exists and supplies an operational model |
+| Amazon DeepFleet | Official research publication/blog | High | Foundation-model fleet coordination has direct commercial value |
+| SwarmFarm product/application pages | Official company evidence | Medium | Deployed cooperative agricultural robots and explicit partnership posture |
+| Burro robot/BOSS pages | Official company evidence | Medium | Deployed outdoor autonomy, local compute, route sharing, and fleet operations |
+| Eagle Ray product page | Official company technical claims | Medium | Hardware fragmentation and limited submerged communication are explicit pain points |
+| EDA SABUVIS II | Official public program | High | Independent confirmation of underwater bandwidth, latency, environment, and interoperability constraints |
+| Ocado engineering/product pages | Official company evidence | Medium | Large-fleet radio, traffic, and site-generalization problems are operationally real |
+| LocusONE / Exotec / Symbotic pages | Official company evidence | Medium | Warehouse offerings are primarily centrally orchestrated fleets |
+| Percepto FAA/inspection pages | Company report of regulatory approval + product evidence | Medium | One-operator-to-many inspection is a concrete owner problem |
+| Energy Robotics / ANYbotics partnership pages | Official company evidence | Medium | Heterogeneous multi-vendor inspection is a plausible later challenge |
+| Shield AI / Anduril / Auterion pages | Official product and program evidence | Medium | Lost-link autonomy and heterogeneous interoperability have market demand |
+| Palladyne / Helsing / Swarm Aero pages | Official company evidence | Low–Medium | Decentralization and assurance themes; claims need independent validation before partnership thesis |
+| DARPA SubT, NASA Swarmathon, ISRO 2026, MARS | Official challenges/programs or associated paper | High | Unknown-world and denied-infrastructure multi-agent challenges have precedent |
+| Current swarm.fail engine and documentation | Repository inspection | High | Existing product strengths, blackboard semantics, public seeds, scoring, and simulator limitations |
+
+### Citation-audit conclusions
+
+- The **academic recommendation** rests on papers, code, and university profiles, not secondary summaries.
+- The **company ranking** uses official evidence but remains an outreach hypothesis until direct interviews validate the pain and openness.
+- The **defence-company section** is deliberately high level. It demonstrates demand for resilience and interoperability; it is not a recommendation to build an operational defence benchmark.
+- No company is described as a proven decentralized swarm unless its public materials expose local/peer coordination or lost-link behavior. Centralized fleets are labeled as such.
+- The recommended challenge is a synthesis of recurring constraints. No source is claimed to have endorsed swarm.fail or this exact benchmark.
