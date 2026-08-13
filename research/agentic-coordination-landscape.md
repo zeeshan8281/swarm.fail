@@ -1,6 +1,6 @@
-# SWARM.FAIL: Science-First Challenge Strategy
+# SWARM.FAIL: Company-First Challenge Strategy
 
-> Research date: 2026-08-13 | Sources: 64 | Mode: Standard | AS_OF: 2026-08-13 | Official sources: 46/64 (39 external, 7 Yukon/repo first-party)
+> Research date: 2026-08-13 | Sources: 75 | Mode: Standard | AS_OF: 2026-08-13 | Official sources: 59/75 (52 external, 7 Yukon/repo first-party)
 
 ## Executive Summary
 
@@ -8,15 +8,15 @@ The scientific claim needs correction before launch.
 
 The current repository is a polished deterministic multi-agent exploration simulator. One policy is cloned across agents exploring procedural rooms, mazes, and caves. It is not yet a credible coordination benchmark: 12 fixed public seeds reward aggregate coverage, agents share an unrestricted global object, and the suite does not vary team size, inject failures, or require joint action. Independent search can score while `env.shared` supplies a shared brain. [33][34]
 
-The recommended challenge is **SWARM.FAIL — Decentralized Coordination Under Uncertainty**. One submitted policy is cloned across varying swarm sizes. Agents receive local observations, private memory, bounded messages, and decaying traces—never a central controller or global scratchpad. Hidden worlds, team sizes, dropout, and link failures test generalization. Missions require information relay, synchronized action, collective transport, and recovery. Policies pass a success gate before ranking by normalized work and communication.
+The previous recommendation was too broad and started with an unreachable institutional partner. The corrected company-first candidate is **SWARM.FAIL — Decentralized Drone Traffic Throughput**: how many autonomous drones can safely reach independently assigned destinations per minute in the same constrained airspace, using only onboard decisions and local broadcasts, under packet loss and member failures. Collision safety is a hard gate; safe trip throughput is the headline number.
 
-The recommended target pair is **NASA/JPL CADRE as the mission analogue** and **Amanda Prorok's Cambridge lab as the academic co-design target**. CADRE is designed around lunar rovers that use mesh communication, explore together, and attempt measurements unavailable to one rover; Prorok studies local-observation coordination, communication, resilience, transfer, and roles. [17][18][25] DeepMind and CAIF fit a later digital-agent lane; centralized fleet routing and manager-worker systems do not define this challenge. [19][20][22][23][24]
+The recommended first company conversation is **CollMot Robotics**, not NASA. CollMot operates physical autonomous drone swarms, exposes an open Skybrush integration layer, invites industrial partnerships, and co-developed a decentralized traffic controller demonstrated with 100 physical drones and 5,000 simulated drones. Its 2024 paper reports almost doubling traffic throughput in some scenarios. [65][76][77][78][79] The direct partner outcome would be: **increase safe decentralized drone traffic throughput at fixed airspace, vehicle dynamics, and safety limits**.
 
-The broader academic scan adds **Sabine Hauert at Bristol** and **Roderich Groß at TU Darmstadt** to the first outreach wave, with Princeton, Cornell, EPFL, ASU, HKUST, and NUS as strong specialist alternatives. [43][44][45][46][47][48][49][50] Harvard belongs on the longlist for Robert Wood's microrobotic hardware, but the best-known Harvard self-organizing swarm lineage now sits primarily with Radhika Nagpal at Princeton and Michael Rubenstein at Northwestern. [45][58][61][62]
+The recommended independent academic validator for that company problem is **Sabine Hauert at Bristol**, whose Swarm Performance Indicators separate raw task speed from robustness, fault tolerance, scalability, and adaptability. [13][43] Cambridge remains a strong learned-policy and sim-to-real reviewer. The university validates the company-selected workload; it does not substitute for a commercial beneficiary.
 
 No named organization has agreed to partner with Yukon as of 2026-08-13.
 
-The founder-level pitch is simple: **Yukon is not benchmarking which boss assigns work best. Yukon is benchmarking whether a population can solve a mission when there is no preinstalled boss, no shared brain, and no agent has the whole answer.**
+The founder-level pitch is simple: **Lighter raises proving TPS; MLX.fast raises inference speed; SWARM.FAIL raises safe drone traffic throughput—more autonomous vehicles completing trips through the same airspace without a central traffic controller.**
 
 ## 1. The Exact Scientific Field
 
@@ -59,11 +59,13 @@ Recent physical results show the stricter boundary is feasible. A 2025 aerial sy
 
 ## 2. Why This Is a Real Frontier in 2026
 
-The frontier is not speculative. NASA, JPL, Google DeepMind, the Cooperative AI Foundation, ARIA, Cambridge, and robotics researchers are actively studying populations that must coordinate under incomplete information, communication constraints, unfamiliar partners, and failures.
+The frontier is not speculative. Current companies are already productizing autonomous swarms: CollMot sells and extends a physical drone-swarm stack; Palladyne markets decentralized cross-platform SwarmOS; Auterion ships Nemyx on its deployed AuterionOS/Skynode base; NewSpace, Swarmer, and ARX build self-healing, distributed, or swarm-capable autonomy for deployed unmanned systems. [65][66][67][69][70][72] Their public architectures differ, and marketing use of “swarm” does not prove strict decentralization, but they establish real company demand.
 
 NASA Ames' June 2026 report frames next-generation swarms around distributed sensing, lunar navigation, edge computing, interoperable networking, and cooperative operation without immediate human control. [14] Starling has demonstrated distributed onboard planning, reactive operations, ad-hoc networking, observation selection, and recovery from a spacecraft-to-ground radio failure. Ground management becomes impractical as populations and distance grow. [15][16]
 
 JPL's CADRE mission is the closest public analogue to the SWARM.FAIL visual world. It is designed around three largely autonomous lunar rovers that communicate over a mesh network, spread out, explore together, map terrain and subsurface structure, and attempt multistatic measurements unavailable to a single rover. [17][18] CADRE is evidence for coupled multi-agent sensing, not evidence by itself for large-swarm scalability.
+
+NASA and JPL remain important technical references, not the first partnership route. A reachable launch path begins with a company that already owns swarm software, a measurable bottleneck, and a plausible integration surface. CollMot is currently the strongest match because its decentralized traffic work already defines throughput and collision-risk measurements, while Skybrush supports tailored missions and common drone ecosystems. [76][77][78]
 
 Digital-agent coordination is also receiving Tier-1 investment. In June 2026, Google DeepMind, the Cooperative AI Foundation, Schmidt Sciences, ARIA, and Google.org announced a $10 million call focused on sandboxes, testbeds, agent-network science, population-level emergence, network failures, and oversight of large interacting AI ecosystems; applications closed on 8 August 2026. [19][22] This is evidence of ecosystem priority, not a currently open application route. DeepMind has prior benchmark credibility through Melting Pot, which evaluates cooperation and social generalization with unfamiliar agents rather than model selection. [20] ARIA's nearly £50 million Scaling Trust programme includes a planned coordination arena spanning digital and physical worlds and a multi-million-pound prize pool. [21] These are landscape signals, not part of the recommended v1 embodied challenge.
 
@@ -96,14 +98,14 @@ Fourth, the suite does not vary world scale, team size regime, failures, message
 | Scientific claim | Evidence required | Current evidence | Required redesign |
 | --- | --- | --- | --- |
 | Decentralized execution | No global state; legal local inputs only | `env.shared` is global and same-tick ordered | Remove it; snapshot actions/messages; randomize or eliminate order effects [33][34] |
-| Genuine coordination | Mission fails or degrades sharply without agent interaction | Coverage can be accumulated independently | Add relay, synchronized unlock, collective transport, and connectivity missions [2][7][8] |
+| Safe decentralized traffic | Each agent reaches its own destination while avoiding moving neighbors from local state | Agents only explore; collisions and destinations do not exist | Add per-agent destinations, occupancy conflicts, minimum separation, and local position/velocity broadcasts [77] |
 | Generalization | Held-out worlds and parameter combinations | 12 fixed public seeds | Private final seeds, hidden geometry parameters, post-event release [11][33][34] |
-| Scalability | Same policy across held-out team sizes | One public regime with 50-agent minimum | Evaluate 8, 32, and 128 agents without code changes [13][33][34] |
+| Scalability | Same policy across held-out traffic densities | One public regime with 50-agent minimum | Sweep density and population toward partner-approved simulation scales [13][77][78] |
 | Fault tolerance | Named failure modes and measured degradation | No failures | Drop agents; corrupt sensors; lose/delay messages; compare with healthy reduced swarm [13] |
 | Communication efficiency | Explicit channel capacity and ablations | Global shared object is unpriced | Bounded local messages and trails; score bits/writes; turn channels off [5] |
-| Role differentiation | Measured behavioral or contribution diversity | No role metric | Report state/trajectory/contribution diversity and role stability [9][10] |
+| Partner value | Higher safe traffic throughput on an accepted workload | Coverage score has no company mapping | Rank safe completed trips per minute and area against the partner baseline [77] |
 
-The correct engineering response is not a rewrite. Preserve the deterministic simulator, procedural generators, replay UX, policy editor, seeded RNG, and leaderboard shell. Replace the information contract, task suite, hidden evaluation protocol, and score. This is a benchmark redesign built on the existing artifact.
+The correct engineering response is not a rewrite, but it must wait for partner confirmation. Preserve the deterministic simulator, procedural generators, replay UX, policy editor, seeded RNG, and leaderboard shell. If CollMot validates the target, replace coverage with destination traffic, add collision physics and bounded neighbor broadcasts, and rank safe flow. A 2D grid is sufficient for outreach and a pre-partner prototype, not for claims about deployable 3D flight software.
 
 **Confidence: High.** The diagnosis comes directly from the repository's README and deterministic engine, and each limitation maps to a specific observable interface or evaluation rule. [33][34]
 
@@ -113,75 +115,50 @@ The correct engineering response is not a rewrite. Preserve the deterministic si
 
 ### 4.1 Name and claim
 
-**SWARM.FAIL — Decentralized Coordination Under Uncertainty**
+**SWARM.FAIL — Decentralized Drone Traffic Throughput**
 
 The defensible scientific claim is:
 
-> A single submitted policy can generate efficient, scalable, and fault-tolerant collective behavior from agents with partial observations and bounded local communication across unseen environments, team sizes, and failures.
+> A single local controller can increase the rate at which autonomous vehicles safely complete independent trips through constrained shared space, without a central traffic controller, across unseen densities, geometries, communication failures, and member failures.
 
-Do not claim general swarm intelligence from dots moving together. Do not claim emergent roles unless role measurements support it. Do not call a system decentralized if agents share global real-time state.
+The partner-facing result is TPS-like: **X% more collision-free arrivals per minute in the same airspace at the same safety threshold**. Do not promise X before the challenge runs, and do not claim physical-drone gains until the company validates finalists in its simulator or hardware.
 
 ### 4.2 Submission contract
 
 Each entrant submits one deterministic policy:
 
-`step(agentState, localObservation, localMemory, incomingMessages, rng) -> action, nextMemory, outgoingMessage, trailMark`
+`step(ownState, destination, localNeighbors, memory, incomingMessages, rng) -> desiredMotion, nextMemory, outgoingMessage`
 
-The evaluator clones it across every agent and team size. Legal inputs are fixed-radius task and geometry observations, private byte-limited memory, anonymous nearby occupancy, next-tick radius-limited messages, a local decaying trace field, and evaluator-seeded randomness. Illegal inputs include the global map, centrally assigned task lists, global writable state, others' private memory, stable execution-order information, network, filesystem, clock, or cross-episode persistence.
+The evaluator clones it across every drone. Each drone knows its own local motion state and assigned destination, senses or receives bounded neighbor state, and computes its motion onboard. It does not receive a global traffic map, centrally computed route, omniscient shared object, stable execution order, or other agents' private state. CollMot's published algorithm supplies the precedent: drones broadcast position, velocity, and destination to neighbors and locally combine conflict avoidance with sense-and-avoid behavior. [77]
 
-The v1 observation contract should close common side channels:
-
-| Field | Ranked coordination tasks |
+| Field | Candidate ranked contract |
 | --- | --- |
-| Geometry and task state | Relative, fixed-radius observations only |
-| Absolute coordinates and global tick | Hidden; otherwise entrants can pre-partition the world open-loop |
-| Agent identity | No stable numeric ID; private memory persists only within the episode |
-| Team size | Either hidden or explicitly varied as a declared ablation |
+| Own state and destination | Local position/velocity and independently assigned goal; representation must match the accepted simulator |
+| Neighbor state | Radius- and latency-bounded position/velocity broadcasts from local neighbors only |
+| Airspace | Local obstacle sensing; no global live traffic state or centrally assigned route |
+| Agent identity | No priority or capability advantage unless declared as a separate heterogeneous track |
 | Randomness | Independent evaluator-seeded stream per agent; no recoverable shared seed |
-| Execution order | Unobservable; actions and messages resolve simultaneously from a snapshot |
+| Execution | Actions and messages resolve from tick snapshots so policy order is unobservable |
+| Resources | Fixed motion, compute, message, and safety limits supplied or approved by the partner |
 
-Every optimized no-channel baseline receives exactly the same non-channel inputs. If a future accessibility track exposes global coordinates, label it **pre-coordinated decentralized control**, not online coordination.
-
-Messages should be deliberately small. Trails should have a write cost, local sensing radius, saturation cap, and decay. The 2024 stigmergy study is a direct warning: naive pheromone release can saturate the environment and trap the collective in its own signals. [5]
-
-Roles are legal when the swarm creates them. A policy may elect a temporary relay, scout, carrier, or coordinator using local interaction. Stable hard-coded IDs and centrally assigned jobs are not legal. An identical deterministic policy cannot break a perfectly symmetric state by magic; the evaluator should provide natural symmetry breakers such as different local observations, histories, spawn positions, or seeded local randomness, then measure whether specialization helps. [7][9][10]
+The public evaluator may include a centralized full-state planner as an ineligible reference, but the ranked track must execute locally. This is physical traffic coordination, not model routing: the submitted code continuously resolves collisions and shared-space conflicts among moving vehicles.
 
 ### 4.3 Task suite
 
-The smallest serious launch needs three task families plus failure conditions.
+The smallest serious launch needs one fixed workload with multiple strata, not three unrelated swarm games:
 
-**1. Explore — control task**
+1. **Open traffic:** independently assigned origin–destination trips in unobstructed shared airspace.
+2. **Constrained traffic:** the same task through corridors, apertures, or obstacle fields that create local congestion.
+3. **Degraded traffic:** packet loss, latency, stale neighbor state, vehicle dropout, and sensing noise.
+4. **Density sweep:** progressively more agents per unit area until safe flow saturates.
 
-Retain coverage to measure navigation efficiency and provide continuity with the current repo. It remains a control, not evidence of coordination. Publish results for the independent no-channel baseline alongside every policy.
+Every episode counts completed trips, time, minimum separation, collisions, path or energy overhead, and message bytes. The three existing map families can remain as visual development geometries, but the partner must decide whether they correspond to a useful operating regime. The official benchmark cannot claim product value from decorative caves and mazes alone.
 
-**2. Search and relay — information coordination**
-
-Targets are distributed across an unknown world. Discovering a target does not complete the mission. Its information must reach a base, receiver, or another subgroup through bounded messages or stigmergy. Obstacles and range limits force multi-hop relays and connectivity choices. This tests distributed perception, information transport, and dynamic allocation.
-
-**3. Collective transport — joint action**
-
-An object moves only when a threshold number of agents arrive, align, and act within a time window. Different objects may require different group sizes. This creates non-additive success: no independent agent can complete the core action. Collective transport is an established coordination task family in which success depends on joint action. [2][7][8]
-
-Before any generated mission enters the official suite, it must pass a **task-admission gate**:
-
-1. It contains partitioned information requiring a handoff, or a joint action whose time and place cannot be predetermined from shared initial information.
-2. A single agent is structurally unable to complete it.
-3. A separately optimized independent N-agent policy remains below a preregistered hidden success ceiling.
-4. A legal decentralized baseline clears a higher success floor.
-5. Any generated instance that fails these controls is discarded before final scoring.
-
-For search-and-relay, the receiver deadline or topology must force a multi-hop handoff rather than allow one agent to discover and return alone. For transport, the required rendezvous fact should be hidden until runtime so independent agents cannot merely meet at a fixed known point.
-
-Two extensions can be conditions rather than separate engines:
-
-- **Distributed unlock:** separated agents observe different clues or must activate distant switches together, requiring information pooling and synchronization.
-- **Recovery:** during any core mission, agents disappear, become stationary obstacles, lose communication, or emit stale messages; the population must reallocate work without a leader.
-
-Later versions can add connectivity-preserving exploration, distributed shape formation, collective mapping, and unfamiliar-policy cross-play. Recent work demonstrates local negotiation for shape assembly and dynamic information propagation through a swarm. [6][7]
+The existing Lévy-flight and exploration policies remain in a **legacy playground**. They provide continuity and teach submissions, but they are not meaningful traffic baselines because they do not have destinations or collision avoidance.
 
 ### 4.4 Hidden evaluation
 
-Publish the generator API and a small development suite. Keep final seeds and parameter combinations private until submissions freeze. Evaluate multiple geometry families, team sizes such as 8, 32, and 128, randomized spawns, 0%/10%/30% dropout, message loss and delay, sensor noise, and unseen parameter combinations.
+Publish the dynamics and generator API plus a small development suite. Keep final origin–destination distributions, densities, obstacle layouts, delays, packet loss, failures, and parameter combinations private until submissions freeze. Include the partner reference controller only when licensing permits it; otherwise publish a reproducible baseline supplied or approved by the partner.
 
 SMACv2 provides the key methodological precedent. Its predecessor allowed non-trivial performance from a policy conditioned only on time, so the revised benchmark added procedural unseen scenarios and meaningful partial observability to require closed-loop behavior. [11] SWARM.FAIL should include the same diagnostic: a time-only or open-loop policy must fail the meaningful tasks.
 
@@ -193,11 +170,11 @@ Use seasons to reconcile hidden evaluation with an open leaderboard:
 - Yukon releases the suite, hashes, raw results, validator version, and replays with the final results.
 - The next season uses a fresh generator key and parameter holdout.
 
-The website must label **development score** and **official season result** separately. This preserves both generalization during competition and reproducibility afterward.
+The website must label **development score**, **official simulation result**, and any **partner-validated physical result** separately. This prevents a fast 2D policy from being presented as production drone software.
 
-**Confidence: High on the contract and task principles; Medium on exact numerical budgets.** The architecture follows strong recent evidence, while message sizes, memory limits, team sizes, and task weights require pilot calibration with baselines.
+**Confidence: High that safe decentralized traffic is a measurable swarm problem; Medium that CollMot will adopt the challenge; Low on the exact vehicle model until a company review.** The metric and physical precedent are published, but no company has approved Yukon's abstraction. [77][78]
 
-**Counter-claim:** Requiring one identical policy may suppress useful heterogeneous specialization. The compromise is a common controller with private state and locally generated roles. If pilots show the restriction is scientifically distorting, add a separate heterogeneous-policy track rather than silently mixing it into the flagship result. [9][10][25]
+**Counter-claim:** This is “just routing.” It is not model routing or a centralized route solver: every moving vehicle continuously reacts to local neighbors and resolves shared physical safety constraints onboard. It is nevertheless narrower than general collective intelligence, which is a strength for a partner challenge.
 
 ## 5. Scoring, Baselines, and Scientific Controls
 
@@ -205,22 +182,23 @@ The website must label **development score** and **official season result** sepa
 
 Use a preregistered lexicographic contract instead of arbitrary weighted sums:
 
-1. **Eligibility:** clear the minimum success rate in every task × team-size × failure stratum.
-2. **Headline rank:** lower P90 normalized agent-steps across eligible episodes.
-3. **Tie-breakers:** lower communication bits, then trail writes, then policy compute.
+1. **Safety eligibility:** zero collisions and no minimum-separation violation beyond the partner-approved tolerance in every required stratum.
+2. **Reliability eligibility:** clear the minimum destination-completion rate under every density and failure stratum.
+3. **Headline rank:** higher P10 safe completed trips per simulated minute and unit area; P10 rewards controllers that remain useful in their worst conditions.
+4. **Tie-breakers:** lower path or energy overhead, then lower communication bytes, then lower policy compute.
 
-Messages, trails, memory, and compute receive hard per-episode budgets. Lower wins. The published P90 work cost remains the one headline number, while the gate prevents an excellent average from hiding a catastrophic failure bucket. Before launch, baseline pilots must preregister normalization denominators and confirm that plausible budget changes do not reorder the top policies materially.
+Motion, messages, memory, and compute receive hard budgets. The safety gate prevents a controller from “winning” by flying dangerously close; the lower-tail throughput score prevents a great average from hiding collapse in dense or degraded conditions. The partner must approve the safety envelope and normalization before launch.
 
 The site should expose:
 
-- mission success;
-- agent-steps or energy proxy;
-- elapsed simulation steps;
-- message bits and trail writes;
-- scaling curve across team sizes;
+- completed and failed trips;
+- safe traffic throughput;
+- collision and minimum-separation events;
+- path length or energy proxy;
+- message bytes and stale-message rate;
+- throughput curve across traffic densities;
 - degradation and recovery under each failure mode;
-- role or trajectory diversity;
-- channel-ablation deltas.
+- centralized-oracle gap and no-communication ablation.
 
 Swarm traits must be reported conditionally. The Swarm Performance Indicators work shows why: robustness, fault tolerance, scalability, and adaptability are not automatic consequences of distributed control. They must be tested for named failure modes and parameter ranges. Its fault-tolerance comparison distinguishes a failed swarm from a healthy swarm with the same number of agents removed, revealing whether broken agents actively harm neighbors. [13]
 
@@ -228,17 +206,16 @@ Swarm traits must be reported conditionally. The Swarm Performance Indicators wo
 
 Every release needs these controls:
 
-1. **Single agent:** establishes whether the task is individually solvable.
-2. **Matched channel ablation:** the ranked policy rerun with messages, trails, and neighbor sensing disabled.
-3. **Optimized independent population:** a separately tuned policy with the same compute, memory, observations, and agent count but no inter-agent signals.
-4. **Random/reactive local policy:** a minimal sanity floor.
-5. **Current Lévy-style exploration policy:** continuity with the existing artifact.
-6. **Strong handwritten decentralized policy:** establishes a serious non-learning baseline.
-7. **Open-loop/time-only policy:** detects fixed-instance exploitation, following the SMACv2 lesson. [11]
-8. **Centralized full-state oracle:** an explicitly ineligible upper bound.
-9. **Additional ablations:** memory off and dropout on.
+1. **Straight-to-goal:** ignores other agents; establishes uncongested speed and collision failure.
+2. **Reactive sense-and-avoid:** a simple local safety baseline.
+3. **Published decentralized traffic baseline:** supplied or approved by the partner; CollMot's paper is the reference family, not permission to copy closed product code. [77]
+4. **No-communication ablation:** rerun each controller without neighbor broadcasts.
+5. **Open-loop/time-only policy:** detects fixed-instance exploitation, following the SMACv2 lesson. [11]
+6. **Centralized full-state oracle:** explicitly ineligible upper bound.
+7. **Failure ablations:** packet loss, latency, stale state, disabled agents, and sensing noise.
+8. **Legacy exploration baselines:** Lévy flight and trail policies remain visible in the playground but do not enter the traffic ranking.
 
-The central scientific statistic is **coordination gain**: the difference between a ranked policy and the stronger of the optimized independent baselines on held-out tasks that require joint behavior. The matched ablation diagnoses channel dependence but cannot define the baseline by itself. More agents beating one agent is not enough.
+The central partner statistic is **safe throughput gain** over the accepted decentralized reference controller at the same safety threshold. Coordination diagnostics remain important, but the headline must describe a product outcome the company can use.
 
 Unfamiliar-partner cross-play is not part of v1. If Yukon later adds it, ZSC-Eval shows that the held-out partner population must be behaviorally diverse rather than a narrow self-play pool. [12]
 
@@ -250,61 +227,57 @@ The current same-tick ordered `env.shared` behavior must disappear because it pe
 
 ### 5.4 Hero artifact
 
-The homepage should render two synchronized replays on the same hidden world:
+The homepage should render two synchronized traffic replays on the same hidden scenario:
 
 - the entrant policy;
-- the strongest independent-agent baseline.
+- the accepted decentralized reference controller.
 
-Viewers can toggle messages and trails, kill 20% of the population, and change team size. The replay shows local observations, message hops, trail decay, temporary roles, mission completion, work, and communication cost. The story becomes visually undeniable: the population keeps solving a task when no member has the whole answer.
+Viewers can toggle neighbor broadcasts, add packet loss, disable vehicles, and change density. The replay shows destinations, projected conflicts, minimum separation, arrivals, failures, and live safe-throughput counters. The story becomes visible: more vehicles pass through the same constrained space without collisions or a central traffic brain.
 
 **Confidence: Medium-High.** The control structure and metric categories are well supported; final weights and thresholds need calibration against pilot submissions.
 
-**Counter-claim:** Even a success-gated P90 score can hide tradeoffs. Publish every stratum, budget, ablation, and failure curve so the headline cannot conceal a brittle specialist.
+**Counter-claim:** Even collision-gated lower-tail throughput can hide tradeoffs. Publish every density, failure, resource, and safety stratum so the headline cannot conceal a brittle specialist.
 
 ## 6. Tier-1 Partnership Strategy
 
 ### 6.1 Recommended target coalition
 
-**Recommended problem-owner target: NASA/JPL CADRE**
+**Recommended company target: CollMot Robotics**
 
-CADRE is the closest public mission analogue for distributed exploration, mesh communication, and joint sensing under limited Earth intervention. Its planned autonomous rovers are designed to spread out, explore terrain, and combine measurements. [17][18] The official JPL project page publishes principal investigator Jean-Pierre de la Croix and project manager Subha Comandur; the PI's public address is `Jean-Pierre.de.la.Croix@jpl.nasa.gov`. This is a contact for outreach only—no partnership, endorsement, or branding permission is implied. [18]
+CollMot is the strongest current combination of exact swarm fit and practical reachability. Its `flockctrl` framework runs onboard swarm management, Skybrush exposes open and extensible fleet infrastructure, its industrial page explicitly invites large-scale product partnerships, and its decentralized traffic research has been tested with 100 real drones and 5,000 simulated drones. [65][76][77][78][79]
 
-CADRE should validate the **mission problem**, not be presented as the exact benchmark architecture. Its published planning, scheduling, and execution system elects one leader to plan centrally and then distributes execution across the rovers. [37] That is a resilient hybrid architecture, whereas the proposed challenge asks whether a population can coordinate from local state without a preinstalled global planner. The distinction makes Jean-Pierre the right person for mission constraints and Amanda Prorok the better first reviewer for the strict decentralized contract.
+The ask is not “please endorse our swarm game.” It is:
 
-The JPL ask should be deliberately small and follow an initial academic-specification review:
+- confirm whether safe traffic throughput is a useful product bottleneck;
+- provide or approve vehicle dynamics, safety thresholds, scenario distributions, and a reproducible baseline;
+- review two benchmark specifications;
+- validate finalists in CollMot's simulator or on a small physical fleet if results justify it;
+- permit product and company naming only under a written agreement.
 
-- a 30-minute technical fit call;
-- confirmation that the abstracted task families reflect real distributed exploration failures;
-- one advisor for two benchmark-design reviews;
-- permission to say "inspired by CADRE-like distributed exploration" only if approved;
-- no request for flight software, private telemetry, or formal sponsorship.
+CollMot publishes `info@collmot.com`, Gábor Vásárhelyi's direct industrial-partnership phone, and his academic address. [78][80] This makes the route materially more practical than beginning with NASA.
 
-**Academic co-designer: Amanda Prorok's Cambridge lab**
+**Independent academic validator: Sabine Hauert's Bristol group**
 
-The Prorok Lab is the strongest fit for scientific design. Its public research explicitly covers decentralized coordination from local observations, learned communication, resilience, role emergence, physical transfer, and open benchmark tooling. [25] The lab should be asked to review the observation/action contract, coordination baselines, hidden generalization design, and role metrics, and to coauthor a post-challenge technical report.
-
-A global scan does not make Cambridge the only credible target. Bristol's Sabine Hauert and TU Darmstadt's Roderich Groß are equally serious first-wave contacts for strict swarm engineering, robustness, verification, local-rule design, and scale. [43][44] Cambridge remains the best first call for a learned-policy benchmark; Bristol and TU Darmstadt close gaps that Cambridge alone should not be expected to cover.
-
-If both targets agree to participate, the pair would clear both halves of Yukon's legitimacy bar: a mission-grade problem analogue and independent benchmark rigor.
+Bristol should review whether the benchmark measures safe task performance, robustness, fault tolerance, scalability, and adaptability separately. [13][43] Cambridge is the stronger second reviewer if the track includes learned controllers and simulation-to-hardware transfer. [25] The company owns the problem; the university validates the measurement.
 
 ### 6.2 Outreach order: fit versus feasibility
 
 | Outreach order | Target | Scientific fit | Near-term feasibility | Status and proposed role |
 | ---: | --- | --- | --- | --- |
-| 1 | Cambridge Prorok Lab | Very high: local policies, communication, resilience, roles, benchmarks [25] | High relative to mission institutions | **Uncontacted.** First co-design outreach; review the spec before mission pitching |
-| 2 | Bristol Hauert Lab | Very high: strict swarm engineering, resilience, verification, performance indicators [13][43] | High relative to mission institutions | **Uncontacted.** First-wave scientific validation |
-| 3 | TU Darmstadt RCPS | Very high: self-organization, distributed robotics, local rules, scalable systems [8][44] | High relative to mission institutions | **Uncontacted.** First-wave algorithms and scale review |
-| 4 | NASA/JPL CADRE | Very high mission analogue; hybrid rather than strictly decentralized architecture [17][18][37] | Medium-low: institutional, brand, and IP process | **Uncontacted stretch target.** Problem validator, not a claimed partner |
-| 5 | NASA Ames Starling/DSA | Very high: distributed planning, networking, recovery, scaling rationale [14][15][16] | Medium-low | **Uncontacted alternative mission advisor** |
-| 6 | Princeton, Cornell, or EPFL | Very high current swarm depth [45][46][47] | Medium | Second academic wave if first-wave appetite is weak or a specialist is needed |
-| 7 | Google DeepMind + CAIF | High for a separate digital-population lane [19][20][22] | Medium; $10M application deadline has passed | Not v1; later research-alignment conversation |
-| 8 | ARIA Scaling Trust | High, but its programme already includes a planned arena [21] | Low for a duplicate challenge | Complementary niche only |
-| 9 | Shield AI | High technical fit in denied environments [27] | Low public-benchmark feasibility | Later synthetic/non-sensitive discussion |
-| 10 | NVIDIA or Amazon Robotics | Infrastructure or centralized reference value; weak strict-swarm problem ownership [23][24][26] | Medium | Sponsor/reference only, not scientific lead |
+| 1 | CollMot Robotics / Gábor Vásárhelyi | Exact: decentralized physical drone traffic, open integration surface, published throughput metric [65][76][77][78] | High: direct industrial-partnership route | **Uncontacted.** Validate the workload and baseline before code redesign |
+| 2 | BotLab Dynamics / Tanmay Bunkar | High physical-fleet relevance and India proximity; strict decentralization unverified [68][81] | High: Delhi team, public business email and phones | **Uncontacted.** Hardware/scale conversation, not scientific lead yet |
+| 3 | Bristol Hauert Lab | Exact metric validation for robustness, fault tolerance, scalability, adaptability [13][43] | High relative to large companies | **Uncontacted.** Independent protocol reviewer after company fit call |
+| 4 | Palladyne SwarmOS / Denis Garagić | Exact decentralized feature-sharing and degraded-communications problem [66] | Medium: public product inquiry; defense constraints | Alternative company problem owner |
+| 5 | Auterion Nemyx / Lorenz Meier | Strong deployed swarm product and drone ecosystem [67][83] | Medium: Nemyx inquiry route; defense-heavy | Alternative if it will expose a non-sensitive workload |
+| 6 | NewSpace Research | Exact heterogeneous self-healing swarms and India proximity [69] | Medium-low: public footprint but no open benchmark route found | Warm-introduction target only |
+| 7 | Swarmer or Swarm Defense | Exact autonomy/swarm products [70][71] | Medium-low: defense-heavy, closed workload | Later alternatives |
+| 8 | Rapyuta Robotics | Best TPS-style KPI—warehouse throughput—and distributed multi-robot depth [73][74] | Medium | Separate multi-robot challenge if Yukon relaxes the strict-swarm thesis |
+| 9 | Exyn | Valuable mapping-throughput problem [75] | Medium | Adjacent exploration target; strict swarm fit unproven |
+| 10 | NASA/JPL | Strong reference, poor first-contact feasibility [14][17][18] | Low | Literature and mission reference, not launch dependency |
 
 ### 6.3 Global academic landscape
 
-The scan covered 22 current groups across four regions. The bands below rank **fit for this challenge**, not university prestige or general robotics quality.
+The scan covered 22 current groups across four regions. For the traffic-specific v1, Bristol is the primary metric validator, Cambridge is the learned-controller specialist, and TU Darmstadt is the local-rule fallback. The remaining groups are a broader future swarm-programme map. The bands rank technical fit, not university prestige or general robotics quality.
 
 | Fit band | Institution and lead | Current state-of-the-art relevance | Best role for SWARM.FAIL |
 | --- | --- | --- | --- |
@@ -347,7 +320,7 @@ DeepMind and CAIF fund the relevant science—population emergence, unfamiliar a
 
 **Confidence: High on scientific fit; Medium on partnership feasibility.** The problem ownership and research programmes are public. None of the sources confirms that these institutions have agreed to a Yukon partnership.
 
-**Counter-claim:** A smaller commercial robotics company may move faster than NASA or Cambridge. Speed alone does not satisfy the pattern established by Yukon's strongest challenges. Use smaller companies for pilots only if a Tier-1 scientific validator remains attached.
+**Counter-claim:** CollMot is not a household-name institution. That matters less than exact problem ownership: a reachable company with physical evidence, an open integration surface, and a measurable bottleneck is more useful than a famous institution that never participates. Independent academic review still prevents the partnership from becoming self-certified marketing.
 
 ## 7. Why This Matches the Yukon Challenge Model
 
@@ -364,18 +337,18 @@ The partner supplies the target, reference point, validation authority, or workl
 
 SWARM.FAIL can follow the same structure:
 
-- **Frontier objective:** coordination gain under local information, bounded communication, unseen worlds, and failures.
-- **Problem-owner target:** CADRE/JPL or NASA Ames, subject to written alignment.
-- **Academic-validator target:** one primary lab selected from Cambridge, Bristol, and TU Darmstadt after technical review, subject to agreement.
-- **Auditable metric:** success-gated normalized work and communication cost.
-- **Reference points:** independent-agent baseline, strong decentralized baseline, and centralized oracle.
-- **Hero artifact:** interactive side-by-side failure and ablation replays.
+- **Frontier objective:** increase decentralized drone traffic flow without violating collision safety.
+- **Company target:** CollMot Robotics, subject to written alignment.
+- **Academic-validator target:** Bristol first for swarm performance metrics; Cambridge if learned policies enter the track.
+- **Auditable metric:** collision-gated completed trips per minute and unit area.
+- **Reference points:** partner-approved decentralized baseline, no-communication controller, and centralized oracle.
+- **Hero artifact:** synchronized traffic replays showing destinations, conflicts, failures, and live throughput.
 
 Launch only when a problem owner names the real failure, an external academic reviewer approves the protocol, hidden evaluation defeats overfitting baselines, and the replay makes the claim visible.
 
 **Confidence: High.** The challenge pages consistently show named targets, validators, and partners, and the current repo already contains the visual and deterministic foundation. [28][29][30][31][32][33][34]
 
-**Counter-claim:** ECDSA.fail demonstrates that a project can be meaningful without a formal company partner for every external reference. Correct; the invariant is credible field ownership and a recognized target, not identical commercial structure. SWARM.FAIL still needs stronger scientific validation because "coordination" is easier to claim loosely than a circuit size or measured throughput.
+**Counter-claim:** ECDSA.fail demonstrates that a project can be meaningful without a formal company partner for every external reference. Correct; the invariant is credible field ownership and a recognized target. However, a company-approved traffic workload is what turns SWARM.FAIL from a generic swarm game into a result comparable to Lighter TPS or MLX.fast latency.
 
 ## 8. Outreach Plan and Exact Message
 
@@ -383,41 +356,41 @@ No partnership, endorsement, or advisory relationship has been established with 
 
 ### 8.1 Sequence
 
-**Days 1-5:** assign one engineering owner and one partnerships owner. Prepare a two-page brief containing the current replay, diagnosis, strict contract, two coupled task prototypes, baselines, and one CADRE-like scenario. Do not announce a challenge or prize.
+**Days 1-3:** prepare a two-page CollMot brief with the current replay, the proposed safe-traffic metric, a 2D destination-and-collision mockup, and the exact data needed from a partner. Do not implement the full benchmark or announce a prize.
 
-**Days 3-8:** send distinct first-wave notes to Cambridge, Bristol, and TU Darmstadt. Ask Cambridge about learned-policy and benchmark controls, Bristol about strict-swarm metrics and verification, and TU Darmstadt about local rules, scale, and emergence. Use the strongest response to select one primary academic co-designer and at most one specialist reviewer.
+**Days 2-5:** contact Gábor Vásárhelyi through CollMot's published industrial-partnership route. In parallel, contact BotLab Dynamics for an India-based physical-fleet conversation. Do not describe either as a partner.
 
-**Days 6-12:** contact JPL and NASA Ames for problem validation using the reviewed abstraction. Ask which public, non-mission-specific failures are consequential; do not ask for flight code, telemetry, endorsement, or branding.
+**Days 5-10:** if a company validates the bottleneck, ask Bristol to review the safety gate, throughput metric, scaling curve, and fault tests. Add Cambridge only if learned controllers or sim-to-real transfer are in scope.
 
-**Days 6-20:** remove global memory in a benchmark branch, add snapshot messages, build search-and-relay and collective-transport, implement seasonal holdouts, and preserve the existing UX.
+**Days 10-20:** only after written technical interest, remove global memory in a benchmark branch, add per-agent destinations, collisions, local broadcasts, traffic density sweeps, and hidden conditions while preserving the legacy exploration playground.
 
-**Days 21-27:** run optimized independent, decentralized, open-loop, and centralized-oracle baselines plus a closed adversarial audit for side channels and unstable rankings.
+**Days 21-27:** run straight-to-goal, reactive local, partner-approved decentralized, no-communication, and centralized-oracle baselines plus a closed safety audit.
 
 **Days 28-30:** make a go/no-go decision. Do not fund a prize or announce a partner until the scientific and partnership gates pass.
 
-### 8.2 JPL outreach draft
+### 8.2 CollMot outreach draft
 
-**Subject:** An open benchmark for CADRE-like resilient multi-robot coordination
+**Subject:** Can Yukon turn CollMot's decentralized drone-traffic problem into an open optimization challenge?
 
-> Jean-Pierre — Yukon builds public technical challenges around consequential frontier problems. We have a working deterministic simulator where one policy is cloned across a population of agents in unknown terrain. We are redesigning it as a rigorous benchmark for decentralized coordination: local observations only, bounded mesh communication, hidden terrain, changing team sizes, node loss, and missions requiring joint sensing and information relay.
+> Gábor — Yukon builds public optimization challenges around a real company's technical bottleneck. We have a playable deterministic swarm simulator, but we do not want to launch another generic robotics game. Your published decentralized traffic work gives us a much sharper candidate: maximize collision-free arrivals through constrained shared airspace while every vehicle decides onboard from local neighbor broadcasts.
 >
-> CADRE is the clearest real mission analogue we have found. We are not asking for flight code, telemetry, endorsement, or procurement. We would value a 30-minute technical conversation on whether our abstract tasks capture the real coordination failures: maintaining useful connectivity while exploring, combining measurements no rover can produce alone, and recovering from rover or link loss.
+> The public result would look like an optimization benchmark: X% more safe trips per minute at the same density and safety threshold, tested across unseen traffic patterns, packet loss, latency, and vehicle failures. We would build and operate the evaluator and replay experience.
 >
-> If the fit is real, the smallest follow-up would be two advisory reviews of a public, non-proprietary benchmark specification. Yukon would build and operate the challenge.
+> The immediate ask is a 30-minute fit call: is this a useful CollMot/Skybrush/FlockCtrl bottleneck, which non-sensitive dynamics and safety limits would make the simulator credible, and could a winning controller eventually be checked in your simulator or on a small fleet? We are not asking for closed code or permission to use the CollMot name before an agreement.
 
-### 8.3 Cambridge outreach draft
+### 8.3 Bristol outreach draft
 
-**Subject:** Co-designing a benchmark for decentralized swarm coordination
+**Subject:** Independent review of a safe-throughput benchmark for decentralized drone traffic
 
-> Amanda — we have a playable multi-agent simulator and are converting it from parallel coverage into a science-grade decentralized coordination challenge. Entrants submit one controller cloned across varying swarm sizes. Every agent has local observations, private memory, bounded neighbor messages, and stigmergy; there is no global state or leader. Hidden worlds, unfamiliar conditions, and failures test generalization.
+> Sabine — Yukon is exploring a company-backed challenge for decentralized drone traffic. A single local controller runs onboard every simulated vehicle. The safety gate is collision and minimum separation; the headline metric is completed trips per minute and unit area under held-out density, packet loss, latency, and failures.
 >
-> We would like the Prorok Lab to help define the benchmark controls: tasks that truly require coordination, the independent-population and centralized-oracle baselines, communication ablations, role-diversity measures, and held-out team-size tests. Our proposed mission analogue and first problem-owner target is NASA/JPL CADRE, giving the benchmark a real distributed-exploration reference rather than a generic multi-agent story.
+> We would value a review of whether the protocol measures task throughput, robustness, fault tolerance, scalability, and adaptability without letting a dangerous or brittle controller win. We are contacting the company problem owner first; this note would follow only if that company confirms the bottleneck.
 >
-> The immediate ask is a technical review call and, if aligned, two specification reviews plus a possible post-challenge technical report.
+> The immediate ask would be one technical call and, if aligned, two specification reviews. Yukon would build and operate the challenge.
 
 ### 8.4 Founder pitch
 
-> Today, swarm.fail is a beautiful deterministic multi-agent exploration game. The opportunity is to make it the public benchmark for decentralized collective intelligence. A contestant writes one policy; we clone it into swarms of different sizes; no agent sees the whole world; communication is local and expensive; maps, teammates, and failures change. The swarm must complete missions no independent population can solve—relay discoveries, synchronize actions, allocate roles, and recover when members disappear. With a mission partner such as JPL and an academic co-designer such as Cambridge, Yukon could turn every verified improvement into a playable public artifact. We are not benchmarking model routing. We are benchmarking whether intelligence can coordinate when there is no preinstalled boss and no shared brain.
+> Today, swarm.fail is a polished exploration game without a company outcome. The company-first version targets a number that matters: safe decentralized drone traffic throughput. A contestant writes one local controller and we clone it across hundreds or thousands of vehicles with independent destinations. There is no central traffic brain. Hidden traffic patterns, congestion, packet loss, and failures test whether the controller can move more drones through the same space without violating safety. If CollMot validates the workload and Bristol validates the measurement, Yukon can publish results like “the winning controller raised collision-free arrivals per minute by X% at the same density and safety threshold.” That is the swarm equivalent of improving proving TPS or model latency.
 
 **Confidence: Medium.** The sequence and messages are recommendations. Partner interest and institutional timelines remain unverified.
 
@@ -429,10 +402,10 @@ Approve a **30-day capped pilot**, not a public launch: at most 20 engineering d
 
 Go forward only if all four gates pass:
 
-1. An external academic reviewer validates the execution contract and task-admission tests.
-2. A legal decentralized baseline beats the optimized independent population on hidden coupled tasks.
-3. The seasonal validator survives an adversarial audit and produces stable rankings.
-4. At least one credible problem owner confirms in writing that the abstraction represents a consequential coordination problem.
+1. A swarm company confirms in writing that safe traffic throughput is a useful bottleneck and approves a non-sensitive workload.
+2. An external academic reviewer validates the safety, robustness, scalability, and fault metrics.
+3. The validator survives an adversarial audit and produces stable rankings across hidden traffic distributions.
+4. The partner supplies or approves a baseline and a path to simulator or small-fleet validation.
 
 If a gate fails, keep the current site as a multi-agent exploration demo and stop additional challenge investment. Decide prize size, launch budget, and distribution commitments only after the pilot establishes a real frontier and partner appetite.
 
@@ -442,19 +415,22 @@ These are public professional channels verified on 2026-08-13. No address was in
 
 | Priority | Person | Why this person | Verified public channels | First ask |
 | ---: | --- | --- | --- | --- |
-| 1 | **Amanda Prorok**, Professor of Collective Intelligence and Robotics, University of Cambridge [35] | Best first scientific reviewer for local observations, decentralized communication, resilience, role metrics, and benchmark controls | [`asp45@cam.ac.uk`](mailto:asp45@cam.ac.uk); [Cambridge/lab profile](https://www.proroklab.org/people/amanda-prorok/); [LinkedIn](https://uk.linkedin.com/in/aprorok); [Google Scholar](https://scholar.google.com/citations?user=o7xMDgEAAAAJ); [lab GitHub](https://github.com/proroklab) | A 30-minute specification review, followed only if aligned by two benchmark-design reviews |
-| 2 | **Sabine Hauert**, Professor of Swarm Engineering, University of Bristol [43] | Exact strict-swarm fit: robustness, trustworthy swarm systems, performance indicators, verification, and logistics | [`sabine.hauert@bristol.ac.uk`](mailto:sabine.hauert@bristol.ac.uk); [Bristol profile](https://www.bristol.ac.uk/person/Sabine-Hauert-f714ce91-f09a-47e1-b573-f4e120cac448/) | Review whether the tasks and score prove useful swarm coordination, resilience, and scalability |
-| 3 | **Roderich Groß**, Head of Resilient Cyber-Physical Systems, TU Darmstadt [44] | Exact local-rule and self-organization fit, with current swarm/modular robotics and GenSwarm work | [TU Darmstadt profile](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/team_menu_rcps/team_details_135744.en.jsp); [RCPS lab](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/index.en.jsp) | Review identical-policy execution, symmetry breaking, scalability, and the boundary between swarm and centralized control |
-| 4 | **Jean-Pierre de la Croix**, Group Leader, JPL Multi-Agent Robotics; CADRE principal investigator [18][36] | Best mission-constraint reviewer for joint sensing, exploration, connectivity, and rover/link failure; CADRE itself uses centralized planning with distributed execution [37] | [`Jean-Pierre.de.la.Croix@jpl.nasa.gov`](mailto:Jean-Pierre.de.la.Croix@jpl.nasa.gov); [JPL profile](https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/); [LinkedIn](https://www.linkedin.com/in/ajpldelacroix) | Whether the public, non-mission-specific task abstractions represent consequential multi-rover failures |
-| 5 | **Caleb Adams**, NASA Ames Distributed Spacecraft Autonomy project manager [16][39] | Direct programme route for distributed task allocation, ad-hoc networking, human-swarm interaction, and Starling flight-test lessons | [`caleb.a.adams@nasa.gov`](mailto:caleb.a.adams@nasa.gov) [40]; [NASA DSA profile](https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/); [LinkedIn](https://www.linkedin.com/in/caleb-adams-75433168) | Which scale, communication, and failure measures matter in real distributed-spacecraft autonomy, plus the right NASA technical referral |
-| 6 | **Jeremy Frank**, NASA Ames Planning and Scheduling Group Lead and Program Element Manager [41] | Strong technical reviewer for distributed planning, execution, fault handling, and task design; coauthor of NASA's 2026 swarm report [14] | [NASA profile](https://www.nasa.gov/people/jeremy-frank/); [LinkedIn](https://www.linkedin.com/in/jeremy-frank-62141bb3) | Prefer an introduction through Caleb; ask whether the task-admission and failure tests reflect real autonomous mission planning |
-| 7 | **Subha Comandur**, JPL researcher and CADRE project manager [18][38] | Operational and institutional route if the technical fit with CADRE is established | [`Subha.Comandur@jpl.nasa.gov`](mailto:Subha.Comandur@jpl.nasa.gov); [JPL profile](https://www.jpl.nasa.gov/site/research/comandur/) | After Jean-Pierre replies or redirects: the smallest viable public collaboration and approval path |
-| 8 | **Trey Smith**, NASA Ames Intelligent Robotics Group [14][42] | Optional robotics/testbed reviewer with multi-robot architecture, uncertain planning, and human-robot systems experience | [`trey.smith@nasa.gov`](mailto:trey.smith@nasa.gov); [professional profile](https://longhorizon.org/trey/); [LinkedIn](https://www.linkedin.com/in/trey-smith-robotics) | Whether the simulator's coupled tasks and replays can transfer credibly to physical multi-robot testbeds |
+| 1 | **Gábor Vásárhelyi**, CollMot Robotics executive officer and ELTE swarm researcher [78][80] | Owns the closest published company problem: decentralized aerial traffic with safe-flow measurements and physical swarm validation | [`info@collmot.com`](mailto:info@collmot.com); [`vasarhelyi@hal.elte.hu`](mailto:vasarhelyi@hal.elte.hu); industrial partnerships `+36-20-992-8356`; [traffic profile](https://hal.elte.hu/~vasarhelyi/en/projects/traffic/) | Validate the bottleneck, metric, simulator contract, baseline, and hardware-validation path |
+| 2 | **Tanmay Bunkar**, CEO and co-founder, BotLab Dynamics [68][81] | Reachable India-based operator with large physical drone fleets and in-house software; useful scale/deployment reality check | [`business@botlabdynamics.com`](mailto:business@botlabdynamics.com); `+91 9205492800`; `+91 7042284012`; [company profile](https://www.botlabdynamics.com/about-us) | Whether safe decentralized traffic or formation-transition throughput is a useful fleet bottleneck |
+| 3 | **Sabine Hauert**, Professor of Swarm Engineering, University of Bristol [13][43] | Best independent reviewer for safety-adjacent performance, robustness, fault tolerance, scalability, and adaptability | [`sabine.hauert@bristol.ac.uk`](mailto:sabine.hauert@bristol.ac.uk); [Bristol profile](https://www.bristol.ac.uk/person/Sabine-Hauert-f714ce91-f09a-47e1-b573-f4e120cac448/) | Review the company-approved score and failure protocol |
+| 4 | **Denis Garagić**, CTO and co-founder, Palladyne AI [66][82] | Owns SwarmOS's decentralized feature-sharing, dynamic role assignment, and degraded-communications thesis | [official profile](https://www.palladyneai.com/about-palladyne-ai/dr-denis-garagic/); [product inquiry](https://www.palladyneai.com/contact-us/) | Whether a non-sensitive communication-efficient swarm workload can be opened |
+| 5 | **Lorenz Meier**, CEO and co-founder, Auterion [67][83] | Owns an operational swarm product and a large deployed AuterionOS/Skynode ecosystem | [leadership profile](https://auterion.com/company/); [Nemyx inquiry](https://auterion.com/product/nemyx/) | Whether Auterion will define a non-sensitive swarm-throughput or resilience target |
+| 6 | **Amanda Prorok**, Professor of Collective Intelligence and Robotics, University of Cambridge [25][35] | Best learned-controller and sim-to-real reviewer if the company-approved track permits learned policies | [`asp45@cam.ac.uk`](mailto:asp45@cam.ac.uk); [lab profile](https://www.proroklab.org/people/amanda-prorok/); [lab GitHub](https://github.com/proroklab) | Review local policy inputs, communication, hidden tests, and transfer only after company validation |
+| 7 | **Roderich Groß**, Head of Resilient Cyber-Physical Systems, TU Darmstadt [44] | Strong fallback reviewer for local rules, self-organization, and scaling | [TU Darmstadt profile](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/team_menu_rcps/team_details_135744.en.jsp); [RCPS lab](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/index.en.jsp) | Review execution-time decentralization and scale if Bristol is unavailable |
 
-**Contact sequence:** send tailored messages to Amanda, Sabine, and Roderich in the same first week; this is a three-person scientific comparison, not a mass email. Select one primary co-designer and at most one specialist reviewer from the responses. Then send the reviewed brief to Jean-Pierre and Caleb. Use Jeremy, Subha, and Trey as targeted follow-ups. Follow up once after seven days. Do not use any institution or lab logo until written permission exists.
+**Contact sequence:** contact Gábor first and Tanmay second. Do not approach universities with a generic swarm thesis. If either company validates a concrete bottleneck, take that exact workload to Sabine; add Amanda only for learned-policy or sim-to-real questions. Follow up once after seven days. Do not use any company, institution, product, or lab logo until written permission exists.
 
 ## 9. Key Controversies and Counter-Review
 
+- **Reachable versus prestigious:** CollMot is smaller than NASA but owns a more directly accessible controller, metric, integration surface, and industrial-partnership route. Reachability does not prove partnership appetite; it only makes a real fit test possible. [65][76][77][80]
+- **Company product versus academic paper:** CollMot's traffic research is public, while `flockctrl` is closed and Skybrush includes central monitoring infrastructure. The challenge may optimize a decentralized onboard controller, not claim the entire product stack is leaderless. [65][76][77]
+- **Simulation versus deployable flight code:** better 2D safe-flow scores do not establish 3D flight safety. A partner-approved dynamics model and simulator or small-fleet validation are launch requirements.
+- **BotLab scale versus strict swarm:** BotLab's fleet and India proximity make it valuable for deployment conversations, but public descriptions of individually programmed shows do not prove decentralized control. [68][81]
 - **Decentralized versus best-performing:** A centralized oracle may beat every swarm on ideal communication and full state. The challenge should measure resilience, scale, and infrastructure constraints where decentralization matters, not declare universal superiority. [8][13]
 - **Shared controller versus role diversity:** A common policy makes the artifact legible and the submission contract clean, but strict parameter sharing may suppress useful specialization. Permit private state and local role election, measure role diversity, and reserve a future heterogeneous track if needed. [9][10][25]
 - **Coverage versus coordination:** Coverage remains a useful control task, but aggregate area alone is compatible with independent parallel search. Coordination claims require non-additive tasks and no-channel ablations. [33][34]
@@ -467,19 +443,18 @@ These are public professional channels verified on 2026-08-13. No address was in
 ## 10. Key Findings
 
 - **The current repo is a strong simulator, not yet a coordination benchmark.** Fixed public seeds, additive coverage, global shared memory, and absent failure tests prevent the stronger claim. Confidence: High. [33][34]
-- **The exact challenge is decentralized execution under uncertainty.** Local observations, bounded communication, hidden worlds, varying population sizes, and non-additive missions distinguish swarm coordination from model routing and orchestration. Confidence: High. [1][2][3][4][5]
-- **The strongest target coalition is a mission validator such as JPL CADRE plus Cambridge's Prorok Lab.** CADRE is the closest mission analogue in the reviewed set; Cambridge supplies current decentralized-coordination science and benchmark tooling. Neither is a confirmed partner. Confidence: High on fit, Medium on feasibility. [17][18][25]
-- **Cambridge is not the only Tier-1 academic route.** Bristol and TU Darmstadt belong in the first outreach wave; Princeton, Cornell, EPFL, ASU, HKUST, and NUS are strong specialist or fallback partners. Harvard belongs on the hardware/embodiment longlist, while Princeton now houses the strongest continuation of Harvard's former self-organizing swarm lineage. Confidence: High on technical fit, Medium on outreach feasibility. [43][44][45][46][47][48][49][50][61][62]
-- **The decisive metric is coordination gain over independent agents.** Success, normalized work, communication, scaling, and named failure degradation must be visible; architecture alone does not prove robustness. Confidence: High. [11][12][13]
-- **The launch should wait for scientific validation, not more generic feature work.** A co-reviewed task specification and closed pilot matter more than adding more map skins or orchestration concepts. Confidence: Medium-High. [28][29][30][31][32]
+- **The strongest reachable company thesis is CollMot's decentralized traffic problem.** It has a published safe-throughput metric, 100-drone physical evidence, 5,000-agent simulation evidence, open integration infrastructure, and a direct industrial-partnership route. It is not a confirmed partner. Confidence: High on fit, Medium on feasibility. [65][76][77][78][79][80]
+- **The partner result is safe throughput, not generic coordination gain.** The challenge should report collision-free arrivals per minute and unit area at a fixed safety threshold, plus robustness and resource curves. Confidence: High on metric family, Low on exact thresholds until company review. [13][77]
+- **Universities come after company selection.** Bristol best validates the CollMot-aligned robustness and scaling protocol; Cambridge is the learned-policy/sim-to-real specialist. Confidence: High on technical roles, Medium on outreach feasibility. [13][25][43]
+- **The launch should wait for company validation, not more generic feature work.** A partner-approved workload and baseline matter more than building relay, transport, or additional map families. Confidence: High. [28][29][30][31][32][77]
 
 ## 11. Limitations and Future Directions
 
 ### Research limitations
 
-This report uses four verified evidence sets prepared on 2026-08-13, including a 22-group global academic scan, not every 2026 swarm or MARL paper. At least three sources are preprints or preprint project pages and receive lower authority than peer-reviewed work. [9][13][26]
+This report uses five verified evidence sets prepared on 2026-08-13, including a 22-group global academic scan and a company-first scan of exact and adjacent swarm businesses. It is not an exhaustive census of every 2026 autonomy company or paper. At least three sources are preprints or preprint project pages and receive lower authority than peer-reviewed work. [9][13][26]
 
-Public evidence verifies institutional programmes and problem fit; it does not verify willingness to partner with Yukon. NASA/JPL collaboration, participation by any university lab, Google/CAIF interest, and sponsor terms remain prospective. [14][17][18][19][22][25][43][44]
+Public evidence verifies products, programmes, contacts, and problem fit; it does not verify willingness to partner with Yukon. CollMot, BotLab, Palladyne, Auterion, participation by any university lab, and all sponsor terms remain prospective. [65][66][67][68][80][81][82][83]
 
 The report does not choose exact memory bytes, message bits, failure probabilities, score weights, or success thresholds. Those values should emerge from pilot calibration. It also does not specify implementation changes file-by-file; the objective here is the scientific and partnership contract. The global lab scan is a high-confidence working longlist, not an exhaustive census of every relevant group in Latin America, Africa, the Middle East, or every national research institute.
 
@@ -487,13 +462,12 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 
 ### Priority next work
 
-1. Build a competitor matrix covering task coupling, policy homogeneity, observation locality, communication budgets, procedural holdouts, team-size holdouts, failures, physical transfer, and replay UX.
-2. Produce one two-page brief with three tailored first-wave messages for Cambridge, Bristol, and TU Darmstadt; select the primary scientific partner from real engagement, then contact mission-owner targets.
-3. Remove `env.shared` and implement snapshot local messages in a benchmark branch.
-4. Build search-and-relay and collective-transport missions before adding more map families.
-5. Create matched ablations, an optimized independent population, open-loop, strong decentralized, and centralized-oracle baselines.
-6. Run seasonal holdouts, team-size sweeps, and named failures; preregister the gate, budgets, and P90 normalization.
-7. Commission an external benchmark audit and release only after the four pilot gates pass.
+1. Send the CollMot fit brief to Gábor Vásárhelyi; ask only whether the workload, metric, and integration path are useful.
+2. Send BotLab a separate India-based fleet-bottleneck note; do not copy the CollMot pitch or assume identical architecture.
+3. Do not redesign the official engine until a company approves a workload. Keep the existing exploration product live.
+4. If CollMot validates the thesis, build the minimum 2D traffic prototype: destinations, collisions, local neighbor broadcasts, density sweeps, and safe-throughput score.
+5. Ask Bristol to review the company-approved safety, robustness, scalability, and failure protocol; add Cambridge only for learned policies.
+6. Require a partner-approved baseline and simulator or small-fleet validation path before announcing the challenge.
 
 ## References
 
@@ -549,8 +523,6 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 
 [26] NVIDIA Research. "Gamma-World: Generative Multi-Agent World Modeling Beyond Two Players." Source-Type: academic — preprint project page. As Of: 2026-05. https://research.nvidia.com/labs/sil/projects/gamma-world/
 
-[27] Shield AI. "Hivemind: Autonomous Drone and AI Pilot Software." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://shield.ai/hivemind/
-
 [28] Eigen Labs. "ECDSA.fail — can you break ECDSA?" Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://ecdsa.fail/
 
 [29] Yukon. "OpenFrontierCS — benchmarks at the edge." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.yukon.org/frontiercs
@@ -566,20 +538,6 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 [34] swarm.fail. "Deterministic scoring engine." Source-Type: official. As Of: 2026-08-13. [../lib/engine.mjs](../lib/engine.mjs)
 
 [35] Prorok Lab, University of Cambridge. "Amanda Prorok." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.proroklab.org/people/amanda-prorok/
-
-[36] NASA JPL Robotics. "Jean-Pierre de la Croix." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/
-
-[37] Rabideau et al. "Planning, scheduling, and execution on the Moon: the CADRE technology demonstration mission." Source-Type: academic — AAMAS 2025 paper/preprint record. As Of: 2025-02. https://arxiv.org/abs/2502.14803
-
-[38] NASA JPL. "Researcher Profile: Subha Comandur." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.jpl.nasa.gov/site/research/comandur/
-
-[39] NASA. "Distributed Spacecraft Autonomy (DSA)." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/
-
-[40] Adams et al. "A Torrent-Inspired Large File Transfer System for Small Satellite Swarms." Source-Type: academic — NASA Technical Reports Server. As Of: 2025. https://ntrs.nasa.gov/citations/20250008213
-
-[41] NASA. "Jeremy Frank." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.nasa.gov/people/jeremy-frank/
-
-[42] Smith. "Trey Smith — Roboticist, NASA Ames Research Center." Source-Type: public professional profile. Updated: 2025-07. Accessed: 2026-08-13. https://longhorizon.org/trey/
 
 [43] University of Bristol. "Professor Sabine Hauert." Source-Type: official. Published/Updated: live profile with current projects through 2032. Accessed: 2026-08-13. https://www.bristol.ac.uk/person/Sabine-Hauert-f714ce91-f09a-47e1-b573-f4e120cac448/
 
@@ -624,3 +582,41 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 [63] TU Delft MAVLab. "People." Source-Type: official lab. Published/Updated: live lab roster. Accessed: 2026-08-13. https://mavlab.tudelft.nl/people/
 
 [64] Seoul National University. "Hyoun Jin Kim." Source-Type: official. Published/Updated: live faculty profile. Accessed: 2026-08-13. https://aerospace.snu.ac.kr/about/faculty?mode=view&profidx=9
+
+[65] CollMot Robotics. "Industrial drone swarm applications." Source-Type: official. Published/Updated: live 2026 product and partnership page. Accessed: 2026-08-13. https://collmot.com/services/industrial-applications-of-drone-swarms
+
+[66] Palladyne AI. "SwarmOS — Force Multiplier Swarming." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://www.palladyneai.com/products/ai-software/swarmos/
+
+[67] Auterion. "Nemyx: coordinated swarms at scale." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://auterion.com/product/nemyx/
+
+[68] BotLab Dynamics. "About Us." Source-Type: official. Published/Updated: live 2026 company page. Accessed: 2026-08-13. https://www.botlabdynamics.com/about-us
+
+[69] NewSpace Research and Technologies. "Next Generation Missions and Technologies." Source-Type: official. Published/Updated: live company page. Accessed: 2026-08-13. https://newspace.co.in/
+
+[70] Swarmer. "Platform." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://getswarmer.com/platform/
+
+[71] Swarm Defense Technologies. "Drone Swarm Software." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://www.swarmdefense.com/software
+
+[72] ARX Robotics. "Mithra OS." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://www.arx-robotics.com/mithra-os
+
+[73] Rapyuta Robotics. "Rapyuta ASRS." Source-Type: official. Published/Updated: live 2026 solution page. Accessed: 2026-08-13. https://www.rapyuta-robotics.com/solutions-asrs/
+
+[74] Rapyuta Robotics. "Technology." Source-Type: official. Published/Updated: live 2026 technology page. Accessed: 2026-08-13. https://www.rapyuta-robotics.com/technology/
+
+[75] Exyn Technologies. "ExynAI: Autonomy and Mapping." Source-Type: official. Published/Updated: live 2026 product page. Accessed: 2026-08-13. https://www.exyn.com/exynai-autonomy-and-mapping
+
+[76] CollMot Robotics. "Skybrush Server." Source-Type: official. Published/Updated: live product and documentation page. Accessed: 2026-08-13. https://skybrush.io/modules/server/
+
+[77] Karásek et al. "Decentralized traffic management of autonomous drones." Source-Type: academic. Published: 2024. Accessed: 2026-08-13. https://link.springer.com/article/10.1007/s11721-024-00241-y
+
+[78] Vásárhelyi. "Self-organized aerial traffic with autonomous drones." Source-Type: official academic profile. Published/Updated: 2024. Accessed: 2026-08-13. https://hal.elte.hu/~vasarhelyi/en/projects/traffic/
+
+[79] CollMot Robotics. "Skybrush Server — open-source drone swarm management framework." Source-Type: official open-source repository. Published/Updated: live repository. Accessed: 2026-08-13. https://github.com/skybrush-io/skybrush-server
+
+[80] CollMot Robotics. "Company Info." Source-Type: official. Published/Updated: live 2026 company and industrial-partnership contact page. Accessed: 2026-08-13. https://collmot.com/company-info
+
+[81] BotLab Dynamics. "Drone Light Shows and Contact." Source-Type: official. Published/Updated: live 2026 company page. Accessed: 2026-08-13. https://www.botlabdynamics.com/
+
+[82] Palladyne AI. "Contact Us." Source-Type: official. Published/Updated: live 2026 inquiry page. Accessed: 2026-08-13. https://www.palladyneai.com/contact-us/
+
+[83] Auterion. "Company and Leadership." Source-Type: official. Published/Updated: live 2026 company page. Accessed: 2026-08-13. https://auterion.com/company/
