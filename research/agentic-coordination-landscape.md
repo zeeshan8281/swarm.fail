@@ -267,6 +267,8 @@ Viewers can toggle messages and trails, kill 20% of the population, and change t
 
 CADRE is the closest public mission analogue for distributed exploration, mesh communication, and joint sensing under limited Earth intervention. Its planned autonomous rovers are designed to spread out, explore terrain, and combine measurements. [17][18] The official JPL project page publishes principal investigator Jean-Pierre de la Croix and project manager Subha Comandur; the PI's public address is `Jean-Pierre.de.la.Croix@jpl.nasa.gov`. This is a contact for outreach only—no partnership, endorsement, or branding permission is implied. [18]
 
+CADRE should validate the **mission problem**, not be presented as the exact benchmark architecture. Its published planning, scheduling, and execution system elects one leader to plan centrally and then distributes execution across the rovers. [37] That is a resilient hybrid architecture, whereas the proposed challenge asks whether a population can coordinate from local state without a preinstalled global planner. The distinction makes Jean-Pierre the right person for mission constraints and Amanda Prorok the better first reviewer for the strict decentralized contract.
+
 The JPL ask should be deliberately small and follow an initial academic-specification review:
 
 - a 30-minute technical fit call;
@@ -286,7 +288,7 @@ If both targets agree to participate, the pair would clear both halves of Yukon'
 | Outreach order | Target | Scientific fit | Near-term feasibility | Status and proposed role |
 | ---: | --- | --- | --- | --- |
 | 1 | Cambridge Prorok Lab | Very high: local policies, communication, resilience, roles, benchmarks [25] | High relative to mission institutions | **Uncontacted.** First co-design outreach; review the spec before mission pitching |
-| 2 | NASA/JPL CADRE | Very high analogue for embodied distributed exploration and joint sensing [17][18] | Medium-low: institutional, brand, and IP process | **Uncontacted stretch target.** Problem validator, not a claimed partner |
+| 2 | NASA/JPL CADRE | Very high mission analogue; hybrid rather than strictly decentralized architecture [17][18][37] | Medium-low: institutional, brand, and IP process | **Uncontacted stretch target.** Problem validator, not a claimed partner |
 | 3 | NASA Ames Starling/DSA | Very high: distributed planning, networking, recovery, scaling rationale [14][15][16] | Medium-low | **Uncontacted alternative mission advisor** |
 | 4 | Google DeepMind + CAIF | High for a separate digital-population lane [19][20][22] | Medium; $10M application deadline has passed | Not v1; later research-alignment conversation |
 | 5 | ARIA Scaling Trust | High, but its programme already includes a planned arena [21] | Low for a duplicate challenge | Complementary niche only |
@@ -350,7 +352,7 @@ No partnership, endorsement, or advisory relationship has been established with 
 
 ### 8.2 JPL outreach draft
 
-**Subject:** An open benchmark for CADRE-like decentralized coordination
+**Subject:** An open benchmark for CADRE-like resilient multi-robot coordination
 
 > Jean-Pierre — Yukon builds public technical challenges around consequential frontier problems. We have a working deterministic simulator where one policy is cloned across a population of agents in unknown terrain. We are redesigning it as a rigorous benchmark for decentralized coordination: local observations only, bounded mesh communication, hidden terrain, changing team sizes, node loss, and missions requiring joint sensing and information relay.
 >
@@ -388,6 +390,21 @@ Go forward only if all four gates pass:
 4. At least one credible problem owner confirms in writing that the abstraction represents a consequential coordination problem.
 
 If a gate fails, keep the current site as a multi-agent exploration demo and stop additional challenge investment. Decide prize size, launch budget, and distribution commitments only after the pilot establishes a real frontier and partner appetite.
+
+### 8.6 Verified outreach directory
+
+These are public professional channels verified on 2026-08-13. No address was inferred from an institutional email pattern, and no partnership is implied.
+
+| Priority | Person | Why this person | Verified public channels | First ask |
+| ---: | --- | --- | --- | --- |
+| 1 | **Amanda Prorok**, Professor of Collective Intelligence and Robotics, University of Cambridge [35] | Best first scientific reviewer for local observations, decentralized communication, resilience, role metrics, and benchmark controls | [`asp45@cam.ac.uk`](mailto:asp45@cam.ac.uk); [Cambridge/lab profile](https://www.proroklab.org/people/amanda-prorok/); [LinkedIn](https://uk.linkedin.com/in/aprorok); [Google Scholar](https://scholar.google.com/citations?user=o7xMDgEAAAAJ); [lab GitHub](https://github.com/proroklab) | A 30-minute specification review, followed only if aligned by two benchmark-design reviews |
+| 2 | **Jean-Pierre de la Croix**, Group Leader, JPL Multi-Agent Robotics; CADRE principal investigator [18][36] | Best mission-constraint reviewer for joint sensing, exploration, connectivity, and rover/link failure; CADRE itself uses centralized planning with distributed execution [37] | [`Jean-Pierre.de.la.Croix@jpl.nasa.gov`](mailto:Jean-Pierre.de.la.Croix@jpl.nasa.gov); [JPL profile](https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/); [LinkedIn](https://www.linkedin.com/in/ajpldelacroix) | Whether the public, non-mission-specific task abstractions represent consequential multi-rover failures |
+| 3 | **Caleb Adams**, NASA Ames Distributed Spacecraft Autonomy project manager [16][39] | Direct programme route for distributed task allocation, ad-hoc networking, human-swarm interaction, and Starling flight-test lessons | [`caleb.a.adams@nasa.gov`](mailto:caleb.a.adams@nasa.gov) [40]; [NASA DSA profile](https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/); [LinkedIn](https://www.linkedin.com/in/caleb-adams-75433168) | Which scale, communication, and failure measures matter in real distributed-spacecraft autonomy, plus the right NASA technical referral |
+| 4 | **Jeremy Frank**, NASA Ames Planning and Scheduling Group Lead and Program Element Manager [41] | Strong technical reviewer for distributed planning, execution, fault handling, and task design; coauthor of NASA's 2026 swarm report [14] | [NASA profile](https://www.nasa.gov/people/jeremy-frank/); [LinkedIn](https://www.linkedin.com/in/jeremy-frank-62141bb3) | Prefer an introduction through Caleb; ask whether the task-admission and failure tests reflect real autonomous mission planning |
+| 5 | **Subha Comandur**, JPL researcher and CADRE project manager [18][38] | Operational and institutional route if the technical fit with CADRE is established | [`Subha.Comandur@jpl.nasa.gov`](mailto:Subha.Comandur@jpl.nasa.gov); [JPL profile](https://www.jpl.nasa.gov/site/research/comandur/) | After Jean-Pierre replies or redirects: the smallest viable public collaboration and approval path |
+| 6 | **Trey Smith**, NASA Ames Intelligent Robotics Group [14][42] | Optional robotics/testbed reviewer with multi-robot architecture, uncertain planning, and human-robot systems experience | [`trey.smith@nasa.gov`](mailto:trey.smith@nasa.gov); [professional profile](https://longhorizon.org/trey/); [LinkedIn](https://www.linkedin.com/in/trey-smith-robotics) | Whether the simulator's coupled tasks and replays can transfer credibly to physical multi-robot testbeds |
+
+**Contact sequence:** email Amanda first. After incorporating her critique, email Jean-Pierre with the revised two-page brief. Contact Caleb in parallel or through a warm introduction. Use Jeremy, Subha, and Trey as targeted follow-ups, not a simultaneous blast. Follow up once after seven days; if there is no reply, move to the next route. Do not use NASA, JPL, Cambridge, or lab logos until written permission exists.
 
 ## 9. Key Controversies and Counter-Review
 
@@ -499,3 +516,19 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 [33] swarm.fail. "README." Source-Type: official. As Of: 2026-08-13. [../README.md](../README.md)
 
 [34] swarm.fail. "Deterministic scoring engine." Source-Type: official. As Of: 2026-08-13. [../lib/engine.mjs](../lib/engine.mjs)
+
+[35] Prorok Lab, University of Cambridge. "Amanda Prorok." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.proroklab.org/people/amanda-prorok/
+
+[36] NASA JPL Robotics. "Jean-Pierre de la Croix." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/
+
+[37] Rabideau et al. "Planning, scheduling, and execution on the Moon: the CADRE technology demonstration mission." Source-Type: academic — AAMAS 2025 paper/preprint record. As Of: 2025-02. https://arxiv.org/abs/2502.14803
+
+[38] NASA JPL. "Researcher Profile: Subha Comandur." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.jpl.nasa.gov/site/research/comandur/
+
+[39] NASA. "Distributed Spacecraft Autonomy (DSA)." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/
+
+[40] Adams et al. "A Torrent-Inspired Large File Transfer System for Small Satellite Swarms." Source-Type: academic — NASA Technical Reports Server. As Of: 2025. https://ntrs.nasa.gov/citations/20250008213
+
+[41] NASA. "Jeremy Frank." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.nasa.gov/people/jeremy-frank/
+
+[42] Smith. "Trey Smith — Roboticist, NASA Ames Research Center." Source-Type: public professional profile. Updated: 2025-07. Accessed: 2026-08-13. https://longhorizon.org/trey/
