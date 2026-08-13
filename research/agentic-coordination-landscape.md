@@ -1,6 +1,6 @@
 # SWARM.FAIL: Science-First Challenge Strategy
 
-> Research date: 2026-08-13 | Sources: 34 | Mode: Standard | AS_OF: 2026-08-13 | Official sources: 19/34 (12 external, 7 Yukon/repo first-party)
+> Research date: 2026-08-13 | Sources: 64 | Mode: Standard | AS_OF: 2026-08-13 | Official sources: 46/64 (39 external, 7 Yukon/repo first-party)
 
 ## Executive Summary
 
@@ -11,6 +11,8 @@ The current repository is a polished deterministic multi-agent exploration simul
 The recommended challenge is **SWARM.FAIL — Decentralized Coordination Under Uncertainty**. One submitted policy is cloned across varying swarm sizes. Agents receive local observations, private memory, bounded messages, and decaying traces—never a central controller or global scratchpad. Hidden worlds, team sizes, dropout, and link failures test generalization. Missions require information relay, synchronized action, collective transport, and recovery. Policies pass a success gate before ranking by normalized work and communication.
 
 The recommended target pair is **NASA/JPL CADRE as the mission analogue** and **Amanda Prorok's Cambridge lab as the academic co-design target**. CADRE is designed around lunar rovers that use mesh communication, explore together, and attempt measurements unavailable to one rover; Prorok studies local-observation coordination, communication, resilience, transfer, and roles. [17][18][25] DeepMind and CAIF fit a later digital-agent lane; centralized fleet routing and manager-worker systems do not define this challenge. [19][20][22][23][24]
+
+The broader academic scan adds **Sabine Hauert at Bristol** and **Roderich Groß at TU Darmstadt** to the first outreach wave, with Princeton, Cornell, EPFL, ASU, HKUST, and NUS as strong specialist alternatives. [43][44][45][46][47][48][49][50] Harvard belongs on the longlist for Robert Wood's microrobotic hardware, but the best-known Harvard self-organizing swarm lineage now sits primarily with Radhika Nagpal at Princeton and Michael Rubenstein at Northwestern. [45][58][61][62]
 
 No named organization has agreed to partner with Yukon as of 2026-08-13.
 
@@ -281,6 +283,8 @@ The JPL ask should be deliberately small and follow an initial academic-specific
 
 The Prorok Lab is the strongest fit for scientific design. Its public research explicitly covers decentralized coordination from local observations, learned communication, resilience, role emergence, physical transfer, and open benchmark tooling. [25] The lab should be asked to review the observation/action contract, coordination baselines, hidden generalization design, and role metrics, and to coauthor a post-challenge technical report.
 
+A global scan does not make Cambridge the only credible target. Bristol's Sabine Hauert and TU Darmstadt's Roderich Groß are equally serious first-wave contacts for strict swarm engineering, robustness, verification, local-rule design, and scale. [43][44] Cambridge remains the best first call for a learned-policy benchmark; Bristol and TU Darmstadt close gaps that Cambridge alone should not be expected to cover.
+
 If both targets agree to participate, the pair would clear both halves of Yukon's legitimacy bar: a mission-grade problem analogue and independent benchmark rigor.
 
 ### 6.2 Outreach order: fit versus feasibility
@@ -288,13 +292,54 @@ If both targets agree to participate, the pair would clear both halves of Yukon'
 | Outreach order | Target | Scientific fit | Near-term feasibility | Status and proposed role |
 | ---: | --- | --- | --- | --- |
 | 1 | Cambridge Prorok Lab | Very high: local policies, communication, resilience, roles, benchmarks [25] | High relative to mission institutions | **Uncontacted.** First co-design outreach; review the spec before mission pitching |
-| 2 | NASA/JPL CADRE | Very high mission analogue; hybrid rather than strictly decentralized architecture [17][18][37] | Medium-low: institutional, brand, and IP process | **Uncontacted stretch target.** Problem validator, not a claimed partner |
-| 3 | NASA Ames Starling/DSA | Very high: distributed planning, networking, recovery, scaling rationale [14][15][16] | Medium-low | **Uncontacted alternative mission advisor** |
-| 4 | Google DeepMind + CAIF | High for a separate digital-population lane [19][20][22] | Medium; $10M application deadline has passed | Not v1; later research-alignment conversation |
-| 5 | ARIA Scaling Trust | High, but its programme already includes a planned arena [21] | Low for a duplicate challenge | Complementary niche only |
-| 6 | Shield AI | High technical fit in denied environments [27] | Low public-benchmark feasibility | Later synthetic/non-sensitive discussion |
-| 7 | NVIDIA | Medium as infrastructure; low as documented problem owner [26] | High as tooling sponsor | Simulation or compute only |
-| 8 | Amazon Robotics | High industrial coordination; low strict-decentralization fit [23][24] | Medium-low due proprietary data | Centralized reference or later sponsor |
+| 2 | Bristol Hauert Lab | Very high: strict swarm engineering, resilience, verification, performance indicators [13][43] | High relative to mission institutions | **Uncontacted.** First-wave scientific validation |
+| 3 | TU Darmstadt RCPS | Very high: self-organization, distributed robotics, local rules, scalable systems [8][44] | High relative to mission institutions | **Uncontacted.** First-wave algorithms and scale review |
+| 4 | NASA/JPL CADRE | Very high mission analogue; hybrid rather than strictly decentralized architecture [17][18][37] | Medium-low: institutional, brand, and IP process | **Uncontacted stretch target.** Problem validator, not a claimed partner |
+| 5 | NASA Ames Starling/DSA | Very high: distributed planning, networking, recovery, scaling rationale [14][15][16] | Medium-low | **Uncontacted alternative mission advisor** |
+| 6 | Princeton, Cornell, or EPFL | Very high current swarm depth [45][46][47] | Medium | Second academic wave if first-wave appetite is weak or a specialist is needed |
+| 7 | Google DeepMind + CAIF | High for a separate digital-population lane [19][20][22] | Medium; $10M application deadline has passed | Not v1; later research-alignment conversation |
+| 8 | ARIA Scaling Trust | High, but its programme already includes a planned arena [21] | Low for a duplicate challenge | Complementary niche only |
+| 9 | Shield AI | High technical fit in denied environments [27] | Low public-benchmark feasibility | Later synthetic/non-sensitive discussion |
+| 10 | NVIDIA or Amazon Robotics | Infrastructure or centralized reference value; weak strict-swarm problem ownership [23][24][26] | Medium | Sponsor/reference only, not scientific lead |
+
+### 6.3 Global academic landscape
+
+The scan covered 22 current groups across four regions. The bands below rank **fit for this challenge**, not university prestige or general robotics quality.
+
+| Fit band | Institution and lead | Current state-of-the-art relevance | Best role for SWARM.FAIL |
+| --- | --- | --- | --- |
+| A | **Cambridge — Amanda Prorok** [25][35] | Learned decentralized policies, communication, resilience, heterogeneity, and benchmark tooling | Learned-policy and evaluation co-designer |
+| A | **Bristol — Sabine Hauert** [13][43] | Trustworthy swarm engineering, performance indicators, fault robustness, logistics, and verification | Strict-swarm validity and metric review |
+| A | **TU Darmstadt — Roderich Groß** [8][44] | Self-organizing distributed robotics, scalable local rules, modular swarms, and current GenSwarm work | Controller contract, scale, and emergence review |
+| A | **Princeton — Radhika Nagpal** [45] | Local-interaction self-organization, stigmergy, underwater swarms, inspection, and non-additive swarm productivity | Self-organization and embodied task review |
+| A | **Cornell — Kirstin Petersen** [46] | Environment-mediated coordination, collective construction, local rules, and failure-tolerant embodied collectives | Stigmergy and collective-transport review |
+| A | **EPFL — Alcherio Martinoli** [47] | Distributed control, modeling, optimization, sensor networks, and physical multi-robot validation | Experimental methodology and distributed-control review |
+| A | **Arizona State — Spring Berman** [48] | Formal scalable control, decentralized density feedback, collective transport, consensus, and robustness | Baselines, formal controls, and metric review |
+| A | **NUS — Guillaume Sartoretti** [49] | Distributed learning of decentralized policies and swarm control in random environments | Asia-based learned-controller co-design |
+| A | **HKUST — Shaojie Shen** [50] | RACER decentralized exploration with asynchronous limited communication and distributed collaborative SLAM | Aerial exploration and real-system validation |
+| B | **Oxford — Jakob Foerster** [51] | Multi-agent learning, emergent communication, and zero-shot coordination | Digital-agent/MARL evaluation lane, not primary embodied validator |
+| B | **Penn — Vijay Kumar** [52] | Aerial and ground robot swarms, collective behavior, decentralized exploration, and field deployment | Aerial mission/task validator |
+| B | **Stanford — Mac Schwager** [53] | Collaborative autonomy, distributed control, multi-robot failure prediction and recovery | Failure and physical-autonomy review |
+| B | **Georgia Tech — Robotarium / Sean Wilson** [54] | Open remote-access physical swarm testbed with simulation-to-hardware execution | Post-simulation physical validation partner |
+| B | **ULB IRIDIA — Marco Dorigo** [55] | Foundational swarm intelligence plus current self-organizing and foundation-model work | Field legitimacy and research framing |
+| B | **Konstanz — Heiko Hamann** [56] | Formal swarm robotics, scalability, cooperative transport, and self-organization | Formal local-rule specialist |
+| B | **Max Planck Animal Behavior — Liang Li** [57] | New embodied collective-intelligence group spanning biological and robotic swarms | Collective-behavior science and embodiment review |
+| B | **Northwestern — Michael Rubenstein** [58] | Large-scale swarm control, minimalist platforms, and modular reconfiguration | Scale and hardware-abstraction review |
+| B | **Zhejiang FAST — Fei Gao** [59] | Autonomous aerial swarms in unknown cluttered environments, distributed planning, and open implementations | High-performance aerial-swarm validator |
+| B | **Seoul National — Hyoun Jin Kim** [64] | Multi-robot task assignment, path planning, and multi-agent decision-making | Asia-based planning and aerial-robotics review |
+| Role-specific | **MIT — Daniela Rus** [60] | Networked and distributed robotics, including current hybrid-coordination systems | High-prestige hybrid/distributed robotics advisor |
+| Role-specific | **Harvard — Robert Wood / Microrobotics Lab** [61][62] | World-class microrobotic hardware and RoboBee; programmable-swarm pages preserve major earlier work | Hardware and embodiment advisor, not first benchmark-design call |
+| Role-specific | **TU Delft — Guido de Croon / MAVLab** [63] | Onboard micro-air autonomy and lightweight perception with some swarm-enabling work | Tiny-drone platform and onboard-compute review |
+
+### 6.4 Why Harvard was not originally visible
+
+Harvard absolutely belongs in the history of modern swarm robotics: Kilobots, TERMES, RoboBees, and BlueSwarm are major contributions. [45][61][62] The current-person map is different. Radhika Nagpal moved from Harvard to Princeton in 2022, where she now leads the Self-Organizing Swarms and Robotics group; Michael Rubenstein, a key Kilobot researcher, now leads swarm work at Northwestern. [45][58] Harvard's current Robert Wood programme is strongest in microrobotic mechanisms and RoboBee hardware. [61]
+
+Therefore, Harvard should be on the longlist and could be an excellent embodiment advisor. Princeton is the stronger current contact for the decentralized self-organization lineage, while Cambridge, Bristol, and TU Darmstadt are better first calls for this benchmark's policy contract, metrics, and open challenge design.
+
+**Confidence: High on current affiliations and technical fit; Medium on outreach responsiveness.** The ranking uses current official lab pages and recent project/publication evidence, but no lab has yet reviewed the challenge or expressed interest.
+
+**Counter-claim:** Harvard or MIT could create more launch attention than a closer-fit lab. That may be true commercially. Scientific credibility will be more durable if the lead advisor owns the exact decentralized-coordination question; a famous adjacent institution can still join as a hardware or distribution partner.
 
 Amazon is the clearest case where precision matters. Its million-robot-scale work proves the commercial importance of coordination, but the public system predicts whole-fleet traffic and assigns work centrally; its research invokes a central unit for global passing schedules when local coordination deadlocks. [23][24] That is legitimate multi-robot coordination and a useful centralized upper bound. It is not evidence for the proposed decentralized-swarm claim.
 
@@ -321,7 +366,7 @@ SWARM.FAIL can follow the same structure:
 
 - **Frontier objective:** coordination gain under local information, bounded communication, unseen worlds, and failures.
 - **Problem-owner target:** CADRE/JPL or NASA Ames, subject to written alignment.
-- **Academic-validator target:** Cambridge Prorok Lab, subject to agreement.
+- **Academic-validator target:** one primary lab selected from Cambridge, Bristol, and TU Darmstadt after technical review, subject to agreement.
 - **Auditable metric:** success-gated normalized work and communication cost.
 - **Reference points:** independent-agent baseline, strong decentralized baseline, and centralized oracle.
 - **Hero artifact:** interactive side-by-side failure and ablation replays.
@@ -334,13 +379,13 @@ Launch only when a problem owner names the real failure, an external academic re
 
 ## 8. Outreach Plan and Exact Message
 
-No partnership, endorsement, or advisory relationship has been established with JPL, NASA, Cambridge, or the Prorok Lab.
+No partnership, endorsement, or advisory relationship has been established with any institution or person named in this report.
 
 ### 8.1 Sequence
 
 **Days 1-5:** assign one engineering owner and one partnerships owner. Prepare a two-page brief containing the current replay, diagnosis, strict contract, two coupled task prototypes, baselines, and one CADRE-like scenario. Do not announce a challenge or prize.
 
-**Days 3-8:** contact Cambridge first for scientific co-design. Use that feedback to tighten the task-admission gate, observation table, role definition, and independent baselines.
+**Days 3-8:** send distinct first-wave notes to Cambridge, Bristol, and TU Darmstadt. Ask Cambridge about learned-policy and benchmark controls, Bristol about strict-swarm metrics and verification, and TU Darmstadt about local rules, scale, and emergence. Use the strongest response to select one primary academic co-designer and at most one specialist reviewer.
 
 **Days 6-12:** contact JPL and NASA Ames for problem validation using the reviewed abstraction. Ask which public, non-mission-specific failures are consequential; do not ask for flight code, telemetry, endorsement, or branding.
 
@@ -398,13 +443,15 @@ These are public professional channels verified on 2026-08-13. No address was in
 | Priority | Person | Why this person | Verified public channels | First ask |
 | ---: | --- | --- | --- | --- |
 | 1 | **Amanda Prorok**, Professor of Collective Intelligence and Robotics, University of Cambridge [35] | Best first scientific reviewer for local observations, decentralized communication, resilience, role metrics, and benchmark controls | [`asp45@cam.ac.uk`](mailto:asp45@cam.ac.uk); [Cambridge/lab profile](https://www.proroklab.org/people/amanda-prorok/); [LinkedIn](https://uk.linkedin.com/in/aprorok); [Google Scholar](https://scholar.google.com/citations?user=o7xMDgEAAAAJ); [lab GitHub](https://github.com/proroklab) | A 30-minute specification review, followed only if aligned by two benchmark-design reviews |
-| 2 | **Jean-Pierre de la Croix**, Group Leader, JPL Multi-Agent Robotics; CADRE principal investigator [18][36] | Best mission-constraint reviewer for joint sensing, exploration, connectivity, and rover/link failure; CADRE itself uses centralized planning with distributed execution [37] | [`Jean-Pierre.de.la.Croix@jpl.nasa.gov`](mailto:Jean-Pierre.de.la.Croix@jpl.nasa.gov); [JPL profile](https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/); [LinkedIn](https://www.linkedin.com/in/ajpldelacroix) | Whether the public, non-mission-specific task abstractions represent consequential multi-rover failures |
-| 3 | **Caleb Adams**, NASA Ames Distributed Spacecraft Autonomy project manager [16][39] | Direct programme route for distributed task allocation, ad-hoc networking, human-swarm interaction, and Starling flight-test lessons | [`caleb.a.adams@nasa.gov`](mailto:caleb.a.adams@nasa.gov) [40]; [NASA DSA profile](https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/); [LinkedIn](https://www.linkedin.com/in/caleb-adams-75433168) | Which scale, communication, and failure measures matter in real distributed-spacecraft autonomy, plus the right NASA technical referral |
-| 4 | **Jeremy Frank**, NASA Ames Planning and Scheduling Group Lead and Program Element Manager [41] | Strong technical reviewer for distributed planning, execution, fault handling, and task design; coauthor of NASA's 2026 swarm report [14] | [NASA profile](https://www.nasa.gov/people/jeremy-frank/); [LinkedIn](https://www.linkedin.com/in/jeremy-frank-62141bb3) | Prefer an introduction through Caleb; ask whether the task-admission and failure tests reflect real autonomous mission planning |
-| 5 | **Subha Comandur**, JPL researcher and CADRE project manager [18][38] | Operational and institutional route if the technical fit with CADRE is established | [`Subha.Comandur@jpl.nasa.gov`](mailto:Subha.Comandur@jpl.nasa.gov); [JPL profile](https://www.jpl.nasa.gov/site/research/comandur/) | After Jean-Pierre replies or redirects: the smallest viable public collaboration and approval path |
-| 6 | **Trey Smith**, NASA Ames Intelligent Robotics Group [14][42] | Optional robotics/testbed reviewer with multi-robot architecture, uncertain planning, and human-robot systems experience | [`trey.smith@nasa.gov`](mailto:trey.smith@nasa.gov); [professional profile](https://longhorizon.org/trey/); [LinkedIn](https://www.linkedin.com/in/trey-smith-robotics) | Whether the simulator's coupled tasks and replays can transfer credibly to physical multi-robot testbeds |
+| 2 | **Sabine Hauert**, Professor of Swarm Engineering, University of Bristol [43] | Exact strict-swarm fit: robustness, trustworthy swarm systems, performance indicators, verification, and logistics | [`sabine.hauert@bristol.ac.uk`](mailto:sabine.hauert@bristol.ac.uk); [Bristol profile](https://www.bristol.ac.uk/person/Sabine-Hauert-f714ce91-f09a-47e1-b573-f4e120cac448/) | Review whether the tasks and score prove useful swarm coordination, resilience, and scalability |
+| 3 | **Roderich Groß**, Head of Resilient Cyber-Physical Systems, TU Darmstadt [44] | Exact local-rule and self-organization fit, with current swarm/modular robotics and GenSwarm work | [TU Darmstadt profile](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/team_menu_rcps/team_details_135744.en.jsp); [RCPS lab](https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/index.en.jsp) | Review identical-policy execution, symmetry breaking, scalability, and the boundary between swarm and centralized control |
+| 4 | **Jean-Pierre de la Croix**, Group Leader, JPL Multi-Agent Robotics; CADRE principal investigator [18][36] | Best mission-constraint reviewer for joint sensing, exploration, connectivity, and rover/link failure; CADRE itself uses centralized planning with distributed execution [37] | [`Jean-Pierre.de.la.Croix@jpl.nasa.gov`](mailto:Jean-Pierre.de.la.Croix@jpl.nasa.gov); [JPL profile](https://robotics.jpl.nasa.gov/who-we-are/people/jean-pierre_de-la-croix/); [LinkedIn](https://www.linkedin.com/in/ajpldelacroix) | Whether the public, non-mission-specific task abstractions represent consequential multi-rover failures |
+| 5 | **Caleb Adams**, NASA Ames Distributed Spacecraft Autonomy project manager [16][39] | Direct programme route for distributed task allocation, ad-hoc networking, human-swarm interaction, and Starling flight-test lessons | [`caleb.a.adams@nasa.gov`](mailto:caleb.a.adams@nasa.gov) [40]; [NASA DSA profile](https://www.nasa.gov/game-changing-development-projects/distributed-spacecraft-autonomy-dsa/); [LinkedIn](https://www.linkedin.com/in/caleb-adams-75433168) | Which scale, communication, and failure measures matter in real distributed-spacecraft autonomy, plus the right NASA technical referral |
+| 6 | **Jeremy Frank**, NASA Ames Planning and Scheduling Group Lead and Program Element Manager [41] | Strong technical reviewer for distributed planning, execution, fault handling, and task design; coauthor of NASA's 2026 swarm report [14] | [NASA profile](https://www.nasa.gov/people/jeremy-frank/); [LinkedIn](https://www.linkedin.com/in/jeremy-frank-62141bb3) | Prefer an introduction through Caleb; ask whether the task-admission and failure tests reflect real autonomous mission planning |
+| 7 | **Subha Comandur**, JPL researcher and CADRE project manager [18][38] | Operational and institutional route if the technical fit with CADRE is established | [`Subha.Comandur@jpl.nasa.gov`](mailto:Subha.Comandur@jpl.nasa.gov); [JPL profile](https://www.jpl.nasa.gov/site/research/comandur/) | After Jean-Pierre replies or redirects: the smallest viable public collaboration and approval path |
+| 8 | **Trey Smith**, NASA Ames Intelligent Robotics Group [14][42] | Optional robotics/testbed reviewer with multi-robot architecture, uncertain planning, and human-robot systems experience | [`trey.smith@nasa.gov`](mailto:trey.smith@nasa.gov); [professional profile](https://longhorizon.org/trey/); [LinkedIn](https://www.linkedin.com/in/trey-smith-robotics) | Whether the simulator's coupled tasks and replays can transfer credibly to physical multi-robot testbeds |
 
-**Contact sequence:** email Amanda first. After incorporating her critique, email Jean-Pierre with the revised two-page brief. Contact Caleb in parallel or through a warm introduction. Use Jeremy, Subha, and Trey as targeted follow-ups, not a simultaneous blast. Follow up once after seven days; if there is no reply, move to the next route. Do not use NASA, JPL, Cambridge, or lab logos until written permission exists.
+**Contact sequence:** send tailored messages to Amanda, Sabine, and Roderich in the same first week; this is a three-person scientific comparison, not a mass email. Select one primary co-designer and at most one specialist reviewer from the responses. Then send the reviewed brief to Jean-Pierre and Caleb. Use Jeremy, Subha, and Trey as targeted follow-ups. Follow up once after seven days. Do not use any institution or lab logo until written permission exists.
 
 ## 9. Key Controversies and Counter-Review
 
@@ -422,6 +469,7 @@ These are public professional channels verified on 2026-08-13. No address was in
 - **The current repo is a strong simulator, not yet a coordination benchmark.** Fixed public seeds, additive coverage, global shared memory, and absent failure tests prevent the stronger claim. Confidence: High. [33][34]
 - **The exact challenge is decentralized execution under uncertainty.** Local observations, bounded communication, hidden worlds, varying population sizes, and non-additive missions distinguish swarm coordination from model routing and orchestration. Confidence: High. [1][2][3][4][5]
 - **The strongest target coalition is a mission validator such as JPL CADRE plus Cambridge's Prorok Lab.** CADRE is the closest mission analogue in the reviewed set; Cambridge supplies current decentralized-coordination science and benchmark tooling. Neither is a confirmed partner. Confidence: High on fit, Medium on feasibility. [17][18][25]
+- **Cambridge is not the only Tier-1 academic route.** Bristol and TU Darmstadt belong in the first outreach wave; Princeton, Cornell, EPFL, ASU, HKUST, and NUS are strong specialist or fallback partners. Harvard belongs on the hardware/embodiment longlist, while Princeton now houses the strongest continuation of Harvard's former self-organizing swarm lineage. Confidence: High on technical fit, Medium on outreach feasibility. [43][44][45][46][47][48][49][50][61][62]
 - **The decisive metric is coordination gain over independent agents.** Success, normalized work, communication, scaling, and named failure degradation must be visible; architecture alone does not prove robustness. Confidence: High. [11][12][13]
 - **The launch should wait for scientific validation, not more generic feature work.** A co-reviewed task specification and closed pilot matter more than adding more map skins or orchestration concepts. Confidence: Medium-High. [28][29][30][31][32]
 
@@ -429,18 +477,18 @@ These are public professional channels verified on 2026-08-13. No address was in
 
 ### Research limitations
 
-This report uses the three verified note sets prepared on 2026-08-13, not every 2026 swarm or MARL paper. At least three sources are preprints or preprint project pages and receive lower authority than peer-reviewed work. [9][13][26]
+This report uses four verified evidence sets prepared on 2026-08-13, including a 22-group global academic scan, not every 2026 swarm or MARL paper. At least three sources are preprints or preprint project pages and receive lower authority than peer-reviewed work. [9][13][26]
 
-Public evidence verifies institutional programmes and problem fit; it does not verify willingness to partner with Yukon. NASA/JPL collaboration, Cambridge participation, Google/CAIF interest, and sponsor terms remain prospective. [14][17][18][19][22][25]
+Public evidence verifies institutional programmes and problem fit; it does not verify willingness to partner with Yukon. NASA/JPL collaboration, participation by any university lab, Google/CAIF interest, and sponsor terms remain prospective. [14][17][18][19][22][25][43][44]
 
-The report does not choose exact memory bytes, message bits, failure probabilities, score weights, or success thresholds. Those values should emerge from pilot calibration. It also does not specify implementation changes file-by-file; the objective here is the scientific and partnership contract.
+The report does not choose exact memory bytes, message bits, failure probabilities, score weights, or success thresholds. Those values should emerge from pilot calibration. It also does not specify implementation changes file-by-file; the objective here is the scientific and partnership contract. The global lab scan is a high-confidence working longlist, not an exhaustive census of every relevant group in Latin America, Africa, the Middle East, or every national research institute.
 
 Finally, "role" remains overloaded. Future specifications must distinguish transient state, persistent specialization, externally assigned capability, and learned latent role before claiming role emergence.
 
 ### Priority next work
 
 1. Build a competitor matrix covering task coupling, policy homogeneity, observation locality, communication budgets, procedural holdouts, team-size holdouts, failures, physical transfer, and replay UX.
-2. Produce the two-page Cambridge/JPL brief; contact Cambridge first, then mission-owner targets.
+2. Produce one two-page brief with three tailored first-wave messages for Cambridge, Bristol, and TU Darmstadt; select the primary scientific partner from real engagement, then contact mission-owner targets.
 3. Remove `env.shared` and implement snapshot local messages in a benchmark branch.
 4. Build search-and-relay and collective-transport missions before adding more map families.
 5. Create matched ablations, an optimized independent population, open-loop, strong decentralized, and centralized-oracle baselines.
@@ -532,3 +580,47 @@ Finally, "role" remains overloaded. Future specifications must distinguish trans
 [41] NASA. "Jeremy Frank." Source-Type: official. Published/Updated: undated. Accessed: 2026-08-13. https://www.nasa.gov/people/jeremy-frank/
 
 [42] Smith. "Trey Smith — Roboticist, NASA Ames Research Center." Source-Type: public professional profile. Updated: 2025-07. Accessed: 2026-08-13. https://longhorizon.org/trey/
+
+[43] University of Bristol. "Professor Sabine Hauert." Source-Type: official. Published/Updated: live profile with current projects through 2032. Accessed: 2026-08-13. https://www.bristol.ac.uk/person/Sabine-Hauert-f714ce91-f09a-47e1-b573-f4e120cac448/
+
+[44] TU Darmstadt. "Resilient Cyber-Physical Systems." Source-Type: official. Published/Updated: live lab page with 2026 activity. Accessed: 2026-08-13. https://www.informatik.tu-darmstadt.de/rcps/rcps_menu/index.en.jsp
+
+[45] Princeton University. "Nagpal Lab — Research." Source-Type: official. Published/Updated: live current-project page. Accessed: 2026-08-13. https://ssr.princeton.edu/research
+
+[46] Cornell University. "Collective Embodied Intelligence Lab." Source-Type: official. Published/Updated: live lab page with 2025–2026 work. Accessed: 2026-08-13. https://cei.ece.cornell.edu/
+
+[47] EPFL. "Alcherio Martinoli — Distributed Intelligent Systems and Algorithms Laboratory." Source-Type: official. Published/Updated: live profile. Accessed: 2026-08-13. https://people.epfl.ch/alcherio.martinoli?lang=en
+
+[48] Arizona State University. "Autonomous Collective Systems Laboratory — Publications." Source-Type: official. Published/Updated: live publication list through 2026. Accessed: 2026-08-13. https://faculty.engineering.asu.edu/acs/publications
+
+[49] National University of Singapore. "Guillaume A. Sartoretti." Source-Type: official. Published/Updated: live faculty profile. Accessed: 2026-08-13. https://cde.nus.edu.sg/me/staff/sartoretti-guillaume-a/
+
+[50] HKUST. "Aerial Robotics Group." Source-Type: official. Published/Updated: live lab page. Accessed: 2026-08-13. https://uav.hkust.edu.hk/
+
+[51] University of Oxford. "Jakob Foerster." Source-Type: official. Published/Updated: live faculty profile with 2026 activity. Accessed: 2026-08-13. https://eng.ox.ac.uk/people/jakob-foerster
+
+[52] University of Pennsylvania. "Vijay Kumar Lab." Source-Type: official lab. Published/Updated: live lab page. Accessed: 2026-08-13. https://www.kumarrobotics.org/
+
+[53] Stanford University. "Multi-Robot Systems Lab." Source-Type: official. Published/Updated: 2026. Accessed: 2026-08-13. https://msl.stanford.edu/
+
+[54] Georgia Institute of Technology. "Robotarium." Source-Type: official. Published/Updated: live testbed page. Accessed: 2026-08-13. https://www.robotarium.gatech.edu/
+
+[55] Université libre de Bruxelles IRIDIA. "Marco Dorigo." Source-Type: official lab/personal profile. Updated: 2026-06. Accessed: 2026-08-13. https://iridia.ulb.ac.be/~mdorigo/
+
+[56] University of Konstanz. "Cyber-Physical Systems Group." Source-Type: official. Published/Updated: live lab page with 2025–2026 teaching. Accessed: 2026-08-13. https://www.cps.uni-konstanz.de/
+
+[57] Max Planck Institute of Animal Behavior. "Dr. Liang Li." Source-Type: official. Updated: 2025 appointment and current group description. Accessed: 2026-08-13. https://www.ab.mpg.de/736590/dr-liang-li
+
+[58] Northwestern University. "Mike Rubenstein." Source-Type: official. Published/Updated: live faculty profile. Accessed: 2026-08-13. https://robotics.northwestern.edu/people/profiles/faculty/rubenstein-mike.html
+
+[59] Zhejiang University FAST Lab. "Fei Gao." Source-Type: official lab. Published/Updated: live profile with 2025–2026 work. Accessed: 2026-08-13. https://zju-fast-lab.github.io/author/fei-gao-%E9%AB%98%E9%A3%9E/
+
+[60] MIT CSAIL. "Daniela Rus." Source-Type: official. Updated: 2026-01. Accessed: 2026-08-13. https://www.csail.mit.edu/person/daniela-rus
+
+[61] Harvard SEAS. "Robert J. Wood." Source-Type: official. Published/Updated: live faculty profile with 2026 activity. Accessed: 2026-08-13. https://seas.harvard.edu/person/robert-wood
+
+[62] Harvard Wyss Institute. "Programmable Robot Swarms." Source-Type: official. Published/Updated: live technology page containing work through 2021. Accessed: 2026-08-13. https://wyss.harvard.edu/technology/programmable-robot-swarms/
+
+[63] TU Delft MAVLab. "People." Source-Type: official lab. Published/Updated: live lab roster. Accessed: 2026-08-13. https://mavlab.tudelft.nl/people/
+
+[64] Seoul National University. "Hyoun Jin Kim." Source-Type: official. Published/Updated: live faculty profile. Accessed: 2026-08-13. https://aerospace.snu.ac.kr/about/faculty?mode=view&profidx=9
